@@ -17,7 +17,7 @@ h=h[:i]+'<details class="preview"><summary>Podgląd animacji: pora roku, święt
 
 # style strony
 h=h.replace('<header id="hero">','<a class="skip" href="#tresc">Przejdź do treści</a><header id="hero"><h1 class="sr">Parafia Ewangelicko-Augsburska Brenna-Górki</h1>',1)
-h=h.replace('</style></head>',css+'\n'+open('pano_viewer.css',encoding='utf-8').read()+'\n'+open('post_editor.css',encoding='utf-8').read()+'\n'+open('services_editor.css',encoding='utf-8').read()+'\n'+open('bottom.css',encoding='utf-8').read()+'\n'+open('calm.css',encoding='utf-8').read()+'\n</style></head>',1)
+h=h.replace('</style></head>',css+'\n'+open('post_editor.css',encoding='utf-8').read()+'\n'+open('services_editor.css',encoding='utf-8').read()+'\n'+open('bottom.css',encoding='utf-8').read()+'\n'+open('calm.css',encoding='utf-8').read()+'\n</style></head>',1)
 
 # skrypty strony
 JS0=r'''
@@ -66,7 +66,7 @@ document.querySelectorAll('.jnav a').forEach((a,i)=>{a.style.transitionDelay=(.3
   ov.querySelector('.phclose').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});
   addEventListener('keydown',function k(e){if(e.key==='Escape'&&ov){close();removeEventListener('keydown',k)}})};})();
 '''
-JS=JS0.replace('PANOJS',open('pano_viewer.js',encoding='utf-8').read()+'\n'+open('tour.js',encoding='utf-8').read()+'\n'+open('post_editor.js',encoding='utf-8').read()+'\n'+open('services_editor.js',encoding='utf-8').read()+'\n'+open('login.js',encoding='utf-8').read())
+JS=JS0.replace('PANOJS',open('tour.js',encoding='utf-8').read()+'\n'+open('post_editor.js',encoding='utf-8').read()+'\n'+open('services_editor.js',encoding='utf-8').read()+'\n'+open('login.js',encoding='utf-8').read())
 h=h.replace('</script>\n</body>',JS+'\n</script>\n</body>',1)
 import base64
 for k,f in [('DOOR_LEFT','door/left.webp'),('DOOR_RIGHT','door/right.webp'),('DOOR_RING','door/ring.webp')]:

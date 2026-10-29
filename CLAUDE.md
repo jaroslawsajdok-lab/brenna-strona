@@ -14,7 +14,7 @@ Teraz: jeden plik HTML jako prototyp. Docelowo: WordPress na hostingu luteranie.
 ## Czego NIE ruszamy
 - **Nagłówek** (animowany rysunek kreską: kościoły, las, pory roku, sceny roku liturgicznego, menu w nagłówku) i **zielony pasek menu `.joint`**, który przykleja się u góry. Jarosław: „genialne w swej prostocie”. Wygląd i zachowanie zostają.
 - Sceny świąteczne w nagłówku zmieniamy tylko na wyraźną prośbę parafii.
-- **Szkic kościoła ze spacerem 360°** (29.10.2026 zastąpił drzwi): kreskowy rysunek kościoła w Brennej w dziale Aktualności (po prawej, na telefonie na górze), trzy przyciski „Z góry”, „Obok”, „Wewnątrz” otwierają spacer na cały ekran. Nazwy 22 miejsc w `tour.js` są robocze – do potwierdzenia przez parafię.
+- **Szkic kościoła ze spacerem 360°** (29.10.2026 zastąpił drzwi): kreskowy rysunek kościoła w Brennej w dziale Aktualności (po prawej, na telefonie na górze), trzy przyciski „Z góry”, „Obok”, „Wewnątrz” otwierają spacer na cały ekran.
 - Działu Kazania nie ma (transmisji i nagrań nie będzie).
 
 ## Kierunek wyglądu (poniżej nagłówka)
@@ -40,8 +40,8 @@ Strona ma nie wyglądać na zrobioną przez AI. Obowiązuje:
 | `services_editor.js/.css` | tabela nabożeństw: edycja wierszy, sortowanie po dacie, dzień tygodnia, „najbliższe”, minione znikają, puste = brak nabożeństwa; pasek „Najbliższe nabożeństwo” pod menu |
 | `post_editor.js/.css` | aktualności: okno edycji (tytuł, data, zdjęcie główne z punktem kadru, treść, galeria), przeglądarka zdjęć |
 | `login.js` | logowanie (róża Lutra w stopce lub `#edycja`; prototyp: `proboszcz` / `brenna`), tryb edycji, las w stopce, przełącznik mapy, flaga `?podglad` |
-| `pano_viewer.js/.css` | własna przeglądarka spaceru 360° (kafle 3DVista z luteranie-wirtualne-muzea.pl) |
-| `tour.js` | szkic kościoła: nazwy 22 miejsc spaceru (`PLACES`, kolejność jak `PANOS`), okno spaceru na cały ekran |
+| `pano_viewer.js/.css` | dawna własna przeglądarka spaceru (CSS 3D) – nieużywana: przy dużym ekranie rozjeżdżała się w kwadraty; zastąpiona oryginalnym odtwarzaczem |
+| `tour.js` | okno spaceru na cały ekran: oryginalny odtwarzacz 3DVista z luteranie-wirtualne-muzea.pl w ramce, `#media=N` otwiera od N-tego punktu (1 dron, 7 przed kościołem, 9 nawa) |
 | `make_page.py` | **składa `brenna-strona.html`** (nagłówek + treść + wszystkie CSS/JS + obrazy drzwi jako data URI) |
 | `door/`, `door_svg.py`, `door_parts.html` | dawne drzwi do spaceru – nieużywane, do usunięcia |
 | `font/` | PT Sans i PT Sans Narrow (fontsource) – do wgrania na serwer w WordPressie |
