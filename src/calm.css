@@ -124,3 +124,10 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 .maptabs button{font-size:14px!important}
 .foot2,.flinks a{font-size:14px}.fid b{font-size:17px}
 .video .screen{border:0}
+
+/* runda 3 (Claude Code, 1): braki widać jako braki, nie jako puste tło */
+.pastor .ph{background:#f6ead2!important}
+.album .ph:empty{background:#f6ead2!important;display:grid;place-items:center}
+.album .ph:empty::after{content:"zdjęcia do dodania";font-size:14px;color:#6b5220}
+.days li[hidden]{display:none}
+.sermons li{grid-template-columns:48px 1fr}
