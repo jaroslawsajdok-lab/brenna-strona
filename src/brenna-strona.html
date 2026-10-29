@@ -1114,6 +1114,19 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 .maptabs button{min-height:44px;padding-left:18px;padding-right:18px}
 .seal{width:44px;height:44px}
 
+/* runda 6 (Claude Code, 4): plakaty nie przytłaczają kalendarza, galeria na telefonie jako lista */
+@media (max-width:900px){
+ .posters{grid-template-columns:repeat(2,minmax(0,220px))!important;justify-content:start;gap:16px!important}
+ .p2{margin-top:0!important}
+}
+@media (max-width:520px){
+ .albums{grid-template-columns:1fr!important;gap:12px!important}
+ .album{display:grid!important;grid-template-columns:120px 1fr;grid-template-rows:auto 1fr;column-gap:16px;align-items:start}
+ .album .ph{grid-row:1/3;aspect-ratio:4/3!important}
+ .album span{margin-top:0}
+ .album .ph:empty::after{content:"brak zdjęć";text-align:center}
+}
+
 </style></head>
 <body data-season="jesien">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="fglow"><stop offset="0" stop-color="#ffcf6b" stop-opacity=".75"/><stop offset="1" stop-color="#ffcf6b" stop-opacity="0"/></radialGradient><radialGradient id="warm"><stop offset="0" stop-color="#ffd27a" stop-opacity=".85"/><stop offset=".6" stop-color="#e8a24a" stop-opacity=".35"/><stop offset="1" stop-color="#e8a24a" stop-opacity="0"/></radialGradient><radialGradient id="starglow"><stop offset="0" stop-color="#fff6d0" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d0" stop-opacity="0"/></radialGradient><radialGradient id="whiteglow"><stop offset="0" stop-color="#fffdf2" stop-opacity=".95"/><stop offset="1" stop-color="#fff8dc" stop-opacity="0"/></radialGradient><linearGradient id="snowg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d6e1eb"/></linearGradient></defs></svg><a class="skip" href="#tresc">Przejdź do treści</a><header id="hero"><h1 class="sr">Parafia Ewangelicko-Augsburska Brenna-Górki</h1>
