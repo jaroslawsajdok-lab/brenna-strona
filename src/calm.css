@@ -75,14 +75,23 @@ main h3{font-size:20px}
 .qa details[open] summary::after{content:"−"!important}
 .qa details p{color:var(--ink-soft)}
 
-/* pasek „najbliższe nabożeństwo” jako jedno zdanie */
-.nextbar{background:#e9ede6!important;border-bottom:0!important}
+/* pasek „najbliższe nabożeństwo”: białe pole w szerokości treści – kiedy, co, gdzie i o której */
+.nextbar .nb{display:block}
+.nextbar{display:block;background:var(--ground)!important;border:0!important;padding-top:40px;text-decoration:none;color:var(--ink)}
 .nextbar::after{content:none!important}
-.nextbar .nb-s{display:block;padding-top:14px;padding-bottom:14px;font-size:17px;line-height:1.45;color:var(--ink)}
-.nextbar .nb-s b{font-weight:700}
-.nextbar .nb-s span{text-decoration:underline;text-decoration-color:rgba(47,93,69,.5);text-underline-offset:3px;color:var(--spruce);font-weight:700;white-space:nowrap}
-.nextbar:hover{background:#dfe6dc!important}
-.nextbar.today{background:#f5ecd9!important}
+.nb-box{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:baseline;gap:4px 40px;background:#fff;padding:20px 28px 22px}
+.nb-k{grid-column:1/-1;font-size:14px;color:var(--ink-soft)}
+.nb-d{font-size:20px;white-space:nowrap}
+.nb-d i{font-style:normal;font-size:17px;font-weight:700;color:var(--spruce);margin-left:10px}
+.nb-n{font-size:17px;color:var(--ink-soft)}
+.nextbar.feast .nb-n{color:var(--spruce);font-weight:700}
+.nb-p{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 28px;font-size:17px}
+.nb-p b{font-size:20px;margin-left:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nb-o{font-size:14px;color:var(--ink-soft)}
+.nextbar:hover .nb-box{outline:3px solid var(--spruce);outline-offset:0}
+.nextbar:focus-visible{outline:0}.nextbar:focus-visible .nb-box{outline:3px solid var(--spruce);outline-offset:3px}
+.nextbar.today .nb-box{background:#f5ecd9}
+@media (max-width:760px){.nextbar{padding-top:24px}.nb-box{grid-template-columns:1fr;padding:16px 18px 18px;gap:4px}.nb-p{margin-top:6px}}
 
 /* przyciski testowe tylko w trybie podglądu (adres z ?podglad) */
 html:not(.dev) details.preview,html:not(.dev) .phonebtn{display:none!important}
@@ -165,3 +174,6 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 
 /* runda 7 (Claude Code, 5): brak w stopce czytelny na zieleni */
 .flinks a.todo{color:#6b5220!important;text-decoration:none}
+
+/* Kazania bez wideo (transmisji nie będzie): jedna kolumna */
+.listen-in{grid-template-columns:minmax(0,760px)!important}

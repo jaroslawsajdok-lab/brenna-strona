@@ -1039,14 +1039,23 @@ main h3{font-size:20px}
 .qa details[open] summary::after{content:"−"!important}
 .qa details p{color:var(--ink-soft)}
 
-/* pasek „najbliższe nabożeństwo” jako jedno zdanie */
-.nextbar{background:#e9ede6!important;border-bottom:0!important}
+/* pasek „najbliższe nabożeństwo”: białe pole w szerokości treści – kiedy, co, gdzie i o której */
+.nextbar .nb{display:block}
+.nextbar{display:block;background:var(--ground)!important;border:0!important;padding-top:40px;text-decoration:none;color:var(--ink)}
 .nextbar::after{content:none!important}
-.nextbar .nb-s{display:block;padding-top:14px;padding-bottom:14px;font-size:17px;line-height:1.45;color:var(--ink)}
-.nextbar .nb-s b{font-weight:700}
-.nextbar .nb-s span{text-decoration:underline;text-decoration-color:rgba(47,93,69,.5);text-underline-offset:3px;color:var(--spruce);font-weight:700;white-space:nowrap}
-.nextbar:hover{background:#dfe6dc!important}
-.nextbar.today{background:#f5ecd9!important}
+.nb-box{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:baseline;gap:4px 40px;background:#fff;padding:20px 28px 22px}
+.nb-k{grid-column:1/-1;font-size:14px;color:var(--ink-soft)}
+.nb-d{font-size:20px;white-space:nowrap}
+.nb-d i{font-style:normal;font-size:17px;font-weight:700;color:var(--spruce);margin-left:10px}
+.nb-n{font-size:17px;color:var(--ink-soft)}
+.nextbar.feast .nb-n{color:var(--spruce);font-weight:700}
+.nb-p{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 28px;font-size:17px}
+.nb-p b{font-size:20px;margin-left:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nb-o{font-size:14px;color:var(--ink-soft)}
+.nextbar:hover .nb-box{outline:3px solid var(--spruce);outline-offset:0}
+.nextbar:focus-visible{outline:0}.nextbar:focus-visible .nb-box{outline:3px solid var(--spruce);outline-offset:3px}
+.nextbar.today .nb-box{background:#f5ecd9}
+@media (max-width:760px){.nextbar{padding-top:24px}.nb-box{grid-template-columns:1fr;padding:16px 18px 18px;gap:4px}.nb-p{margin-top:6px}}
 
 /* przyciski testowe tylko w trybie podglądu (adres z ?podglad) */
 html:not(.dev) details.preview,html:not(.dev) .phonebtn{display:none!important}
@@ -1129,6 +1138,9 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 
 /* runda 7 (Claude Code, 5): brak w stopce czytelny na zieleni */
 .flinks a.todo{color:#6b5220!important;text-decoration:none}
+
+/* Kazania bez wideo (transmisji nie będzie): jedna kolumna */
+.listen-in{grid-template-columns:minmax(0,760px)!important}
 
 </style></head>
 <body data-season="jesien">
@@ -1328,10 +1340,6 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
    </ul>
    <p class="todo">Przykładowe pozycje – nagrań jeszcze nie ma. Do ustalenia z proboszczem, czy kazania będą nagrywane.</p>
    <a class="more" href="#">Archiwum nagrań</a>
-  </div>
-  <div class="video" data-edit="wideo">
-   <div class="screen"><span class="yt"><svg viewBox="0 0 16 16" aria-hidden="true" style="width:20px;height:20px;fill:#fff"><path d="M4 2.5v11l9-5.5z"/></svg></span></div>
-   <p class="todo">Link do kanału parafii na YouTube – do uzupełnienia</p>
   </div>
  </div>
 </section>
@@ -2766,9 +2774,8 @@ function toast(t){const el=document.createElement('div');el.className='ped-toast
   bar.classList.toggle('feast',tr.classList.contains('feast'));bar.classList.toggle('today',when(d)==='dziś');
   const only=places.length===1?`tylko ${places[0][2]}`:'';
   bar.setAttribute('aria-label',`Najbliższe nabożeństwo: ${day} ${d.getDate()} ${MON[d.getMonth()]}, ${name}. ${places.map(x=>x[0]+' '+x[1]).join(', ')}${only?' ('+only+')':''}. Zobacz wszystkie nabożeństwa.`);
-  const tm=places.length===2&&places[0][1]===places[1][1]?`Brenna i Górki: ${places[0][1]}`:places.map(([n,v])=>`${n} ${v}`).join(', ');
-  const w=when(d),wtxt=w==='dziś'?'dziś':w==='jutro'?'jutro':w;
-  bar.innerHTML=`<span class="nb-s wrap" aria-hidden="true">Najbliższe nabożeństwo: <b>${day} ${d.getDate()} ${MON[d.getMonth()]}</b> (${wtxt}), ${name}. ${tm}${only?', '+only:''}. </span>`}
+  const w=when(d),pl=places.length===2&&places[0][1]===places[1][1]?[['Brenna i Górki',places[0][1]]]:places;
+  bar.innerHTML=`<span class="nb wrap" aria-hidden="true"><span class="nb-box"><span class="nb-k">Najbliższe nabożeństwo</span><span class="nb-d"><b>${day} ${d.getDate()} ${MON[d.getMonth()]}</b><i>${w}</i></span><span class="nb-n">${name}</span><span class="nb-p">${pl.map(([n,v])=>`<span>${n} <b>${v}</b></span>`).join('')}${only?`<span class="nb-o">${only}</span>`:''}</span></span></span>`}
 
  new MutationObserver(upd).observe(tb.tBodies[0],{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});upd()})();
 

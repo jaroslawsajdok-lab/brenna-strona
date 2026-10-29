@@ -46,9 +46,8 @@
   bar.classList.toggle('feast',tr.classList.contains('feast'));bar.classList.toggle('today',when(d)==='dziś');
   const only=places.length===1?`tylko ${places[0][2]}`:'';
   bar.setAttribute('aria-label',`Najbliższe nabożeństwo: ${day} ${d.getDate()} ${MON[d.getMonth()]}, ${name}. ${places.map(x=>x[0]+' '+x[1]).join(', ')}${only?' ('+only+')':''}. Zobacz wszystkie nabożeństwa.`);
-  const tm=places.length===2&&places[0][1]===places[1][1]?`Brenna i Górki: ${places[0][1]}`:places.map(([n,v])=>`${n} ${v}`).join(', ');
-  const w=when(d),wtxt=w==='dziś'?'dziś':w==='jutro'?'jutro':w;
-  bar.innerHTML=`<span class="nb-s wrap" aria-hidden="true">Najbliższe nabożeństwo: <b>${day} ${d.getDate()} ${MON[d.getMonth()]}</b> (${wtxt}), ${name}. ${tm}${only?', '+only:''}. </span>`}
+  const w=when(d),pl=places.length===2&&places[0][1]===places[1][1]?[['Brenna i Górki',places[0][1]]]:places;
+  bar.innerHTML=`<span class="nb wrap" aria-hidden="true"><span class="nb-box"><span class="nb-k">Najbliższe nabożeństwo</span><span class="nb-d"><b>${day} ${d.getDate()} ${MON[d.getMonth()]}</b><i>${w}</i></span><span class="nb-n">${name}</span><span class="nb-p">${pl.map(([n,v])=>`<span>${n} <b>${v}</b></span>`).join('')}${only?`<span class="nb-o">${only}</span>`:''}</span></span></span>`}
 
  new MutationObserver(upd).observe(tb.tBodies[0],{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});upd()})();
 
