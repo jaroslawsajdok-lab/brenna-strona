@@ -162,3 +162,6 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
  .album span{margin-top:0}
  .album .ph:empty::after{content:"brak zdjęć";text-align:center}
 }
+
+/* runda 7 (Claude Code, 5): brak w stopce czytelny na zieleni */
+.flinks a.todo{color:#6b5220!important;text-decoration:none}
