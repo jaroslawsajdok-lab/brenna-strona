@@ -14,16 +14,16 @@ Teraz: jeden plik HTML jako prototyp. Docelowo: WordPress na hostingu luteranie.
 ## Czego NIE ruszamy
 - **Nagłówek** (animowany rysunek kreską: kościoły, las, pory roku, sceny roku liturgicznego, menu w nagłówku) i **zielony pasek menu `.joint`**, który przykleja się u góry. Jarosław: „genialne w swej prostocie”. Wygląd i zachowanie zostają.
 - Sceny świąteczne w nagłówku zmieniamy tylko na wyraźną prośbę parafii.
-- **Szkic kościoła ze spacerem 360°** (29.10.2026 zastąpił drzwi): kreskowy rysunek kościoła w Brennej w dziale Aktualności (po prawej, na telefonie na górze), trzy przyciski „Z góry”, „Obok”, „Wewnątrz” otwierają spacer na cały ekran.
+- **Drzwi do spaceru 360°** (okrągłe drewniane drzwi z różą Lutra w dziale Aktualności, po prawej; na telefonie na górze działu) – jedyne miejsce, gdzie drewno ma zostać. Rysują się kreską, gdy pojawią się na ekranie; po kliknięciu odrysowują się (kolor schodzi, kreski się zwijają, w kole zostaje zdjęcie nawy) i spacer otwiera się na cały ekran; po zamknięciu rysują się z powrotem. Skrzydła się nie obracają.
 - Działu Kazania nie ma (transmisji i nagrań nie będzie).
 
 ## Kierunek wyglądu (poniżej nagłówka)
 Strona ma nie wyglądać na zrobioną przez AI. Obowiązuje:
 - Tło `#f3f3f0` (neutralny kamień), zieleń parafii `--spruce #2f5d45` / `--spruce-d #24493a` jako jedyny akcent, tusz `#1d1d1b`. Bez kremu, bez fioletu, bez gradientów.
 - Pismo: PT Sans (tekst) + PT Sans Narrow (tytuły działów). Pięć rozmiarów: 14 · 17 · 20 · 30 · 52 px.
-- Bez: drewnianych ramek i listew, falistych przejść, cieni na elementach w spoczynku, cienkich linii-dzielników (linie tylko w prawdziwych tabelach i polach formularzy), napisów wersalikami nad nagłówkami, strzałek „→” w linkach, emoji/znaków jako ikon (ikony = SVG, klasa `.ico`), kart z ikoną na górze, układu „jedno duże + cztery małe”.
+- Bez: drewnianych ramek i listew (poza drzwiami), falistych przejść, cieni na elementach w spoczynku, cienkich linii-dzielników (linie tylko w prawdziwych tabelach i polach formularzy), napisów wersalikami nad nagłówkami, strzałek „→” w linkach, emoji/znaków jako ikon (ikony = SVG, klasa `.ico`), kart z ikoną na górze, układu „jedno duże + cztery małe”.
 - Działy oddziela przestrzeń i lekka zmiana tła (`--tone #e8ebe5`, zielony pas dla hasła tygodnia).
-- Ruch: tylko nagłówek. Spacer 360° nie obraca się sam. Żadnych „fade-in” każdego działu. Szanuj `prefers-reduced-motion`.
+- Ruch: tylko nagłówek i rysowanie/odrysowanie drzwi. Żadnych „fade-in” każdego działu. Szanuj `prefers-reduced-motion`.
 - Dostępność: kontrast ≥ 4,5:1, widoczny fokus, cele dotykowe ≥ 44 px, brak przewijania w bok przy 390/768/1440.
 
 ## Pliki (`src/`)
@@ -41,9 +41,9 @@ Strona ma nie wyglądać na zrobioną przez AI. Obowiązuje:
 | `post_editor.js/.css` | aktualności: okno edycji (tytuł, data, zdjęcie główne z punktem kadru, treść, galeria), przeglądarka zdjęć |
 | `login.js` | logowanie (róża Lutra w stopce lub `#edycja`; prototyp: `proboszcz` / `brenna`), tryb edycji, las w stopce, przełącznik mapy, flaga `?podglad` |
 | `pano_viewer.js/.css` | dawna własna przeglądarka spaceru (CSS 3D) – nieużywana: przy dużym ekranie rozjeżdżała się w kwadraty; zastąpiona oryginalnym odtwarzaczem |
-| `tour.js` | okno spaceru na cały ekran: oryginalny odtwarzacz 3DVista z luteranie-wirtualne-muzea.pl w ramce, `#media=N` otwiera od N-tego punktu (1 dron, 7 przed kościołem, 9 nawa) |
+| `tour.js` | drzwi (rysowanie, odrysowanie po kliknięciu) i okno spaceru na cały ekran: oryginalny odtwarzacz 3DVista z luteranie-wirtualne-muzea.pl w ramce, `#media=N` otwiera od N-tego punktu (drzwi otwierają od 9 – nawa) |
 | `make_page.py` | **składa `brenna-strona.html`** (nagłówek + treść + wszystkie CSS/JS + obrazy drzwi jako data URI) |
-| `door/`, `door_svg.py`, `door_parts.html` | dawne drzwi do spaceru – nieużywane, do usunięcia |
+| `door/`, `door_svg.py`, `door_parts.html` | drzwi do spaceru (generator SVG drzwi wklejonych w `page_content.html`) |
 | `font/` | PT Sans i PT Sans Narrow (fontsource) – do wgrania na serwer w WordPressie |
 
 ## Budowanie i sprawdzanie

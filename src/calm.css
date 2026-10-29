@@ -175,23 +175,30 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 /* runda 7 (Claude Code, 5): brak w stopce czytelny na zieleni */
 .flinks a.todo{color:#6b5220!important;text-decoration:none}
 
-/* ===== szkic kościoła w miejscu dawnych drzwi: trzy punkty otwierają spacer 360° ===== */
+/* ===== drzwi do spaceru: rysują się kreską i tak samo się odrysowują ===== */
 .now{display:grid!important;grid-template-columns:minmax(0,7fr) minmax(0,5fr);column-gap:64px;align-items:start}
 .now-h,.now>.post,.now>.more{grid-column:1}
-.sketch{grid-column:2;grid-row:1/span 8;margin:0}
-.sk-art{position:relative}
-.sk-art svg{display:block;width:100%;height:auto;overflow:visible;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.sk-art path{vector-effect:non-scaling-stroke}
-.sk-art .th{stroke-width:1.2}
-.pin{position:absolute;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px 0 14px;border:0;background:var(--spruce);color:#fff;font:inherit;font-size:17px;font-weight:700;white-space:nowrap;cursor:pointer}
-.pin::before{content:"";flex:none;width:10px;height:10px;border-radius:50%;background:#fff}
-.pin:hover{background:var(--spruce-d)}
-.sketch figcaption{margin-top:24px;color:var(--ink-soft)}
-.sketch figcaption strong{display:block;font-size:17px!important;color:var(--ink);margin-bottom:4px}
-.sketch figcaption a{color:var(--spruce);font-weight:700}
+.now>.rose{grid-column:2;grid-row:1/span 8;float:none;width:100%;margin:0 0 96px;shape-outside:none}
+/* w kole pod drzwiami: zdjęcie nawy, widoczne dopiero przy odrysowaniu */
+.rose .rose-in,.rose.inked.closed .rose-in{background:var(--paper);transition:none}
+.rose-in img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease}
+.rose.undraw .rose-in img{opacity:1}
+/* pierwsze rysowanie wolniej, żeby było je widać */
+.rose.inked .dl{animation:dkres 2s ease-in-out forwards}
+.rose.inked .df,.rose.inked .rivet{animation:dfill .8s ease 1.7s forwards}
+/* odrysowanie skrzydeł: najpierw schodzi kolor, potem zwijają się kreski; kamienna obręcz zostaje */
+.rose.undraw .dleaf .df,.rose.undraw .dleaf .rivet{animation:dunfill .5s ease forwards}
+.rose.undraw .dleaf .dl{animation:dund 1.2s ease-in-out .4s forwards}
+@keyframes dunfill{from{opacity:1}to{opacity:0}}
+@keyframes dund{from{stroke-dashoffset:0}to{stroke-dashoffset:1}}
+.rose.undraw .visit{opacity:0;pointer-events:none}
+.rose .visit{transition:opacity .3s}
+.rose.closed:hover .dleaf.l,.rose.closed:focus-within .dleaf.l,.rose.closed:hover .dleaf.r,.rose.closed:focus-within .dleaf.r{transform:none}
+.rose.undraw .doors{cursor:default}
+@media (prefers-reduced-motion:reduce){.rose.inked .dl,.rose.inked .df,.rose.inked .rivet,.rose.undraw .dleaf .dl,.rose.undraw .dleaf .df,.rose.undraw .dleaf .rivet{animation:none!important}.rose.undraw .doors{display:none}}
 @media (max-width:900px){
  .now{grid-template-columns:minmax(0,1fr)}
- .sketch{grid-column:1;grid-row:auto;max-width:420px;width:100%;justify-self:center;margin:0 0 56px}
+ .now>.rose{grid-column:1;grid-row:auto;order:0;width:min(380px,100%);justify-self:center;margin:0 0 120px}
  .now-h,.now>.post,.now>.more{grid-column:1}
 }
 
