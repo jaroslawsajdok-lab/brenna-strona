@@ -1,0 +1,280 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Parafia Ewangelicko-Augsburska Brenna-Górki</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    .ln{fill:none;stroke:#1d1d1b;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    .th{stroke-width:1}
+    .hx{fill:url(#hatch);stroke:none}
+    .bk{fill:#1d1d1b;stroke:none}
+    .wh{fill:#fff;stroke:none}
+  
+:root{--paper:#f7f5ef;--grid:#e6e2d6;--ink:#1d1d1b;--sky:#cfe2ec;--spruce:#2f5d45;--beech:#6f9a4a;--grass:#7aa35a;--ridge:#c9d6c2;--ridge2:#e3eadf}
+body[data-season="wiosna"]{--spruce:#3d7354;--beech:#9cc95f;--grass:#a6cf6b;--ridge:#d5e4cf;--ridge2:#e8f0e3;--sky:#d3e7f2}
+body[data-season="lato"]{--spruce:#2f5d45;--beech:#5f8f3e;--grass:#78a552;--ridge:#c4d5bd;--ridge2:#e0e9dc;--sky:#c6dfee}
+body[data-season="jesien"]{--spruce:#2f5a44;--beech:#d08a2e;--grass:#b3a35a;--ridge:#e2d3b5;--ridge2:#eee6d4;--sky:#d4e2ea}
+body[data-season="zima"]{--spruce:#3c5a4c;--beech:#b9b4a6;--grass:#dcdcd4;--ridge:#eceeed;--ridge2:#f3f4f3;--sky:#dfe6ea}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:'PT Sans',system-ui,sans-serif;
+ background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+
+/* ===== NAGŁÓWEK ===== */
+#hero{position:relative;height:clamp(520px,78vh,800px);overflow:hidden}
+@media (max-width:900px){#hero{height:calc(min(100vw,560px)*1.02 + 90px)}}
+#sky{position:absolute;inset:0;background:linear-gradient(to bottom,var(--sky) 0%,color-mix(in srgb,var(--sky) 45%,transparent) 38%,transparent 62%);opacity:0;animation:fade 2s ease forwards .2s}
+#land{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#scene{position:absolute;left:50%;bottom:var(--groundGap);transform:translateX(-50%);width:var(--sceneW);height:auto;overflow:visible}
+#front{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+/* chmury: obrys cyrklem + miękkie wypełnienie, powoli dryfują */
+.cloud{animation:drift linear infinite}
+.cloud path{fill:color-mix(in srgb,#fff 82%,transparent);stroke:var(--ink);stroke-width:1;stroke-opacity:.35}
+@keyframes drift{from{transform:translateX(var(--from))}to{transform:translateX(var(--to))}}
+
+/* linia gór */
+.ridge-line{fill:none;stroke:var(--ink);stroke-width:1.3;stroke-linecap:round}
+.ridge-line.back{stroke-width:.8;opacity:.4}
+.ridge-fill.back{fill:var(--ridge2)}
+.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 2.4s ease-in-out forwards}
+.ridge-fill{opacity:0;animation:fade 1.6s ease forwards 2.2s}
+
+/* menu wpisane w linię gór – jak opis poziomicy */
+nav{position:absolute;inset:0;pointer-events:none}
+.peak{position:absolute;left:0;top:0;pointer-events:auto;font-size:clamp(14px,1.05vw,17px);letter-spacing:.06em;text-transform:uppercase;
+ color:var(--ink);text-decoration:none;white-space:nowrap;padding:6px 4px;line-height:1;
+ transform-origin:50% 50%;opacity:0;transition:color .2s}
+.peak.on{animation:fade .6s ease forwards}
+.peak::after{content:"";position:absolute;left:50%;bottom:-1px;width:0;height:2px;background:var(--spruce);transition:all .25s;transform:translateX(-50%)}
+.peak:hover,.peak:focus-visible{color:var(--spruce);outline:none}
+.peak:hover::after,.peak:focus-visible::after{width:100%}
+.tick{stroke:var(--ink);stroke-width:1}
+
+/* las i logo (jak w prototypie) */
+.logo .wh,.sil{fill:var(--paper)} .sil,.sil-post{opacity:0;animation:fade 1s ease forwards 2.4s} .sil-post{fill:color-mix(in srgb,var(--ridge) 55%,var(--paper))}
+.ln,.fl{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s ease-in-out forwards}
+.fl{fill:none;stroke:var(--ink);stroke-width:.85;stroke-linecap:round;stroke-linejoin:round}
+.far .fl{stroke-width:.7;opacity:.55} .near .fl{stroke-width:1}
+#fills,#text{opacity:0;animation:fade 1s ease forwards}
+#fills{animation-delay:3.4s}#text{animation-delay:3.9s}
+.leaf{stroke:none;transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0);opacity:0;animation:grow .9s cubic-bezier(.3,1.4,.5,1) forwards}
+.sp-f{fill:var(--spruce)} .bk-f{fill:var(--beech)}
+.far .sp-f{fill:color-mix(in srgb,var(--spruce) 50%,var(--paper))} .far .bk-f{fill:color-mix(in srgb,var(--beech) 50%,var(--paper))}
+.near .sp-f:nth-child(even){fill:color-mix(in srgb,var(--spruce) 88%,#000)}
+body[data-season="zima"] .sp-f:nth-child(odd){fill:#eef0ee}
+.tree{animation:sway 6s ease-in-out infinite alternate 7s}
+.tree:nth-child(3n){animation-duration:7.5s} .tree:nth-child(2n){animation-direction:alternate-reverse}
+.ground{stroke:var(--ink);stroke-width:1.3}
+.gr{fill:none;stroke:var(--grass);stroke-width:1.1;stroke-linecap:round;opacity:0;animation:fade .8s ease forwards 5s}
+
+@keyframes draw{to{stroke-dashoffset:0}} @keyframes fade{to{opacity:1}}
+@keyframes grow{to{transform:scaleY(1);opacity:1}} @keyframes sway{from{transform:rotate(-.7deg)}to{transform:rotate(.7deg)}}
+
+/* telefon: menu chowa się pod przyciskiem */
+#burger{display:none;position:absolute;top:14px;right:14px;z-index:5;font:inherit;font-size:15px;letter-spacing:.06em;text-transform:uppercase;
+ background:var(--paper);border:1px solid var(--ink);padding:8px 12px;border-radius:3px;cursor:pointer}
+@media (max-width:900px){
+ #burger{display:block}
+ nav{position:absolute;inset:auto 14px auto auto;top:58px;z-index:5;display:none;flex-direction:column;background:var(--paper);border:1px solid var(--ink);padding:6px 4px;pointer-events:auto}
+ nav.open{display:flex}
+ .peak{position:static;transform:none!important;opacity:1!important;animation:none!important;padding:10px 14px}
+}
+@media (prefers-reduced-motion:reduce){
+ *{animation-duration:0s!important;animation-delay:0s!important}
+ .cloud,.tree{animation:none!important}
+}
+
+/* podgląd */
+.bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:22px 16px 40px}
+.bar button{font:inherit;font-size:14px;padding:7px 14px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:4px;cursor:pointer}
+.bar button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.below{max-width:880px;margin:0 auto;padding:10px 20px 0;color:#555;font-size:15px;text-align:center}
+</style></head>
+<body data-season="jesien">
+<header id="hero">
+ <div id="sky"></div>
+ <svg id="land" aria-hidden="true"></svg>
+ <svg id="scene" viewBox="-96 -8 540 254" role="img" aria-label="Kościoły w Brennej i Górkach na tle beskidzkiego lasu"><defs><pattern id="hatch" width="2.2" height="20" patternUnits="userSpaceOnUse"><rect width="0.6" height="20" fill="#1d1d1b"/></pattern></defs><g class="forest"><g class="tree far" style="transform-origin:-58.0px 244.0px"><polygon class="leaf sp-f" points="-58.0,131.1 -67.8,160.7 -48.2,160.7"/><polygon class="leaf sp-f" points="-58.0,148.2 -71.1,177.7 -44.9,177.7"/><polygon class="leaf sp-f" points="-58.0,165.3 -74.4,194.8 -41.6,194.8"/><polygon class="leaf sp-f" points="-58.0,182.3 -77.7,211.9 -38.3,211.9"/><polygon class="leaf sp-f" points="-58.0,199.4 -81.0,229.0 -35.0,229.0"/><path pathLength="1" class="fl" d="M-58.0,131.1 V244.0 M-67.8,160.7 L-58.0,131.1 L-48.2,160.7 M-71.1,177.7 L-58.0,148.2 L-44.9,177.7 M-74.4,194.8 L-58.0,165.3 L-41.6,194.8 M-77.7,211.9 L-58.0,182.3 L-38.3,211.9 M-81.0,229.0 L-58.0,199.4 L-35.0,229.0"/></g><g class="tree far" style="transform-origin:-12.7px 244.0px"><polygon class="leaf sp-f" points="-12.7,126.4 -21.7,157.2 -3.7,157.2"/><polygon class="leaf sp-f" points="-12.7,144.2 -24.8,175.0 -0.6,175.0"/><polygon class="leaf sp-f" points="-12.7,162.0 -27.8,192.8 2.5,192.8"/><polygon class="leaf sp-f" points="-12.7,179.8 -30.9,210.6 5.5,210.6"/><polygon class="leaf sp-f" points="-12.7,197.6 -34.0,228.4 8.6,228.4"/><path pathLength="1" class="fl" d="M-12.7,126.4 V244.0 M-21.7,157.2 L-12.7,126.4 L-3.7,157.2 M-24.8,175.0 L-12.7,144.2 L-0.6,175.0 M-27.8,192.8 L-12.7,162.0 L2.5,192.8 M-30.9,210.6 L-12.7,179.8 L5.5,210.6 M-34.0,228.4 L-12.7,197.6 L8.6,228.4"/></g><g class="tree far" style="transform-origin:26.9px 244.0px"><polygon class="leaf sp-f" points="26.9,118.3 15.9,151.2 37.9,151.2"/><polygon class="leaf sp-f" points="26.9,137.3 12.1,170.2 41.7,170.2"/><polygon class="leaf sp-f" points="26.9,156.3 8.4,189.2 45.4,189.2"/><polygon class="leaf sp-f" points="26.9,175.3 4.6,208.3 49.2,208.3"/><polygon class="leaf sp-f" points="26.9,194.4 0.9,227.3 52.9,227.3"/><path pathLength="1" class="fl" d="M26.9,118.3 V244.0 M15.9,151.2 L26.9,118.3 L37.9,151.2 M12.1,170.2 L26.9,137.3 L41.7,170.2 M8.4,189.2 L26.9,156.3 L45.4,189.2 M4.6,208.3 L26.9,175.3 L49.2,208.3 M0.9,227.3 L26.9,194.4 L52.9,227.3"/></g><g class="tree far" style="transform-origin:62.3px 244.0px"><polygon class="leaf sp-f" points="62.3,137.2 53.4,165.2 71.1,165.2"/><polygon class="leaf sp-f" points="62.3,153.4 50.4,181.4 74.2,181.4"/><polygon class="leaf sp-f" points="62.3,169.5 47.3,197.5 77.2,197.5"/><polygon class="leaf sp-f" points="62.3,185.7 44.3,213.7 80.2,213.7"/><polygon class="leaf sp-f" points="62.3,201.9 41.3,229.8 83.2,229.8"/><path pathLength="1" class="fl" d="M62.3,137.2 V244.0 M53.4,165.2 L62.3,137.2 L71.1,165.2 M50.4,181.4 L62.3,153.4 L74.2,181.4 M47.3,197.5 L62.3,169.5 L77.2,197.5 M44.3,213.7 L62.3,185.7 L80.2,213.7 M41.3,229.8 L62.3,201.9 L83.2,229.8"/></g><g class="tree far" style="transform-origin:103.1px 244.0px"><circle class="leaf bk-f" cx="103.1" cy="198.9" r="16.8"/><circle class="leaf bk-f" cx="92.7" cy="204.7" r="12.1"/><circle class="leaf bk-f" cx="113.9" cy="203.9" r="12.6"/><circle class="leaf bk-f" cx="104.8" cy="191.3" r="11.8"/><path pathLength="1" class="fl" d="M103.1,244.0 V203.9 M103.1,211.5 L95.6,202.2 M103.1,208.1 L111.6,199.7"/><circle pathLength="1" class="fl" cx="103.1" cy="198.9" r="16.8"/></g><g class="tree far" style="transform-origin:140.5px 244.0px"><polygon class="leaf sp-f" points="140.5,119.3 130.7,152.0 150.3,152.0"/><polygon class="leaf sp-f" points="140.5,138.2 127.4,170.9 153.6,170.9"/><polygon class="leaf sp-f" points="140.5,157.1 124.1,189.7 156.9,189.7"/><polygon class="leaf sp-f" points="140.5,175.9 120.8,208.6 160.2,208.6"/><polygon class="leaf sp-f" points="140.5,194.8 117.5,227.4 163.5,227.4"/><path pathLength="1" class="fl" d="M140.5,119.3 V244.0 M130.7,152.0 L140.5,119.3 L150.3,152.0 M127.4,170.9 L140.5,138.2 L153.6,170.9 M124.1,189.7 L140.5,157.1 L156.9,189.7 M120.8,208.6 L140.5,175.9 L160.2,208.6 M117.5,227.4 L140.5,194.8 L163.5,227.4"/></g><g class="tree far" style="transform-origin:184.1px 244.0px"><polygon class="leaf sp-f" points="184.1,150.4 176.8,175.0 191.4,175.0"/><polygon class="leaf sp-f" points="184.1,164.6 174.3,189.1 193.8,189.1"/><polygon class="leaf sp-f" points="184.1,178.8 171.8,203.3 196.3,203.3"/><polygon class="leaf sp-f" points="184.1,192.9 169.3,217.4 198.8,217.4"/><polygon class="leaf sp-f" points="184.1,207.1 166.9,231.6 201.3,231.6"/><path pathLength="1" class="fl" d="M184.1,150.4 V244.0 M176.8,175.0 L184.1,150.4 L191.4,175.0 M174.3,189.1 L184.1,164.6 L193.8,189.1 M171.8,203.3 L184.1,178.8 L196.3,203.3 M169.3,217.4 L184.1,192.9 L198.8,217.4 M166.9,231.6 L184.1,207.1 L201.3,231.6"/></g><g class="tree far" style="transform-origin:218.1px 244.0px"><circle class="leaf bk-f" cx="218.1" cy="225.6" r="6.9"/><circle class="leaf bk-f" cx="213.8" cy="228.0" r="4.9"/><circle class="leaf bk-f" cx="222.5" cy="227.6" r="5.1"/><circle class="leaf bk-f" cx="218.8" cy="222.5" r="4.8"/><path pathLength="1" class="fl" d="M218.1,244.0 V227.6 M218.1,230.7 L215.0,227.0 M218.1,229.4 L221.5,225.9"/><circle pathLength="1" class="fl" cx="218.1" cy="225.6" r="6.9"/></g><g class="tree far" style="transform-origin:263.9px 244.0px"><polygon class="leaf sp-f" points="263.9,207.1 260.5,219.2 267.2,219.2"/><polygon class="leaf sp-f" points="263.9,214.1 259.2,226.2 268.5,226.2"/><polygon class="leaf sp-f" points="263.9,221.1 257.9,233.1 269.8,233.1"/><polygon class="leaf sp-f" points="263.9,228.0 256.6,240.1 271.1,240.1"/><path pathLength="1" class="fl" d="M263.9,207.1 V244.0 M260.5,219.2 L263.9,207.1 L267.2,219.2 M259.2,226.2 L263.9,214.1 L268.5,226.2 M257.9,233.1 L263.9,221.1 L269.8,233.1 M256.6,240.1 L263.9,228.0 L271.1,240.1"/></g><g class="tree far" style="transform-origin:306.0px 244.0px"><polygon class="leaf sp-f" points="306.0,200.6 301.8,214.8 310.2,214.8"/><polygon class="leaf sp-f" points="306.0,208.8 300.2,223.0 311.8,223.0"/><polygon class="leaf sp-f" points="306.0,217.0 298.6,231.2 313.4,231.2"/><polygon class="leaf sp-f" points="306.0,225.2 296.9,239.4 315.1,239.4"/><path pathLength="1" class="fl" d="M306.0,200.6 V244.0 M301.8,214.8 L306.0,200.6 L310.2,214.8 M300.2,223.0 L306.0,208.8 L311.8,223.0 M298.6,231.2 L306.0,217.0 L313.4,231.2 M296.9,239.4 L306.0,225.2 L315.1,239.4"/></g><g class="tree far" style="transform-origin:350.7px 244.0px"><polygon class="leaf sp-f" points="350.7,144.0 342.9,170.2 358.6,170.2"/><polygon class="leaf sp-f" points="350.7,159.2 340.2,185.4 361.2,185.4"/><polygon class="leaf sp-f" points="350.7,174.3 337.6,200.5 363.9,200.5"/><polygon class="leaf sp-f" points="350.7,189.4 334.9,215.6 366.6,215.6"/><polygon class="leaf sp-f" points="350.7,204.5 332.2,230.7 369.2,230.7"/><path pathLength="1" class="fl" d="M350.7,144.0 V244.0 M342.9,170.2 L350.7,144.0 L358.6,170.2 M340.2,185.4 L350.7,159.2 L361.2,185.4 M337.6,200.5 L350.7,174.3 L363.9,200.5 M334.9,215.6 L350.7,189.4 L366.6,215.6 M332.2,230.7 L350.7,204.5 L369.2,230.7"/></g><g class="tree far" style="transform-origin:386.5px 244.0px"><polygon class="leaf sp-f" points="386.5,153.4 378.9,177.1 394.1,177.1"/><polygon class="leaf sp-f" points="386.5,167.1 376.3,190.8 396.7,190.8"/><polygon class="leaf sp-f" points="386.5,180.8 373.7,204.5 399.3,204.5"/><polygon class="leaf sp-f" points="386.5,194.5 371.1,218.3 401.8,218.3"/><polygon class="leaf sp-f" points="386.5,208.2 368.5,232.0 404.4,232.0"/><path pathLength="1" class="fl" d="M386.5,153.4 V244.0 M378.9,177.1 L386.5,153.4 L394.1,177.1 M376.3,190.8 L386.5,167.1 L396.7,190.8 M373.7,204.5 L386.5,180.8 L399.3,204.5 M371.1,218.3 L386.5,194.5 L401.8,218.3 M368.5,232.0 L386.5,208.2 L404.4,232.0"/></g><g class="tree near" style="transform-origin:-42.6px 245.0px"><polygon class="leaf sp-f" points="-42.6,95.0 -54.7,134.3 -30.5,134.3"/><polygon class="leaf sp-f" points="-42.6,117.7 -58.8,157.0 -26.4,157.0"/><polygon class="leaf sp-f" points="-42.6,140.4 -62.9,179.7 -22.3,179.7"/><polygon class="leaf sp-f" points="-42.6,163.1 -67.0,202.4 -18.2,202.4"/><polygon class="leaf sp-f" points="-42.6,185.8 -71.1,225.1 -14.1,225.1"/><path pathLength="1" class="fl" d="M-42.6,95.0 V245.0 M-54.7,134.3 L-42.6,95.0 L-30.5,134.3 M-58.8,157.0 L-42.6,117.7 L-26.4,157.0 M-62.9,179.7 L-42.6,140.4 L-22.3,179.7 M-67.0,202.4 L-42.6,163.1 L-18.2,202.4 M-71.1,225.1 L-42.6,185.8 L-14.1,225.1"/></g><g class="tree near" style="transform-origin:-11.5px 245.0px"><polygon class="leaf sp-f" points="-11.5,73.0 -26.4,118.0 3.4,118.0"/><polygon class="leaf sp-f" points="-11.5,99.0 -31.5,144.1 8.5,144.1"/><polygon class="leaf sp-f" points="-11.5,125.1 -36.6,170.1 13.5,170.1"/><polygon class="leaf sp-f" points="-11.5,151.1 -41.6,196.1 18.6,196.1"/><polygon class="leaf sp-f" points="-11.5,177.1 -46.7,222.2 23.7,222.2"/><path pathLength="1" class="fl" d="M-11.5,73.0 V245.0 M-26.4,118.0 L-11.5,73.0 L3.4,118.0 M-31.5,144.1 L-11.5,99.0 L8.5,144.1 M-36.6,170.1 L-11.5,125.1 L13.5,170.1 M-41.6,196.1 L-11.5,151.1 L18.6,196.1 M-46.7,222.2 L-11.5,177.1 L23.7,222.2"/></g><g class="tree near" style="transform-origin:21.8px 245.0px"><circle class="leaf bk-f" cx="21.8" cy="183.6" r="23.6"/><circle class="leaf bk-f" cx="7.2" cy="191.9" r="17.0"/><circle class="leaf bk-f" cx="36.9" cy="190.7" r="17.7"/><circle class="leaf bk-f" cx="24.2" cy="173.0" r="16.5"/><path pathLength="1" class="fl" d="M21.8,245.0 V190.7 M21.8,201.3 L11.2,188.4 M21.8,196.6 L33.6,184.8"/><circle pathLength="1" class="fl" cx="21.8" cy="183.6" r="23.6"/></g><g class="tree near" style="transform-origin:56.5px 245.0px"><polygon class="leaf sp-f" points="56.5,85.0 43.3,126.9 69.7,126.9"/><polygon class="leaf sp-f" points="56.5,109.2 38.9,151.1 74.2,151.1"/><polygon class="leaf sp-f" points="56.5,133.4 34.4,175.3 78.7,175.3"/><polygon class="leaf sp-f" points="56.5,157.6 29.9,199.5 83.2,199.5"/><polygon class="leaf sp-f" points="56.5,181.8 25.4,223.7 87.6,223.7"/><path pathLength="1" class="fl" d="M56.5,85.0 V245.0 M43.3,126.9 L56.5,85.0 L69.7,126.9 M38.9,151.1 L56.5,109.2 L74.2,151.1 M34.4,175.3 L56.5,133.4 L78.7,175.3 M29.9,199.5 L56.5,157.6 L83.2,199.5 M25.4,223.7 L56.5,181.8 L87.6,223.7"/></g><g class="tree near" style="transform-origin:133.6px 245.0px"><polygon class="leaf sp-f" points="133.6,77.0 120.7,121.0 146.6,121.0"/><polygon class="leaf sp-f" points="133.6,102.4 116.3,146.4 151.0,146.4"/><polygon class="leaf sp-f" points="133.6,127.8 111.9,171.8 155.4,171.8"/><polygon class="leaf sp-f" points="133.6,153.3 107.5,197.3 159.8,197.3"/><polygon class="leaf sp-f" points="133.6,178.7 103.1,222.7 164.2,222.7"/><path pathLength="1" class="fl" d="M133.6,77.0 V245.0 M120.7,121.0 L133.6,77.0 L146.6,121.0 M116.3,146.4 L133.6,102.4 L151.0,146.4 M111.9,171.8 L133.6,127.8 L155.4,171.8 M107.5,197.3 L133.6,153.3 L159.8,197.3 M103.1,222.7 L133.6,178.7 L164.2,222.7"/></g><g class="tree near" style="transform-origin:171.8px 245.0px"><polygon class="leaf sp-f" points="171.8,95.0 160.3,134.3 183.3,134.3"/><polygon class="leaf sp-f" points="171.8,117.7 156.4,157.0 187.2,157.0"/><polygon class="leaf sp-f" points="171.8,140.4 152.5,179.7 191.1,179.7"/><polygon class="leaf sp-f" points="171.8,163.1 148.6,202.4 195.0,202.4"/><polygon class="leaf sp-f" points="171.8,185.8 144.7,225.1 198.9,225.1"/><path pathLength="1" class="fl" d="M171.8,95.0 V245.0 M160.3,134.3 L171.8,95.0 L183.3,134.3 M156.4,157.0 L171.8,117.7 L187.2,157.0 M152.5,179.7 L171.8,140.4 L191.1,179.7 M148.6,202.4 L171.8,163.1 L195.0,202.4 M144.7,225.1 L171.8,185.8 L198.9,225.1"/></g><g class="tree near" style="transform-origin:246.0px 245.0px"><polygon class="leaf sp-f" points="246.0,203.0 242.0,216.7 250.0,216.7"/><polygon class="leaf sp-f" points="246.0,210.9 240.5,224.7 251.5,224.7"/><polygon class="leaf sp-f" points="246.0,218.9 238.9,232.6 253.1,232.6"/><polygon class="leaf sp-f" points="246.0,226.8 237.4,240.6 254.6,240.6"/><path pathLength="1" class="fl" d="M246.0,203.0 V245.0 M242.0,216.7 L246.0,203.0 L250.0,216.7 M240.5,224.7 L246.0,210.9 L251.5,224.7 M238.9,232.6 L246.0,218.9 L253.1,232.6 M237.4,240.6 L246.0,226.8 L254.6,240.6"/></g><g class="tree near" style="transform-origin:292.1px 245.0px"><circle class="leaf bk-f" cx="292.1" cy="225.2" r="7.6"/><circle class="leaf bk-f" cx="287.4" cy="227.9" r="5.5"/><circle class="leaf bk-f" cx="297.0" cy="227.5" r="5.7"/><circle class="leaf bk-f" cx="292.9" cy="221.8" r="5.3"/><path pathLength="1" class="fl" d="M292.1,245.0 V227.5 M292.1,230.9 L288.7,226.8 M292.1,229.4 L295.9,225.6"/><circle pathLength="1" class="fl" cx="292.1" cy="225.2" r="7.6"/></g><g class="tree near" style="transform-origin:358.3px 245.0px"><polygon class="leaf sp-f" points="358.3,69.0 344.0,115.1 372.6,115.1"/><polygon class="leaf sp-f" points="358.3,95.6 339.2,141.7 377.4,141.7"/><polygon class="leaf sp-f" points="358.3,122.3 334.4,168.4 382.2,168.4"/><polygon class="leaf sp-f" points="358.3,148.9 329.5,195.0 387.1,195.0"/><polygon class="leaf sp-f" points="358.3,175.5 324.7,221.6 391.9,221.6"/><path pathLength="1" class="fl" d="M358.3,69.0 V245.0 M344.0,115.1 L358.3,69.0 L372.6,115.1 M339.2,141.7 L358.3,95.6 L377.4,141.7 M334.4,168.4 L358.3,122.3 L382.2,168.4 M329.5,195.0 L358.3,148.9 L387.1,195.0 M324.7,221.6 L358.3,175.5 L391.9,221.6"/></g><g class="tree near" style="transform-origin:386.6px 245.0px"><polygon class="leaf sp-f" points="386.6,107.0 376.1,143.1 397.2,143.1"/><polygon class="leaf sp-f" points="386.6,127.9 372.5,164.0 400.8,164.0"/><polygon class="leaf sp-f" points="386.6,148.8 368.9,184.9 404.3,184.9"/><polygon class="leaf sp-f" points="386.6,169.6 365.3,205.8 407.9,205.8"/><polygon class="leaf sp-f" points="386.6,190.5 361.8,226.7 411.5,226.7"/><path pathLength="1" class="fl" d="M386.6,107.0 V245.0 M376.1,143.1 L386.6,107.0 L397.2,143.1 M372.5,164.0 L386.6,127.9 L400.8,164.0 M368.9,184.9 L386.6,148.8 L404.3,184.9 M365.3,205.8 L386.6,169.6 L407.9,205.8 M361.8,226.7 L386.6,190.5 L411.5,226.7"/></g><g class="tree near" style="transform-origin:400.4px 245.0px"><polygon class="leaf sp-f" points="400.4,85.0 387.8,126.9 413.0,126.9"/><polygon class="leaf sp-f" points="400.4,109.2 383.5,151.1 417.2,151.1"/><polygon class="leaf sp-f" points="400.4,133.4 379.2,175.3 421.5,175.3"/><polygon class="leaf sp-f" points="400.4,157.6 375.0,199.5 425.8,199.5"/><polygon class="leaf sp-f" points="400.4,181.8 370.7,223.7 430.0,223.7"/><path pathLength="1" class="fl" d="M400.4,85.0 V245.0 M387.8,126.9 L400.4,85.0 L413.0,126.9 M383.5,151.1 L400.4,109.2 L417.2,151.1 M379.2,175.3 L400.4,133.4 L421.5,175.3 M375.0,199.5 L400.4,157.6 L425.8,199.5 M370.7,223.7 L400.4,181.8 L430.0,223.7"/></g></g><rect class="sil-post" x="70.5" y="203" width="83" height="42"/><path class="sil" d="M108.5,47.5 L118.5,59 V89.5 L146.4,121.1 L177,101 V61 H181.5 L196,14 L211,61 H215.5 V101.5 L256,124 H217 V202 L186,195 H160 L157,190 H153.5 V204 H70.5 V190 H67 L64.5,195 H39 L28,182 L98.5,91 V59 Z"/><g class="logo">
+  
+  
+  
+
+  <!-- ===== WYPEŁNIENIA (kreskowanie + czerń) ===== -->
+  <g id="fills">
+    <!-- Górki: iglica -->
+    <polygon class="hx" points="196,14 181.5,62 181.5,69 195.5,57.5 211,69 211,62"/>
+    <polygon class="hx" points="177,61 181.5,61 181.5,69.2 177,72.9"/>
+    <polygon class="hx" points="211,61 215.5,61 215.5,72.9 211,69.4"/>
+    <!-- Górki: skrzydła dachu -->
+    <polygon class="hx" points="177,101 142,124 177,124"/>
+    <polygon class="hx" points="215.5,101.5 256,124 215.5,124"/>
+    <!-- Górki: pas pod okapem i ściany -->
+    <polygon class="hx" points="196,125.5 174.5,145.5 217,145.5"/>
+    <polygon class="hx" points="174.5,145.5 217,145.5 217,202 216.5,202 174.5,154"/>
+    <!-- Brenna: lewe i prawe skrzydło trapezu -->
+    <polygon class="hx" points="80.5,141 100,141 100,150 67,191 67,195 39,195"/>
+    <polygon class="hx" points="119,141 141,141 186,195 156,195 156,191 119,150"/>
+    <!-- Brenna: trójkąt środkowy -->
+    <polygon class="hx" points="110.3,157 89,190 134,190"/>
+    <!-- Brenna: słup pod podestem -->
+    <polygon class="hx" points="74,204 152,204 152,216 94,240 74,240"/>
+
+    <!-- czarne trójkąty dachu Brennej -->
+    <polygon class="bk" points="108.4,79.2 69,130 153.9,130"/>
+    <!-- biała wieża na tle czerni -->
+    <rect class="wh" x="98.5" y="59" width="20" height="71"/>
+    <!-- czarny blok u stóp wieży -->
+    <rect class="bk" x="99" y="134" width="20.5" height="17"/>
+    <!-- czarne kliny u podstawy iglicy Górek -->
+    
+    
+    <!-- okno Górek -->
+    <path class="bk" d="M190,105.5 V86 C190,81 192.5,78 195.75,75 C199,78 201.5,81 201.5,86 V105.5 Z"/>
+  </g>
+
+  <!-- ===== KRESKI (do animacji rysowania) ===== -->
+  <g id="lines">
+    <!-- BRENNA -->
+    <path pathLength="1" class="ln" id="b-cross" d="M108.5,31 V54 M101,38.5 H115"/>
+    <path pathLength="1" class="ln" id="b-tower" d="M98.5,130 V59 L108.5,47.5 L118.5,59 V130"/>
+    <path pathLength="1" class="ln" id="b-chevron" d="M98.5,60 L108.7,71 L118.5,60"/>
+    <path pathLength="1" class="ln th" id="b-scale" d="M102,70 L104,129 M102.6,88.5 H109 M103.2,106 H109"/>
+    <path pathLength="1" class="ln" id="b-roof-l" d="M98.5,91 L28,182"/>
+    <path pathLength="1" class="ln" id="b-roof-r" d="M118.5,89.5 L217,202"/>
+    <path pathLength="1" class="ln" id="b-base" d="M69,130.3 H154"/>
+    <path pathLength="1" class="ln" id="b-trap" d="M39,195 L80.5,141 H141 L186,195"/>
+    <path pathLength="1" class="ln th" id="b-divs" d="M80.5,141 V170.5 M60,170.5 V195 M140.5,141 V170.5 M160,170.5 V195 M58.5,170.5 H84.5 M137,170.5 H165"/>
+    <path pathLength="1" class="ln" id="b-rafter-l" d="M100,150 L64.5,195"/>
+    <path pathLength="1" class="ln" id="b-rafter-r" d="M119,150 L160,195"/>
+    <path pathLength="1" class="ln" id="b-tri" d="M89,190 L110.3,157 L134,190"/>
+    <path pathLength="1" class="ln th" id="b-tri-v" d="M102,171 H120.5 M102,171 V190 M112,171 V190 M120.5,171 V190"/>
+    <path pathLength="1" class="ln" id="b-bottom" d="M38,195 H64.5 M160,195 H188"/>
+    <path pathLength="1" class="ln" id="b-slab" d="M67,190.3 H157 M70.5,190.3 V204 H153.5 V190.3 M70.5,198 H153.5"/>
+    <path pathLength="1" class="ln" id="b-post" d="M73.8,204 V240"/>
+
+    <!-- GÓRKI -->
+    <path pathLength="1" class="ln" id="g-cross" d="M196,-3 V14 M192.5,1.5 H199.5"/>
+    <path pathLength="1" class="ln" id="g-spire" d="M181.6,61 L196,14 L210.9,61"/>
+    <path pathLength="1" class="ln" id="g-tower" d="M177,124 V61 H181.5 V69.2 M215.5,124 V61 H211 V69.4"/>
+    <path pathLength="1" class="ln" id="g-gable" d="M177.5,72.5 L195.5,57.5 L215,72.5"/>
+    <path pathLength="1" class="ln" id="g-wings" d="M177,101 L142,124 M215.5,101.5 L256,124"/>
+    <path pathLength="1" class="ln" id="g-eave" d="M142,124.5 H256"/>
+    <path pathLength="1" class="ln" id="g-lowgable" d="M174.5,145.5 L196,125.5 L217,145.5 M174.5,145.5 H217"/>
+    <path pathLength="1" class="ln th" id="g-cross2" d="M196,125.5 V145.5 M185,136.5 H207"/>
+    <path pathLength="1" class="ln" id="g-walls" d="M174.5,124.5 V154 M217,124.5 V202"/>
+  </g>
+
+  <!-- ===== NAPIS ===== -->
+  <g id="text" fill="#1d1d1b">
+    <g transform="translate(222.00 141.50) scale(0.0145 -0.0137) translate(-85.0 0)"><path transform="translate(0 0)" d="M85 693Q123 702 167.0 705.0Q211 708 254 708Q300 708 347.5 699.0Q395 690 434.0 666.0Q473 642 497.5 600.0Q522 558 522 493Q522 429 499.0 385.0Q476 341 438.0 313.5Q400 286 351.0 274.0Q302 262 250 262Q245 262 233.5 262.0Q222 262 209.5 262.5Q197 263 185.0 264.0Q173 265 168 266V0H85ZM256 636Q230 636 206.0 635.0Q182 634 168 630V340Q173 338 184.0 337.5Q195 337 207.0 336.5Q219 336 230.0 336.0Q241 336 246 336Q280 336 313.5 342.5Q347 349 374.0 366.0Q401 383 417.5 414.0Q434 445 434 493Q434 534 418.5 561.5Q403 589 377.5 605.5Q352 622 320.0 629.0Q288 636 256 636Z"/><path transform="translate(559 0)" d="M418 194H160L90 0H8L273 711H311L577 0H490ZM187 266H393L315 479L290 585H289L264 477Z"/><path transform="translate(1144 0)" d="M85 693Q123 700 172.5 704.0Q222 708 263 708Q309 708 350.5 698.0Q392 688 423.5 665.0Q455 642 474.0 605.0Q493 568 493 515Q493 433 448.0 382.0Q403 331 334 314L382 277L556 0H459L266 302L168 317V0H85ZM265 636Q252 636 238.0 636.0Q224 636 211.0 635.0Q198 634 186.5 633.0Q175 632 168 630V372H246Q315 372 360.0 406.0Q405 440 405 512Q405 566 368.0 601.0Q331 636 265 636Z"/><path transform="translate(1739 0)" d="M418 194H160L90 0H8L273 711H311L577 0H490ZM187 266H393L315 479L290 585H289L264 477Z"/><path transform="translate(2324 0)" d="M85 700H466V626H168V387H446V313H168V0H85Z"/><path transform="translate(2841 0)" d="M104 700H187V0H104Z"/><path transform="translate(3132 0)" d="M418 194H160L90 0H8L273 711H311L577 0H490ZM187 266H393L315 479L290 585H289L264 477Z"/></g>
+    <g transform="translate(222.00 156.00) scale(0.0140 -0.0137) translate(-85.0 0)"><path transform="translate(0 0)" d="M85 700H466V626H168V397H441V323H168V74H471V0H85Z"/><path transform="translate(536 0)" d="M222 231 238 115H239L256 233L400 700H440L585 231L602 115H603L621 233L739 700H820L625 -11H579L437 458L419 564H414L396 457L254 -11H208L8 700H96Z"/><path transform="translate(1364 0)" d="M418 194H160L90 0H8L273 711H311L577 0H490ZM187 266H393L315 479L290 585H289L264 477Z"/><path transform="translate(1949 0)" d="M211 458 157 559H153L163 458V0H85V711H129L464 244L516 148H521L510 244V700H588V-11H544Z"/><path transform="translate(2622 0)" d="M321 349H556V41Q540 29 517.5 19.0Q495 9 469.5 2.0Q444 -5 416.5 -8.5Q389 -12 363 -12Q296 -12 240.0 9.5Q184 31 143.0 75.5Q102 120 79.0 188.5Q56 257 56 350Q56 447 84.0 516.0Q112 585 157.0 628.5Q202 672 258.0 692.0Q314 712 370 712Q430 712 469.0 705.5Q508 699 535 688L514 615Q466 638 377 638Q335 638 293.5 623.5Q252 609 219.0 575.0Q186 541 165.0 486.0Q144 431 144 350Q144 276 161.0 222.0Q178 168 208.5 132.5Q239 97 282.0 79.5Q325 62 376 62Q440 62 485 87V282L321 302Z"/><path transform="translate(3234 0)" d="M85 700H466V626H168V397H441V323H168V74H471V0H85Z"/><path transform="translate(3770 0)" d="M499 0H85V700H168V74H499Z"/><path transform="translate(4287 0)" d="M104 700H187V0H104Z"/><path transform="translate(4578 0)" d="M533 29Q503 6 457.0 -3.0Q411 -12 359 -12Q296 -12 241.0 9.5Q186 31 145.0 75.0Q104 119 80.0 187.5Q56 256 56 350Q56 448 82.5 516.5Q109 585 152.5 628.5Q196 672 250.0 692.0Q304 712 360 712Q420 712 458.0 705.5Q496 699 523 688L503 615Q455 638 366 638Q325 638 285.0 623.0Q245 608 213.5 574.0Q182 540 163.0 485.0Q144 430 144 350Q144 278 162.0 224.0Q180 170 211.5 134.0Q243 98 285.5 80.0Q328 62 378 62Q423 62 456.5 71.0Q490 80 513 94Z"/><path transform="translate(5149 0)" d="M215 324H168V0H85V700H168V374L213 388L448 700H544L310 399L268 366L319 326L575 0H470Z"/><path transform="translate(5759 0)" d="M56 350Q56 525 130.0 618.5Q204 712 341 712Q415 712 469.0 686.0Q523 660 558.5 612.5Q594 565 611.0 498.5Q628 432 628 350Q628 175 553.5 81.5Q479 -12 341 -12Q268 -12 214.5 14.0Q161 40 125.5 87.5Q90 135 73.0 201.5Q56 268 56 350ZM144 350Q144 292 155.5 240.0Q167 188 191.0 148.5Q215 109 252.5 85.5Q290 62 341 62Q434 62 487.0 132.5Q540 203 540 350Q540 407 528.5 459.5Q517 512 492.5 551.5Q468 591 430.5 614.5Q393 638 341 638Q249 638 196.5 567.5Q144 497 144 350Z"/><path transform="translate(6443 0)" d="M59 325H301V251H59Z"/></g>
+    <g transform="translate(222.50 170.50) scale(0.0149 -0.0137) translate(-8.0 0)"><path transform="translate(0 0)" d="M418 194H160L90 0H8L273 711H311L577 0H490ZM187 266H393L315 479L290 585H289L264 477Z"/><path transform="translate(585 0)" d="M487 700H567V233Q567 170 550.5 124.0Q534 78 503.5 48.5Q473 19 430.0 5.0Q387 -9 335 -9Q211 -9 148.0 47.0Q85 103 85 217V700H168V256Q168 203 178.5 166.5Q189 130 210.0 107.5Q231 85 262.5 75.0Q294 65 336 65Q417 65 452.0 109.5Q487 154 487 256Z"/><path transform="translate(1237 0)" d="M321 349H556V41Q540 29 517.5 19.0Q495 9 469.5 2.0Q444 -5 416.5 -8.5Q389 -12 363 -12Q296 -12 240.0 9.5Q184 31 143.0 75.5Q102 120 79.0 188.5Q56 257 56 350Q56 447 84.0 516.0Q112 585 157.0 628.5Q202 672 258.0 692.0Q314 712 370 712Q430 712 469.0 705.5Q508 699 535 688L514 615Q466 638 377 638Q335 638 293.5 623.5Q252 609 219.0 575.0Q186 541 165.0 486.0Q144 431 144 350Q144 276 161.0 222.0Q178 168 208.5 132.5Q239 97 282.0 79.5Q325 62 376 62Q440 62 485 87V282L321 302Z"/><path transform="translate(1849 0)" d="M401 178Q401 220 376.0 246.5Q351 273 313.5 293.5Q276 314 232.0 332.0Q188 350 150.5 375.5Q113 401 88.0 438.5Q63 476 63 534Q63 616 120.0 664.0Q177 712 282 712Q343 712 393.0 703.0Q443 694 471 680L446 607Q423 618 378.5 628.0Q334 638 278 638Q212 638 179.0 608.5Q146 579 146 539Q146 500 171.0 474.0Q196 448 233.5 427.5Q271 407 315.0 387.0Q359 367 396.5 340.5Q434 314 459.0 277.0Q484 240 484 185Q484 140 468.0 104.0Q452 68 421.0 42.0Q390 16 346.0 2.0Q302 -12 246 -12Q171 -12 122.0 -0.5Q73 11 46 25L74 100Q97 87 142.0 74.5Q187 62 243 62Q276 62 305.0 68.5Q334 75 355.0 89.5Q376 104 388.5 126.0Q401 148 401 178Z"/><path transform="translate(2380 0)" d="M507 540Q507 515 499.0 489.0Q491 463 475.0 440.5Q459 418 434.0 401.0Q409 384 375 375V371Q405 366 432.5 354.0Q460 342 481.0 321.0Q502 300 515.0 270.0Q528 240 528 199Q528 145 505.5 105.5Q483 66 446.5 41.0Q410 16 363.0 4.0Q316 -8 267 -8Q250 -8 227.0 -8.0Q204 -8 179.0 -6.5Q154 -5 129.0 -2.5Q104 0 85 5V694Q122 700 171.0 704.0Q220 708 278 708Q317 708 357.5 701.5Q398 695 431.0 676.5Q464 658 485.5 625.0Q507 592 507 540ZM275 64Q307 64 337.0 71.5Q367 79 390.0 95.5Q413 112 426.5 136.0Q440 160 440 193Q440 234 423.5 259.0Q407 284 380.5 298.0Q354 312 321.0 317.0Q288 322 255 322H168V71Q175 69 188.0 68.0Q201 67 216.0 66.0Q231 65 247.0 64.5Q263 64 275 64ZM220 392Q237 392 261.0 393.0Q285 394 301 396Q325 404 346.0 415.5Q367 427 383.5 442.5Q400 458 409.5 478.5Q419 499 419 523Q419 556 406.5 577.5Q394 599 373.0 612.0Q352 625 325.0 630.5Q298 636 270 636Q237 636 209.5 634.5Q182 633 168 630V392Z"/><path transform="translate(2964 0)" d="M487 700H567V233Q567 170 550.5 124.0Q534 78 503.5 48.5Q473 19 430.0 5.0Q387 -9 335 -9Q211 -9 148.0 47.0Q85 103 85 217V700H168V256Q168 203 178.5 166.5Q189 130 210.0 107.5Q231 85 262.5 75.0Q294 65 336 65Q417 65 452.0 109.5Q487 154 487 256Z"/><path transform="translate(3616 0)" d="M85 693Q123 700 172.5 704.0Q222 708 263 708Q309 708 350.5 698.0Q392 688 423.5 665.0Q455 642 474.0 605.0Q493 568 493 515Q493 433 448.0 382.0Q403 331 334 314L382 277L556 0H459L266 302L168 317V0H85ZM265 636Q252 636 238.0 636.0Q224 636 211.0 635.0Q198 634 186.5 633.0Q175 632 168 630V372H246Q315 372 360.0 406.0Q405 440 405 512Q405 566 368.0 601.0Q331 636 265 636Z"/><path transform="translate(4211 0)" d="M401 178Q401 220 376.0 246.5Q351 273 313.5 293.5Q276 314 232.0 332.0Q188 350 150.5 375.5Q113 401 88.0 438.5Q63 476 63 534Q63 616 120.0 664.0Q177 712 282 712Q343 712 393.0 703.0Q443 694 471 680L446 607Q423 618 378.5 628.0Q334 638 278 638Q212 638 179.0 608.5Q146 579 146 539Q146 500 171.0 474.0Q196 448 233.5 427.5Q271 407 315.0 387.0Q359 367 396.5 340.5Q434 314 459.0 277.0Q484 240 484 185Q484 140 468.0 104.0Q452 68 421.0 42.0Q390 16 346.0 2.0Q302 -12 246 -12Q171 -12 122.0 -0.5Q73 11 46 25L74 100Q97 87 142.0 74.5Q187 62 243 62Q276 62 305.0 68.5Q334 75 355.0 89.5Q376 104 388.5 126.0Q401 148 401 178Z"/><path transform="translate(4742 0)" d="M215 324H168V0H85V700H168V374L213 388L448 700H544L310 399L268 366L319 326L575 0H470Z"/><path transform="translate(5352 0)" d="M418 194H160L90 0H8L273 711H311L577 0H490ZM187 266H393L315 479L290 585H289L264 477Z"/></g>
+    <g transform="translate(222.00 184.50) scale(0.0146 -0.0137) translate(-85.0 0)"><path transform="translate(0 0)" d="M507 540Q507 515 499.0 489.0Q491 463 475.0 440.5Q459 418 434.0 401.0Q409 384 375 375V371Q405 366 432.5 354.0Q460 342 481.0 321.0Q502 300 515.0 270.0Q528 240 528 199Q528 145 505.5 105.5Q483 66 446.5 41.0Q410 16 363.0 4.0Q316 -8 267 -8Q250 -8 227.0 -8.0Q204 -8 179.0 -6.5Q154 -5 129.0 -2.5Q104 0 85 5V694Q122 700 171.0 704.0Q220 708 278 708Q317 708 357.5 701.5Q398 695 431.0 676.5Q464 658 485.5 625.0Q507 592 507 540ZM275 64Q307 64 337.0 71.5Q367 79 390.0 95.5Q413 112 426.5 136.0Q440 160 440 193Q440 234 423.5 259.0Q407 284 380.5 298.0Q354 312 321.0 317.0Q288 322 255 322H168V71Q175 69 188.0 68.0Q201 67 216.0 66.0Q231 65 247.0 64.5Q263 64 275 64ZM220 392Q237 392 261.0 393.0Q285 394 301 396Q325 404 346.0 415.5Q367 427 383.5 442.5Q400 458 409.5 478.5Q419 499 419 523Q419 556 406.5 577.5Q394 599 373.0 612.0Q352 625 325.0 630.5Q298 636 270 636Q237 636 209.5 634.5Q182 633 168 630V392Z"/><path transform="translate(584 0)" d="M85 693Q123 700 172.5 704.0Q222 708 263 708Q309 708 350.5 698.0Q392 688 423.5 665.0Q455 642 474.0 605.0Q493 568 493 515Q493 433 448.0 382.0Q403 331 334 314L382 277L556 0H459L266 302L168 317V0H85ZM265 636Q252 636 238.0 636.0Q224 636 211.0 635.0Q198 634 186.5 633.0Q175 632 168 630V372H246Q315 372 360.0 406.0Q405 440 405 512Q405 566 368.0 601.0Q331 636 265 636Z"/><path transform="translate(1179 0)" d="M85 700H466V626H168V397H441V323H168V74H471V0H85Z"/><path transform="translate(1715 0)" d="M211 458 157 559H153L163 458V0H85V711H129L464 244L516 148H521L510 244V700H588V-11H544Z"/><path transform="translate(2388 0)" d="M211 458 157 559H153L163 458V0H85V711H129L464 244L516 148H521L510 244V700H588V-11H544Z"/><path transform="translate(3061 0)" d="M418 194H160L90 0H8L273 711H311L577 0H490ZM187 266H393L315 479L290 585H289L264 477Z"/><path transform="translate(3646 0)" d="M59 325H301V251H59Z"/></g>
+    <g transform="translate(222.00 198.50) scale(0.0150 -0.0137) translate(-56.0 0)"><path transform="translate(0 0)" d="M321 349H556V41Q540 29 517.5 19.0Q495 9 469.5 2.0Q444 -5 416.5 -8.5Q389 -12 363 -12Q296 -12 240.0 9.5Q184 31 143.0 75.5Q102 120 79.0 188.5Q56 257 56 350Q56 447 84.0 516.0Q112 585 157.0 628.5Q202 672 258.0 692.0Q314 712 370 712Q430 712 469.0 705.5Q508 699 535 688L514 615Q466 638 377 638Q335 638 293.5 623.5Q252 609 219.0 575.0Q186 541 165.0 486.0Q144 431 144 350Q144 276 161.0 222.0Q178 168 208.5 132.5Q239 97 282.0 79.5Q325 62 376 62Q440 62 485 87V282L321 302Z"/><path transform="translate(612 0)" d="M56 350Q56 525 130.0 618.5Q204 712 341 712Q415 712 469.0 686.0Q523 660 558.5 612.5Q594 565 611.0 498.5Q628 432 628 350Q628 175 553.5 81.5Q479 -12 341 -12Q268 -12 214.5 14.0Q161 40 125.5 87.5Q90 135 73.0 201.5Q56 268 56 350ZM144 350Q144 292 155.5 240.0Q167 188 191.0 148.5Q215 109 252.5 85.5Q290 62 341 62Q434 62 487.0 132.5Q540 203 540 350Q540 407 528.5 459.5Q517 512 492.5 551.5Q468 591 430.5 614.5Q393 638 341 638Q249 638 196.5 567.5Q144 497 144 350ZM415 870H529V849L366 752H297Z"/><path transform="translate(1296 0)" d="M85 693Q123 700 172.5 704.0Q222 708 263 708Q309 708 350.5 698.0Q392 688 423.5 665.0Q455 642 474.0 605.0Q493 568 493 515Q493 433 448.0 382.0Q403 331 334 314L382 277L556 0H459L266 302L168 317V0H85ZM265 636Q252 636 238.0 636.0Q224 636 211.0 635.0Q198 634 186.5 633.0Q175 632 168 630V372H246Q315 372 360.0 406.0Q405 440 405 512Q405 566 368.0 601.0Q331 636 265 636Z"/><path transform="translate(1891 0)" d="M215 324H168V0H85V700H168V374L213 388L448 700H544L310 399L268 366L319 326L575 0H470Z"/><path transform="translate(2501 0)" d="M104 700H187V0H104Z"/></g>
+  </g>
+</g></svg>
+ <svg id="front" aria-hidden="true"></svg>
+ <button id="burger" aria-expanded="false" aria-controls="menu">Menu</button>
+ <nav id="menu" aria-label="Menu główne"><a class="peak" href="#aktualnosci">Aktualności</a><a class="peak" href="#nabozenstwa">Nabożeństwa</a><a class="peak" href="#parafia">Parafia</a><a class="peak" href="#dojazd">Jak dojechać</a><a class="peak" href="#kontakt">Kontakt</a></nav>
+</header>
+<p class="below">Prototyp nagłówka. Poniżej będą nabożeństwa, aktualności z Facebooka i reszta strony.</p>
+<div class="bar" role="group" aria-label="Pora roku">
+ <button data-s="wiosna">Wiosna</button><button data-s="lato">Lato</button><button data-s="jesien">Jesień</button><button data-s="zima">Zima</button>
+ <button id="again">Rysuj ponownie</button>
+</div>
+<script>
+const NS='http://www.w3.org/2000/svg';
+const hero=document.getElementById('hero'),land=document.getElementById('land'),front=document.getElementById('front'),
+      scene=document.getElementById('scene'),nav=document.getElementById('menu'),peaks=[...nav.querySelectorAll('.peak')];
+const VB={x:-96,y:-8,w:540,h:254};          // viewBox sceny
+const el=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+
+// profil Beskidu: suma łagodnych fal, stały kształt niezależny od szerokości
+function ridgeY(x,W,H,top,amp){const t=x/Math.max(W,1150);
+ return H*(top+amp*(.55*Math.sin(t*6.283*1.15+.6)+.3*Math.sin(t*6.283*2.7+1.9)+.12*Math.sin(t*6.283*6.1+.4)+.05*Math.sin(t*6.283*13+2)))}
+
+let first=true;
+function layout(){
+ const W=hero.clientWidth,H=hero.clientHeight,mobile=W<=900;
+ // scena: na szerokim ekranie zostawia boki na menu; zawsze w całości
+ const sceneW=Math.min(mobile?W*1.04:W*.56, 980, (H*.86)*VB.w/VB.h);
+ const groundGap=Math.round(H*.05);
+ hero.style.setProperty('--sceneW',sceneW+'px');hero.style.setProperty('--groundGap',groundGap+'px');
+ const sceneH=sceneW*VB.h/VB.w, sceneTop=H-groundGap-sceneH, groundY=H-groundGap- sceneH*(VB.h-(244-VB.y))/VB.h;
+ const u=sceneH/VB.h;                         // 1 jednostka sceny w px
+ land.setAttribute('viewBox',`0 0 ${W} ${H}`);front.setAttribute('viewBox',`0 0 ${W} ${H}`);
+ land.innerHTML='';front.innerHTML='';
+
+ // chmury
+ const clouds=el('g');[[.12,.13,1],[.46,.07,.8],[.78,.17,1.1],[.3,.24,.7]].forEach(([cx,cy,s],i)=>{
+  const g=el('g',{class:'cloud'});const k=s*Math.min(1,W/1200)*1.1;
+  const p=el('path',{d:`M${-60*k},0 a${22*k},${22*k} 0 0 1 ${30*k},${-18*k} a${30*k},${30*k} 0 0 1 ${52*k},${-6*k} a${20*k},${20*k} 0 0 1 ${36*k},${10*k} a${14*k},${14*k} 0 0 1 ${2*k},${14*k} Z`});
+  g.appendChild(p);g.style.setProperty('--from',(cx*W-40)+'px');g.style.setProperty('--to',(cx*W+40)+'px');
+  g.style.animationDuration=(60+i*17)+'s';g.style.animationDirection=i%2?'alternate-reverse':'alternate';
+  const wrap=el('g',{transform:`translate(0 ${cy*H})`});wrap.appendChild(g);clouds.appendChild(wrap)});
+ clouds.style.opacity=0;clouds.style.animation='fade 2s ease forwards .8s';land.appendChild(clouds);
+
+ // dwie linie gór: dalsza (jaśniejsza) i główna z menu
+ const step=6,pts=(top,amp,shift=0)=>{const a=[];for(let x=-10;x<=W+10;x+=step)a.push([x,ridgeY(x+shift,W,H,top,amp)]);return a};
+ const toD=a=>'M'+a.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L');
+ const topMain=Math.min(.5,(sceneTop+ sceneH*.30)/H), back=pts(topMain-.09,.05,W*.37), main=pts(topMain,.075);
+ land.appendChild(el('path',{class:'ridge-fill back',d:toD(back)+` L${W+10},${H} L-10,${H} Z`}));
+ const bl=el('path',{class:'ridge-line back draw',d:toD(back)});land.appendChild(bl);
+ const defs=el('defs');const lg=el('linearGradient',{id:'rg',x1:0,x2:0,y1:0,y2:1});
+ lg.appendChild(el('stop',{offset:0,'stop-color':'var(--ridge)'}));lg.appendChild(el('stop',{offset:1,'stop-color':'color-mix(in srgb,var(--ridge) 45%,var(--paper))'}));
+ defs.appendChild(lg);land.appendChild(defs);
+ land.appendChild(el('path',{class:'ridge-fill',fill:'url(#rg)',d:toD(main)+` L${W+10},${H} L-10,${H} Z`}));
+
+ // pozycje menu: na bokach, poza sceną (na telefonie menu jest w liście)
+ const gaps=[];
+ if(!mobile){
+  const sL=(W-sceneW)/2+sceneW*.06, sR=(W+sceneW)/2-sceneW*.04;
+  const left=peaks.slice(0,3),right=peaks.slice(3);
+  const place=(arr,x0,x1)=>{const ws=arr.map(a=>a.offsetWidth),gap=Math.max(14,((x1-x0)-ws.reduce((p,c)=>p+c,0))/(arr.length+1));let cur=x0+gap;
+   arr.forEach((a,i)=>{
+   const x=cur+ws[i]/2; cur+=ws[i]+gap; const y=ridgeY(x,W,H,topMain,.075);
+   const dy=ridgeY(x+8,W,H,topMain,.075)-ridgeY(x-8,W,H,topMain,.075);
+   const ang=Math.max(-8,Math.min(8,Math.atan2(dy,16)*180/Math.PI));
+   const w=a.offsetWidth;
+   a.style.transform=`translate(${x-w/2}px,${y-a.offsetHeight/2}px) rotate(${ang}deg)`;
+   gaps.push([x-w/2-10,x+w/2+10]);})};
+  place(left,24,sL); place(right,sR,W-24);
+ }
+ // główna linia z przerwami na opisy
+ const segs=[];let cur=null;
+ for(const [x,y] of main){const inGap=gaps.some(([a,b])=>x>a&&x<b);
+  if(inGap){cur=null;continue} if(!cur){cur=[];segs.push(cur)} cur.push([x,y])}
+ const d=segs.filter(sg=>sg.length&&sg[sg.length-1][0]-sg[0][0]>30).map(sg=>'M'+sg.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L')).join(' ');
+ const ml=el('path',{class:'ridge-line draw',d});land.appendChild(ml);
+ [bl,ml].forEach(p=>{const L=p.getTotalLength();p.style.setProperty('--len',L)});
+ if(!first){[bl,ml].forEach(p=>{p.style.animation='none';p.style.strokeDashoffset=0});land.querySelectorAll('.ridge-fill,g').forEach(g=>{g.style.animation='none';g.style.opacity=1})}
+
+ // ziemia i trawa na całą szerokość (z przodu)
+ front.appendChild(el('line',{class:'ground',x1:0,x2:W,y1:groundY,y2:groundY}));
+ const gr=el('g');let s=1;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
+ for(let x=4;x<W;x+=9+rnd()*6){const h=4+rnd()*7,l=(rnd()-.5)*5;
+  gr.appendChild(el('path',{class:'gr',d:`M${x.toFixed(1)},${groundY} q${l.toFixed(1)},${(-h*.6).toFixed(1)} ${(l*1.6).toFixed(1)},${(-h).toFixed(1)}`}))}
+ if(!first)gr.querySelectorAll('.gr').forEach(g=>{g.style.animation='none';g.style.opacity=1});
+ front.appendChild(gr);
+ // menu pojawia się, gdy linia dojdzie do miejsca opisu
+ peaks.forEach((a,i)=>{a.classList.add('on');a.style.animationDelay=first?(1.2+i*.25)+'s':'0s'});
+ first=false;
+}
+function stagger(){
+ scene.querySelectorAll('.logo .ln').forEach((p,i)=>p.style.animationDelay=(.6+i*.1)+'s');
+ scene.querySelectorAll('.tree').forEach((t,i)=>{const pl=t.classList.contains('far')?0:1,d=3.4+pl*.4+(i%12)*.12;
+  t.querySelectorAll('.fl').forEach(p=>p.style.animationDelay=d+'s');
+  t.querySelectorAll('.leaf').forEach((l,j)=>l.style.animationDelay=(4.8+pl*.3+(i%12)*.06+j*.06)+'s')});
+}
+stagger();
+Promise.race([document.fonts?document.fonts.ready:Promise.resolve(),new Promise(r=>setTimeout(r,700))]).then(()=>{
+ layout();let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(layout,120)})});
+const burger=document.getElementById('burger');
+burger.onclick=()=>{const o=nav.classList.toggle('open');burger.setAttribute('aria-expanded',o)};
+const mo=new Date().getMonth();
+function setS(s){document.body.dataset.season=s;document.querySelectorAll('[data-s]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===s))}
+setS(mo<2||mo==11?'zima':mo<5?'wiosna':mo<8?'lato':'jesien');
+document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>setS(b.dataset.s));
+document.getElementById('again').onclick=()=>location.reload();
+</script></body></html>

@@ -1,0 +1,392 @@
+// =====================================================================
+// ROK KOŚCIELNY – kalendarz i sceny świąteczne (Kościół Ewangelicko-Augsburski)
+// =====================================================================
+// Święto Żniw – data ustalana przez parafię. Wpisz ją tutaj (RRRR-MM-DD), można kilka lat naprzód.
+const HARVEST=['2026-09-27','2027-09-26'];
+
+let SIMDATE=null;                         // data z podglądu; null = dzisiaj
+const pd=t=>{const [y,m,d]=t.split('-').map(Number);return new Date(y,m-1,d,12)};
+const today=()=>SIMDATE?pd(SIMDATE):new Date();
+const Dt=(y,m,d)=>new Date(y,m-1,d), addD=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
+const dayN=d=>Math.round(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5);
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+function easter(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),
+ h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),
+ mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;return Dt(y,mo,da)}
+function advent1(y){const c=Dt(y,12,25),w=c.getDay()||7;return addD(c,-w-21)}   // 4. niedziela przed 25.12
+function feastOf(d){
+ const y=d.getFullYear(),n=dayN(d),m=d.getMonth()+1,dd=d.getDate(),E=dayN(easter(y)),A1=dayN(advent1(y)),r=n-E;
+ if((m===12&&dd>=24)||(m===1&&dd<=6))return {id:'boze',name:m===1&&dd===6?'Epifania':m===12&&dd===24?'Wigilia':'Boże Narodzenie'};
+ if(n>=A1&&m>=11){const c=Math.min(4,Math.floor((n-A1)/7)+1);return {id:'adwent',candles:c,name:c+'. tydzień adwentu'}}
+ if(n===A1-7)return {id:'wiecznosc',name:'Niedziela Wieczności'};
+ if(m===10&&dd===31)return {id:'reformacja',name:'Święto Reformacji'};
+ if(m===11&&dd===1)return {id:'zmarli',name:'Dzień Pamięci Zmarłych'};
+ if(HARVEST.includes(iso(d)))return {id:'zniwa',name:'Święto Żniw'};
+ if(r===-7)return {id:'palmowa',name:'Niedziela Palmowa',pasja:true};
+ if(r===-3)return {id:'wczwartek',name:'Wielki Czwartek'};
+ if(r===-2)return {id:'wpiatek',name:'Wielki Piątek'};
+ if(r===-1)return {id:'wsobota',name:'Wielka Sobota'};
+ if(r===0||r===1)return {id:'wielkanoc',name:r?'Poniedziałek Wielkanocny':'Wielkanoc'};
+ if(r>=-46&&r<=-4)return {id:'pasja',name:r===-46?'Dzień Pokuty i Modlitwy':'Okres pasyjny',pasja:true};
+ if(r===39)return {id:'wniebo',name:'Wniebowstąpienie'};
+ if(r===49||r===50)return {id:'zielone',name:r===49?'Zesłanie Ducha Świętego':'Zesłanie Ducha Świętego – drugie święto'};
+ return null}
+function feastList(y){                     // do podglądu: najważniejsze daty roku
+ const E=easter(y),A=advent1(y),L=[['Epifania',Dt(y,1,6)],['Dzień Pokuty i Modlitwy',addD(E,-46)],['Niedziela Palmowa',addD(E,-7)],['Wielki Czwartek',addD(E,-3)],
+  ['Wielki Piątek',addD(E,-2)],['Wielka Sobota',addD(E,-1)],['Wielkanoc',E],['Wniebowstąpienie',addD(E,39)],['Zesłanie Ducha Świętego',addD(E,49)]];
+ HARVEST.filter(h=>h.startsWith(y+'')).forEach(h=>L.push(['Święto Żniw',pd(h)]));
+ L.push(['Święto Reformacji',Dt(y,10,31)],['1 listopada',Dt(y,11,1)],['Niedziela Wieczności',addD(A,-7)],['1. niedziela adwentu',A],
+  ['2. niedziela adwentu',addD(A,7)],['3. niedziela adwentu',addD(A,14)],['4. niedziela adwentu',addD(A,21)],['Wigilia',Dt(y,12,24)],['30 grudnia (Królowie w drodze)',Dt(y,12,30)]);
+ return L.sort((a,b)=>a[1]-b[1])}
+
+// ---------- rysowanie ----------
+let LY=null,FEAST=null,skyL,ridgeL,groundL,firstFeast=true;
+const FX={};                                 // elementy animowane przez feastTick
+const E=(tag,at,par)=>{const e=el(tag,at);if(par)par.appendChild(e);return e};
+const SKIN='#f1d9bf';
+
+function person(par,color,opt={}){         // postać: głowa, szata, nogi; poza „ręce w górę” do zdumienia
+ const g=E('g',{},par);
+ g.legs=E('path',{class:'fi',d:'M-1.6,-6 L-2.6,0 M1.6,-6 L2.6,0'},g);
+ E('path',{class:'ff',fill:color,d:'M-4.2,-6 L-3.2,-19 Q0,-21.5 3.2,-19 L4.2,-6 Z'},g);
+ g.armsDown=E('path',{class:'fi',d:'M-3.2,-17 L-5,-10 M3.2,-17 L5,-10'},g);
+ g.armsUp=E('path',{class:'fi',d:'M-3.2,-17 L-6,-24 M3.2,-17 L6,-24',style:'display:none'},g);
+ E('circle',{class:'ff',fill:SKIN,cx:0,cy:-22.6,r:2.8},g);
+ if(opt.hair)E('path',{class:'ff',fill:opt.hair,d:'M-2.9,-23 Q-2.6,-26.2 0,-26 Q2.8,-26.2 2.9,-23 Q1,-24.4 -2.9,-23 Z'},g);
+ if(opt.scarf)E('path',{class:'ff',fill:opt.scarf,d:'M-3.1,-22 Q-3.4,-26.8 0,-26.6 Q3.4,-26.8 3.1,-22 L3.6,-19 L-3.6,-19 Z'},g);
+ return g}
+function walkLegs(p,dist){const a=Math.sin(dist/3.2)*2.2;p.legs.setAttribute('d',`M-1.6,-6 L${(-1.6-a).toFixed(1)},0 M1.6,-6 L${(1.6+a).toFixed(1)},0`)}
+function hideRowNear(x0,x1){LY.row.querySelectorAll('.rowtree').forEach(t=>{const x=parseFloat(t.style.transformOrigin);t.classList.toggle('hide-feast',x>x0&&x<x1)})}
+
+function drawFeast(){
+ if(!LY)return;
+ const f=FEAST=feastOf(today()),b=document.body;
+ b.className=b.className.replace(/\bf-\S+/g,'').trim();
+ b.classList.toggle('feast-on',!!f&&f.id!=='pasja');
+ if(f){b.classList.add('f-'+f.id);if(f.pasja)b.classList.add('f-pasja')}
+ [skyL,ridgeL,groundL].forEach(l=>l&&(l.innerHTML=''));for(const k in FX)delete FX[k];
+ hideRowNear(-1,-1);
+ if(!f)return;
+ const {W,H,groundY,k,mobile,sceneW,th}=LY;
+ const HT={boze:60,adwent:34,palmowa:44,wczwartek:40,wpiatek:66,wsobota:38,wielkanoc:38,wniebo:40,zielone:40,zniwa:48,reformacja:76,zmarli:28,wiecznosc:28};
+ const sR=(W+sceneW)/2, sc=mobile?Math.max(.7,th/50)*.55:Math.min(th/50*1.45,(th*1.75-6)/(HT[f.id]||50)), px=mobile?W-34:sR+(W-sR)*.5;
+ const G=E('g',{transform:`translate(${px.toFixed(1)} ${groundY.toFixed(1)}) scale(${sc.toFixed(3)})`},groundL);
+ const hide=(a,b)=>hideRowNear(px+a*sc,px+b*sc);
+ const base=firstFeast?4.6:.2;FX.t0=now()+base+1.5;           // historie ruszają, gdy scena jest już narysowana
+ const draw={boze,adwent,palmowa,wczwartek,wpiatek,wsobota,wielkanoc,wniebo,zielone,zniwa,reformacja,zmarli:groby,wiecznosc:groby}[f.id];
+ if(draw)draw(G,{px,sc,hide,f});
+ drawIn(base);
+ firstFeast=false;
+}
+// scena świąteczna kreśli się kreska po kresce, potem wypełniają się kolory (jak kościół)
+function drawIn(base){let i=0;const D=()=>(base+(i++)*.022).toFixed(2);
+ [skyL,ridgeL,groundL].forEach(Ly=>Ly.querySelectorAll('path,rect,circle,ellipse,polygon,line,polyline').forEach(el=>{
+  if(el.closest('.nodraw')||el.closest('.rays')||el.closest('.star'))return;
+  const d=D();
+  if(el.classList.contains('flame')){el.style.animation=`ffade .6s ease ${d}s both,flameF ${(.38+(i%4)*.07).toFixed(2)}s ease-in-out ${-(i%5)*.11}s infinite alternate`;return}
+  if(el.classList.contains('glowp')){el.style.animation=`ffade .6s ease ${d}s both,glowP ${(.9+(i%3)*.23).toFixed(2)}s ease-in-out ${(+d+.6).toFixed(2)}s infinite alternate`;return}
+  if(el.style.animationName){el.style.animation=`ffade .8s ease ${d}s both,`+el.style.animation;return}
+  el.setAttribute('pathLength','1');el.classList.add('fdraw');el.style.setProperty('--fd',d+'s')}));
+ [skyL,ridgeL,groundL].forEach(Ly=>Ly.querySelectorAll('.rays,.star').forEach(g=>g.style.animation=`ffade 1.2s ease ${D()}s both`))}
+const tau=()=>now()-(FX.t0||0);
+const put=(g,x,y,face,s,rot=0)=>g.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${(face*s).toFixed(3)} ${s.toFixed(3)})${rot?` rotate(${rot.toFixed(1)})`:''}`);
+const actor=(par,color,opt)=>{const p=person(par,color,opt);p.classList.add('nodraw');p.style.display='none';return p};
+
+// --- Adwent: wieniec, co niedzielę zapala się kolejna świeca ---
+function adwent(G,{hide,f}){hide(-34,34);
+ const slots=[155,215,325,25],lit=f.candles;
+ const cand=(i)=>{const a=slots[i]*Math.PI/180,x=24*Math.cos(a),y=-5+6*Math.sin(a),on=i<lit,h=on?17-(lit-1-i)*2.6:17;
+  const g=E('g',{transform:`translate(${x.toFixed(1)} ${y.toFixed(1)})`},G);
+  E('rect',{class:'ff',fill:'#f4eee0',x:-2.3,y:-h,width:4.6,height:h,rx:.8},g);E('path',{class:'fi',d:`M0,${-h} V${-h-1.8}`},g);
+  if(on){E('circle',{class:'glowp',cx:0,cy:-h-4,r:7.5,fill:'url(#fglow)'},g);E('path',{class:'flame',d:`M0,${-h-8.5} Q2.6,${-h-4} 0,${-h-1.6} Q-2.6,${-h-4} 0,${-h-8.5} Z`,style:`animation-delay:${-i*.37}s`},g)}};
+ [1,2].forEach(cand);                                                          // tylne świece za wieńcem
+ E('ellipse',{cx:0,cy:-5,rx:24,ry:6,fill:'none',stroke:'#2f5a44','stroke-width':7.5},G);
+ for(let i=0;i<46;i++){const a=i/46*6.283,r=24+(i%2?3.4:-3.4),x=r*Math.cos(a),y=-5+r*.25*Math.sin(a);
+  E('path',{class:'needle',d:`M${(24*Math.cos(a)).toFixed(1)},${(-5+6*Math.sin(a)).toFixed(1)} L${x.toFixed(1)},${(y-1.6).toFixed(1)}`},G)}
+ E('ellipse',{class:'fi',cx:0,cy:-5,rx:28,ry:8.6},G);E('ellipse',{class:'fi',cx:0,cy:-5.4,rx:19.6,ry:3.8},G);
+ [[-20,-1.6],[-6,1.8],[9,1.6],[21,-.6],[-12,-9.4],[14,-9.6]].forEach(([x,y])=>E('circle',{class:'ff',fill:'#c23b2f',cx:x,cy:y,r:1.5},G));
+ [0,3].forEach(cand)}
+
+// --- Boże Narodzenie: stajenka z życiem w środku, gwiazda, pasterz, anioł; Królowie idą przez góry; 6.01 pokłon ---
+function boze(G,{px,sc,hide,f}){const d=today(),epi=d.getMonth()===0&&d.getDate()===6;hide(-94,epi?96:48);
+ const R=E('g',{},G);FX.nat={bow:[],epi};
+ E('path',{class:'ff',fill:'#4a3a2c',d:'M-34,0 V-36 L0,-50 L34,-36 V0 Z'},R);
+ FX.nat.warm=E('ellipse',{cx:0,cy:-12,rx:30,ry:20,fill:'url(#warm)'},R);
+ // wół i osioł – osobne głowy, żeby mogły się ruszać
+ const ox=E('g',{},R);E('path',{class:'ff',fill:'#6f5845',d:'M-29,-27 q1,-7 7,-7 q3,4 1,9 q-4,2 -8,-2 Z'},ox);E('path',{class:'fi',d:'M-26,-33 l-3,-3 M-21,-34 l2,-3'},ox);
+ const don=E('g',{},R);E('path',{class:'ff',fill:'#8c857c',d:'M20,-31 q4,-6 8,-2 l-1,7 q-4,2 -7,-1 Z'},don);
+ FX.nat.ear=E('path',{class:'fi',d:'M24,-33 l-1,-6 M26,-33 l2,-5'},don);
+ FX.nat.ox=ox;FX.nat.don=don;
+ E('rect',{class:'ff',fill:'#9a7048',x:-37,y:-38,width:4.5,height:38},R);E('rect',{class:'ff',fill:'#9a7048',x:32.5,y:-38,width:4.5,height:38},R);
+ E('path',{class:'ff',fill:'#d9b45a',d:'M-45,-33 L0,-59 L45,-33 L40,-30 L0,-53 L-40,-30 Z'},R);
+ for(let i=-4;i<=4;i++)E('path',{class:'thin',d:`M${i*1.2},-57.5 L${i*9.4},-31.5`},R);
+ // żłóbek z Dzieciątkiem
+ E('path',{class:'fi',d:'M-7,0 L-3,-6 M7,0 L3,-6'},R);E('path',{class:'ff',fill:'#9a7048',d:'M-9,-9 L9,-9 L6,-4 L-6,-4 Z'},R);
+ E('path',{class:'ff',fill:'#e8c96a',d:'M-10,-9 Q-5,-13 0,-11 Q5,-14 10,-9 Z'},R);
+ FX.nat.halo=E('circle',{cx:3.6,cy:-12.8,r:7,fill:'url(#fglow)'},R);
+ E('ellipse',{class:'ff',fill:'#f6f2e8',cx:-.6,cy:-11.6,rx:4.6,ry:2.3},R);E('circle',{class:'ff',fill:SKIN,cx:3.8,cy:-12.6,r:1.9},R);
+ // Maryja (pochyla się nad żłobkiem) i Józef z latarnią
+ const mary=E('g',{},R);FX.nat.mary=mary;
+ E('path',{class:'ff',fill:'#5b7fb5',d:'M-25,0 Q-25,-9 -20,-15 L-15,-15 Q-12,-8 -11,0 Z'},mary);
+ E('path',{class:'ff',fill:'#7f9fcf',d:'M-21.8,-14 Q-21.8,-23.4 -17.6,-23.4 Q-13.6,-23.4 -13.4,-14 Z'},mary);E('circle',{class:'ff',fill:SKIN,cx:-17.4,cy:-19.4,r:2.6},mary);
+ E('path',{class:'fi',d:'M-14.6,-15 L-9.6,-11.4'},mary);
+ E('path',{class:'ff',fill:'#8a6a4a',d:'M13,0 L14.6,-21 Q18,-24 21.4,-21 L23,0 Z'},R);E('circle',{class:'ff',fill:SKIN,cx:18,cy:-25,r:2.9},R);
+ E('path',{class:'ff',fill:'#7a6552',d:'M15.4,-24 Q18,-19.6 20.6,-24 Q18,-22.4 15.4,-24 Z'},R);E('path',{class:'fi',d:'M25.6,0 L25,-33 Q25,-36 27.6,-35.4'},R);
+ E('path',{class:'fi',d:'M14.6,-17 L10.6,-14 L10.6,-12'},R);
+ E('circle',{cx:10.6,cy:-9,r:6,fill:'url(#fglow)'},R);E('rect',{class:'ff',fill:'#3a3328',x:8.8,y:-11.6,width:3.6,height:5,rx:.6},R);
+ E('path',{class:'flame',d:'M10.6,-10.8 Q11.8,-9 10.6,-7.6 Q9.4,-9 10.6,-10.8 Z'},R);
+ // na zewnątrz: pasterz z owcami
+ const O=E('g',{transform:'translate(-58 0)'},G);
+ const sh=E('g',{},O);const p=person(sh,'#8b7d5c',{scarf:'#b9a77f'});E('path',{class:'fi',d:'M5,0 L5.6,-27 Q5.8,-31 8.6,-30'},sh);FX.nat.bow.push([sh,0,.6,22]);
+ FX.nat.sheep=[];
+ [[-14,0],[-26,0],[-20,3]].forEach(([x,y],i)=>{const sp=E('g',{},O);sp.dataset.x=x;sp.dataset.y=y;
+  E('path',{class:'fi',d:'M-3,-3 V0 M3,-3 V0'},sp);E('ellipse',{class:'ff',fill:'#f6f3ec',cx:0,cy:-5.2,rx:5.8,ry:3.8},sp);
+  const hd=E('ellipse',{class:'ff',fill:'#2d2a26',cx:6,cy:-6,rx:2,ry:1.5},sp);FX.nat.sheep.push([sp,hd,i])});
+ // Trzej Królowie przy stajence (6.01)
+ if(epi){const K=E('g',{transform:'translate(62 0) scale(-1 1)'},G);['#a83a32','#2f6a55','#6a4a8c'].forEach((c,i)=>{const m=E('g',{},K);magus(m,c,i);m.dataset.x=-12+i*12;FX.nat.bow.push([m,-12+i*12,i*.35,30])})}
+ // anioł nad stajenką – co jakiś czas się pojawia
+ const A=E('g',{class:'nodraw'},G);FX.nat.angel=A;A.style.opacity=0;
+ FX.nat.wl=E('path',{class:'ff',fill:'#fffdf6',d:'M-1,-6 Q-12,-14 -14,-4 Q-8,-4 -2,-2 Z'},A);FX.nat.wr=E('path',{class:'ff',fill:'#fffdf6',d:'M1,-6 Q12,-14 14,-4 Q8,-4 2,-2 Z'},A);
+ E('path',{class:'ff',fill:'#fffdf6',d:'M-4,8 L-2.6,-6 Q0,-8 2.6,-6 L4,8 Z'},A);E('circle',{class:'ff',fill:SKIN,cx:0,cy:-9,r:2.6},A);
+ E('circle',{cx:0,cy:-9,r:4.4,fill:'none',stroke:'#e2b43c','stroke-width':.8},A);E('path',{class:'fi',d:'M-2.4,-4 L-6,-12 M2.4,-4 L6,-12'},A);
+ // gwiazda betlejemska
+ const S=E('g',{class:'star',transform:`translate(${(LY.mobile?LY.W*.66:px).toFixed(1)} ${(LY.H*.12).toFixed(1)}) scale(1.4)`},skyL);
+ E('circle',{r:22*LY.k,fill:'url(#starglow)'},S);
+ E('path',{class:'startail',d:`M0,0 Q${-40*LY.k},${18*LY.k} ${-92*LY.k},${30*LY.k}`},S);
+ const r1=11*LY.k,r2=2.2*LY.k,r3=6*LY.k;let dd='';for(let i=0;i<16;i++){const a=i*Math.PI/8-Math.PI/2,r=i%4===0?r1:i%2===0?r3:r2;dd+=(i?'L':'M')+(Math.cos(a)*r).toFixed(1)+','+(Math.sin(a)*r).toFixed(1)}
+ E('path',{class:'starbody',d:dd+'Z'},S);
+ // Królowie w drodze przez góry (25.12 – 5.01): karawana wędruje grzbietem i znika za zboczem
+ if(!epi&&!(d.getMonth()===11&&d.getDate()===24)){const g=E('g',{class:'nodraw'},ridgeL);FX.magi={figs:[]};
+  ['#a83a32','#2f6a55','#6a4a8c'].forEach((c,i)=>{const m=E('g',{},g);magus(m,c,i);FX.magi.figs.push(m)});
+  const cam=E('g',{},g);camel(cam);FX.magi.figs.push(cam)}}
+function magus(m,c,i){E('path',{class:'ff',fill:'#b98d5a',d:'M-5.6,-14 Q-8.6,-12 -7.4,-8 Q-5,-7 -3.6,-9 Z'},m);   // tobołek na plecach
+ E('path',{class:'ff',fill:c,d:'M-4.2,0 L-3.2,-15 Q0,-17.4 3.2,-15 L4.2,0 Z'},m);E('circle',{class:'ff',fill:i===1?'#b98b62':SKIN,cx:0,cy:-18.4,r:2.6},m);
+ E('path',{class:'ff',fill:'#e2b43c',d:'M-2.6,-20.4 L-2.6,-23.6 L-1.3,-22 L0,-24.2 L1.3,-22 L2.6,-23.6 L2.6,-20.4 Z'},m);
+ E(i===2?'path':'rect',i===2?{class:'ff',fill:'#d9b24a',d:'M3,-12 Q3,-15.6 5,-15.6 Q7,-15.6 7,-12 L6.4,-10 L3.6,-10 Z'}:{class:'ff',fill:i?'#d9b24a':'#c9a24a',x:3,y:-13.4,width:4.2,height:3.6},m)}
+function camel(g){g.lA=E('path',{class:'fi',d:'M-8,-9 L-10,0 M-5,-9 L-4,0 M6,-9 L5,0 M9,-9 L11,0'},g);g.lB=E('path',{class:'fi',d:'M-8,-9 L-6,0 M-5,-9 L-7,0 M6,-9 L8,0 M9,-9 L8,0',style:'display:none'},g);
+ E('path',{class:'ff',fill:'#c79a62',d:'M-11,-10 Q-10,-17 -4,-18 Q-1,-23 3,-18 Q8,-17 10,-12 L13,-20 Q14,-24 17,-23 L18,-21 L15,-19 L12.5,-9 Q0,-7 -11,-10 Z'},g);
+ E('rect',{class:'ff',fill:'#8a5a3a',x:-6,y:-20,width:6,height:5,rx:1},g);E('rect',{class:'ff',fill:'#6a7a4a',x:1,y:-21,width:5,height:5.4,rx:1},g)}
+
+// --- Niedziela Palmowa: Jezus wjeżdża na osiołku, ludzie machają gałązkami i rzucają je na drogę ---
+function frondSmall(par,len){let d=`M0,0 L0,${-len}`;for(let s=.2;s<.95;s+=.16){const y=-len*s,l=(1-s)*5+1.4;d+=` M0,${y.toFixed(1)} l${-l},${(-l*.7).toFixed(1)} M0,${y.toFixed(1)} l${l},${(-l*.7).toFixed(1)}`}
+ return E('path',{class:'leaflet',d},par)}
+function donkeyRider(par){const g=E('g',{class:'nodraw'},par);
+ g.lA=E('path',{class:'fi',d:'M-9,-9 L-11,0 M-6,-9 L-5,0 M7,-9 L9,0 M10,-9 L11,0'},g);g.lB=E('path',{class:'fi',d:'M-9,-9 L-7,0 M-6,-9 L-8,0 M7,-9 L5,0 M10,-9 L12,0',style:'display:none'},g);
+ E('path',{class:'fi',d:'M-12,-12 Q-15,-10 -14,-6'},g);
+ E('path',{class:'ff',fill:'#9a948c',d:'M18.5,-21.5 L17,-27 L19.5,-22 Z M20.5,-21.8 L21,-27.4 L22,-21.6 Z'},g);
+ E('path',{class:'ff',fill:'#9a948c',d:'M-12,-10 Q-12,-16 -4,-16 L8,-16 Q12,-16 13,-14 L17,-20 Q19,-23 22,-21 L23,-18 L19,-15 L15,-9 Q2,-7 -12,-10 Z'},g);
+ E('circle',{cx:0,cy:-32.4,r:4.6,fill:'none',stroke:'#e2b43c','stroke-width':.8},g);
+ E('path',{class:'ff',fill:'#f4f0e6',d:'M-4,-15 L-3,-29 Q0,-31.4 3,-29 L4,-15 Z'},g);
+ E('path',{class:'ff',fill:'#b8433a',d:'M-3.6,-28 Q-6,-20 -4.6,-13.6 L-1,-13.6 L-.6,-28 Z'},g);
+ E('path',{class:'fi',d:'M1,-16 L3.6,-11 L3.8,-7.6 M2.6,-26 L7,-20'},g);
+ E('circle',{class:'ff',fill:SKIN,cx:0,cy:-32.4,r:2.8},g);E('path',{class:'ff',fill:'#5a3a22',d:'M-2.9,-32.6 Q-3,-36 0,-35.6 Q3,-36 2.9,-32.6 Q2.6,-29 0,-29.2 Q-2.6,-29 -2.9,-32.6 Z M-1.6,-31.6 Q0,-30.4 1.6,-31.6 Q1.6,-33.8 0,-34 Q-1.6,-33.8 -1.6,-31.6 Z'},g);
+ E('circle',{class:'ff',fill:SKIN,cx:0,cy:-32.4,r:1.6},g);
+ return g}
+function palmowa(G,{px,sc,hide}){const {W,groundY}=LY;hideRowNear(W*.58,W+10);
+ FX.palm={rider:donkeyRider(groundL),crowd:[],laid:E('g',{class:'nodraw'},groundL)};
+ const cols=[['#a8463a',{scarf:'#d9c7a0'}],['#3f6a8c',{hair:'#5a3a22'}],['#6b7a3a',{hair:'#2d2a26'}],['#8c5a8a',{scarf:'#e6d9b8'}],['#b07a3a',{hair:'#3a2a1c'}]];
+ cols.forEach(([c,o],i)=>{const p=actor(groundL,c,o);p.armsDown.style.display='none';p.armsUp.setAttribute('d','M-3.2,-17 L-5,-10 M3.2,-17 L6,-24');p.armsUp.style.display='';
+  const fr=E('g',{transform:'translate(6 -24)'},p);frondSmall(fr,12);p.fr=fr;p.xf=W*(.93-i*.075);FX.palm.crowd.push(p)});
+ // kilka gałęzi przy drodze, żeby było widać od pierwszej chwili
+ [[-30,-6],[30,8]].forEach(([x,a])=>{const g=E('g',{transform:`translate(${x} 0) rotate(${a})`},G);frondSmall(g,26)})}
+
+// --- Wielki Czwartek: stół, chleb i kielich (biały, radosny) ---
+function wczwartek(G,{hide}){hide(-36,36);
+ E('ellipse',{cx:0,cy:-26,rx:40,ry:20,fill:'url(#whiteglow)'},G);
+ E('path',{class:'fi',d:'M-26,-12 V0 M26,-12 V0 M-22,-12 L-24,0 M22,-12 L24,0'},G);
+ E('rect',{class:'ff',fill:'#9a7048',x:-31,y:-23,width:62,height:3},G);
+ E('path',{class:'ff',fill:'#fbfaf6',d:'M-33,-22 L33,-22 L31,-11 Q20,-13 10,-11 Q0,-13 -10,-11 Q-20,-13 -31,-11 Z'},G);
+ E('path',{class:'ff',fill:'#c8904f',d:'M-20,-22 Q-20,-30 -11,-30 Q-2,-30 -2,-22 Z'},G);E('path',{class:'thin',d:'M-16,-26 l3,-2 M-12,-25.6 l3,-2 M-8,-25.6 l3,-2'},G);
+ E('path',{class:'ff',fill:'#d9b24a',d:'M7,-38 L17,-38 Q16.4,-31 12,-30 Q7.6,-31 7,-38 Z'},G);E('ellipse',{class:'ff',fill:'#7a1f2b',cx:12,cy:-37.6,rx:4.8,ry:.9},G);
+ E('path',{class:'fi',d:'M12,-30 V-23.6'},G);E('ellipse',{class:'ff',fill:'#d9b24a',cx:12,cy:-23.2,rx:4,ry:1},G)}
+
+// --- Wielki Piątek: Golgota, trzy krzyże (cała scena w szarości) ---
+function wpiatek(G,{hide}){hide(-60,60);
+ E('path',{class:'ff',fill:'#a59c8c',d:'M-62,0 Q-34,-20 0,-23 Q34,-20 62,0 Z'},G);
+ [[-28,-14,26],[28,-14,26]].forEach(([x,y,h])=>{E('rect',{class:'ff',fill:'#6f6458',x:x-1.6,y:y-h,width:3.2,height:h},G);E('rect',{class:'ff',fill:'#6f6458',x:x-7,y:y-h+6,width:14,height:3},G)});
+ E('rect',{class:'ff',fill:'#6f6458',x:-2.2,y:-64,width:4.4,height:42},G);E('rect',{class:'ff',fill:'#6f6458',x:-13,y:-54,width:26,height:4},G)}
+
+// --- Wielka Sobota i Wielkanoc: grób zamknięty / otwarty, anioł na kamieniu, kobiety biegną do grobu ---
+function tomb(G,open){
+ E('path',{class:'ff',fill:'#b7ab95',d:'M-50,0 Q-46,-30 -12,-36 Q28,-38 50,0 Z'},G);E('path',{class:'thin',d:'M-34,-18 l8,-3 M22,-24 l9,4 M-20,-30 l6,1'},G);
+ E('path',{class:'ff',fill:'#2f2a22',d:'M-9,0 V-13 Q0,-24 9,-13 V0 Z'},G);
+ if(open){const L=E('g',{class:'rays'},G);for(let i=0;i<11;i++){const a=Math.PI*(1+i/10);E('path',{class:'ray2',d:`M${(Math.cos(a)*11).toFixed(1)},${(-8+Math.sin(a)*11).toFixed(1)} L${(Math.cos(a)*30).toFixed(1)},${(-8+Math.sin(a)*30).toFixed(1)}`,style:`animation-delay:${-i*.3}s`},L)}
+  E('ellipse',{cx:0,cy:-8,rx:12,ry:10,fill:'url(#whiteglow)'},G);
+  E('circle',{class:'ff',fill:'#9c9483',cx:24,cy:-11,r:11.5},G);E('path',{class:'thin',d:'M17,-15 q6,-3 12,1 M19,-7 q5,2 10,-1'},G);
+  // anioł siedzący na odsuniętym kamieniu (Mk 16,5)
+  const A=E('g',{transform:'translate(25 -22)'},G);FX.angelE=A;
+  E('path',{class:'ff',fill:'#fffdf6',d:'M-1,-8 Q-11,-17 -12,-6 Q-7,-6 -2,-3 Z'},A);
+  E('path',{class:'ff',fill:'#fffdf6',d:'M-4,0 L-3,-10 Q0,-12.4 3,-10 L3.6,-3 L7,-1 L7,1 L-4,1 Z'},A);
+  E('circle',{class:'ff',fill:SKIN,cx:0,cy:-13,r:2.5},A);E('circle',{cx:0,cy:-13,r:4.2,fill:'none',stroke:'#e2b43c','stroke-width':.7},A);
+  [[-40,0],[-33,1],[38,0]].forEach(([x,y])=>{E('path',{class:'stem',d:`M${x},${y} Q${x+1},${y-8} ${x},${y-14}`},G);
+   E('path',{class:'ff',fill:'#fffdf6',d:`M${x},${y-14} l-3.4,-4 l2.2,.6 l1.2,-3.4 l1.2,3.4 l2.2,-.6 Z`},G)})}
+ else{E('circle',{class:'ff',fill:'#9c9483',cx:0,cy:-11,r:12.5},G);E('path',{class:'thin',d:'M-7,-15 q6,-3 12,1 M-5,-7 q5,2 10,-1'},G)}}
+function wsobota(G,{hide}){hide(-52,52);tomb(G,false)}
+function wielkanoc(G,{px,sc,hide}){hide(-52,52);tomb(G,true);
+ FX.easter={px,sc,women:[]};
+ [['#8c5a8a','#e6d9b8'],['#3f6a8c','#d9c7a0'],['#a8463a','#efe6cf']].forEach(([c,s])=>{const w=actor(groundL,c,{scarf:s});
+  E('path',{class:'ff',fill:'#c9a46a',d:'M4.6,-12 h3 v3.4 q-1.5,1 -3,0 Z'},w);FX.easter.women.push(w)})}
+
+// --- Wniebowstąpienie: „znikający Chrystus” – stopy pod chmurą ---
+function wniebo(G,{px}){const k=LY.k,g=E('g',{class:'ascend',transform:`translate(${(LY.mobile?LY.W*.66:px).toFixed(1)} ${(LY.H*.16).toFixed(1)}) scale(${(k*1.5).toFixed(2)})`},ridgeL);
+ const L=E('g',{class:'rays'},g);for(let i=0;i<9;i++){const a=-Math.PI*(.12+.76*i/8);E('path',{class:'ray2',d:`M${(Math.cos(a)*30).toFixed(1)},${(2+Math.sin(a)*10).toFixed(1)} L${(Math.cos(a)*44).toFixed(1)},${(2+Math.sin(a)*20).toFixed(1)}`},L)}
+ // dół szaty i stopy zwisające spod chmury
+ E('path',{class:'ff',fill:'#f7f3ea',d:'M-9,4 L-10.5,22 Q-6,23.6 0,22.6 Q6,23.6 10.5,22 L9,4 Z'},g);
+ E('path',{class:'thin',d:'M-5,8 L-6,21.6 M0,8 L0,22 M5,8 L6,21.6'},g);
+ E('path',{class:'ff',fill:'#b8433a',d:'M9,4 L10.5,22 Q12.6,21 13,18 L11,4 Z'},g);
+ E('path',{class:'ff',fill:SKIN,d:'M-6,22.4 L-5.6,28.6 Q-6.6,32.6 -4.6,33.6 Q-2.6,34 -2.4,31.4 L-1.8,22.6 Z'},g);
+ E('path',{class:'ff',fill:SKIN,d:'M1.8,22.6 L2.4,31.4 Q2.6,34 4.6,33.6 Q6.6,32.6 5.6,28.6 L6,22.4 Z'},g);
+ E('path',{class:'ff cloudf',d:'M-34,8 a10,10 0 0 1 6,-14 a13,13 0 0 1 22,-6 a14,14 0 0 1 24,2 a10,10 0 0 1 14,11 a7,7 0 0 1 -3,9 Q0,13 -34,8 Z'},g)}
+
+// --- Zesłanie Ducha Świętego: uczniowie skupieni w modlitwie, gołębica, nad głowami pojawiają się języki ognia ---
+function birch(par,x,h,i){const t=E('g',{class:'frond',style:`transform-origin:${x}px 0px;animation-delay:${-i}s`},par);
+ E('path',{class:'ff',fill:'#f4f1ea',d:`M${x-1.7},0 L${x-.7},${-h} L${x+.7},${-h} L${x+1.7},0 Z`},t);
+ E('path',{class:'thin',d:`M${x-1.5},${-h*.18} h2.2 M${x-1.1},${-h*.42} h1.6 M${x-1.3},${-h*.64} h1.6`},t);
+ for(let j=0;j<6;j++){const yy=-h+4+j*h*.12,side=j%2?1:-1,len=12-j*.5,ex=x+side*len,ey=yy+len*.9;
+  E('path',{class:'twig',d:`M${x},${yy} Q${(x+side*len*.7).toFixed(1)},${(yy-2).toFixed(1)} ${ex.toFixed(1)},${ey.toFixed(1)}`},t);
+  for(let q=.3;q<=1.01;q+=.23){const lx=x+side*len*q*(1-.15*q),ly=yy-2*q+(ey-yy+2)*q*q;
+   E('ellipse',{class:'birchleaf',cx:lx.toFixed(1),cy:(ly+1.2).toFixed(1),rx:1.15,ry:1.7,transform:`rotate(${side*20} ${lx.toFixed(1)} ${(ly+1.2).toFixed(1)})`},t)}}}
+function zielone(G,{px,sc,hide}){hide(-62,62);birch(G,-54,50,0);birch(G,56,56,1);
+ FX.pent={px,sc,heads:[],flames:[]};
+ // uczniowie zebrani w modlitwie: dwa rzędy, ręce złożone, głowy pochylone
+ const row=(list,y,s0,kneel)=>list.forEach(([x,c,o])=>{const g=E('g',{transform:`translate(${x} ${y}) scale(${s0})`},G),p=person(g,c,o);
+  p.armsDown.remove();p.armsUp.remove();if(kneel)p.legs.remove();
+  E('path',{class:'fi',d:'M-3.2,-17 L-2,-12.6 L0,-14.6 M3.2,-17 L2,-12.6 L0,-14.6'},p);
+  p.setAttribute('transform','rotate(-4 0 -6)');FX.pent.heads.push([x,y-26.4*s0])});
+ // tylny rząd stoi, przedni klęczy
+ row([[-36,'#a8463a',{hair:'#5a3a22'}],[-18,'#3f6a8c',{scarf:'#e6d9b8'}],[0,'#6b7a3a',{hair:'#2d2a26'}],[18,'#8a6a9a',{hair:'#5a3a22'}],[36,'#b0563a',{scarf:'#d9c7a0'}]],-2,1.02);
+ row([[-27,'#8c5a8a',{hair:'#3a2a1c'}],[-9,'#b07a3a',{hair:'#6a4a2a'}],[9,'#4f6f5a',{scarf:'#e6d9b8'}],[27,'#7a4a3a',{hair:'#2d2a26'}]],6.6,1.12,true);
+ FX.pent.heads.forEach(()=>FX.pent.flames.push(E('path',{class:'tongue nodraw',d:'M0,-7 Q2.6,-3 0,0 Q-2.6,-3 0,-7 Z',style:'display:none'},groundL)));
+ FX.dove=E('g',{class:'nodraw'},skyL);const d=FX.dove;
+ E('circle',{r:16,fill:'url(#whiteglow)'},d);
+ FX.dove.w1=E('path',{class:'ff',fill:'#fff',d:'M-1,-1 Q-6,-12 -13,-11 Q-8,-5 -3,1 Z'},d);
+ E('path',{class:'ff',fill:'#fff',d:'M-10,1 Q-4,-3 4,-2 Q9,-2 10,-5 Q12,-5 12,-3 L14,-2.6 L12,-1.6 Q10,3 2,3.4 Q-4,3.6 -10,1 L-14,3 L-13,-.6 Z'},d);
+ FX.dove.w2=E('path',{class:'ff',fill:'#fff',d:'M1,-1 Q-2,-13 -9,-14 Q-6,-6 -2,1 Z'},d);E('circle',{class:'eye2',cx:10.6,cy:-3.4,r:.6},d)}
+
+// --- Święto Żniw: kosz plonów, snop i chleb ---
+function zniwa(G,{hide}){hide(-46,40);
+ const s=E('g',{transform:'translate(-34 0)'},G);E('path',{class:'wheat',d:'M0,0 L-9,-40 M0,0 L-5,-42 M0,0 L-1,-44 M0,0 L3,-43 M0,0 L7,-41 M0,0 L10,-38 M0,0 L-11,-36'},s);
+ [[-9,-40],[-5,-42],[-1,-44],[3,-43],[7,-41],[10,-38],[-11,-36]].forEach(([x,y])=>E('ellipse',{class:'ff',fill:'#e2bf5c',cx:x,cy:y-2.6,rx:1.6,ry:3.6,transform:`rotate(${x*2.2} ${x} ${y-2.6})`},s));
+ E('rect',{class:'ff',fill:'#c2953e',x:-4.6,y:-16,width:9.2,height:2.6},s);
+ E('path',{class:'ff',fill:'#e08a2c',d:'M-14,-16 Q-16,-27 -6,-27 Q4,-27 2,-16 Z'},G);E('path',{class:'thin',d:'M-6,-27 Q-9,-21 -8,-16 M-6,-27 Q-3,-21 -3,-16'},G);E('path',{class:'stem',d:'M-6,-27 q1,-3 3,-3'},G);
+ [[5,-19,'#c23b2f'],[11,-18,'#d6532f'],[8,-23,'#b3302a']].forEach(([x,y,c])=>E('circle',{class:'ff',fill:c,cx:x,cy:y,r:3.6},G));
+ [[16,-20],[18,-17],[14,-17],[16,-14]].forEach(([x,y])=>E('circle',{class:'ff',fill:'#6a3f78',cx:x,cy:y,r:1.9},G));
+ E('path',{class:'ff',fill:'#e47f2a',d:'M-2,-17 L-12,-30 L-9,-31 Z'},G);E('path',{class:'stem',d:'M-12,-30 l-2,-4 M-11,-30.6 l0,-4.6'},G);
+ E('path',{class:'ff',fill:'#c49a5a',d:'M-19,-15 L21,-15 L17,0 L-15,0 Z'},G);E('path',{class:'thin',d:'M-18,-10 H20 M-16.6,-5 H18.6 M-12,-15 L-10,0 M-4,-15 L-3,0 M4,-15 L4,0 M12,-15 L11,0'},G);
+ E('path',{class:'fi',d:'M-17,-15 Q2,-36 19,-15'},G);
+ E('path',{class:'ff',fill:'#c8904f',d:'M24,0 Q24,-11 31,-11 Q38,-11 38,0 Z'},G);E('path',{class:'thin',d:'M28,-7 l3,-2 M31,-6 l3,-2'},G)}
+
+// --- Święto Reformacji: Luter przybija tezy do drzwi kościoła; ludzie czytają, dziwią się i wchodzą do środka ---
+function reformacja(G,{px,sc,hide}){hide(-34,34);
+ // mały kościół: wieżyczka na kalenicy, okienko w szczycie, drzwi (na nich zawisną tezy)
+ E('rect',{class:'ff',fill:'#efe8da',x:-3.5,y:-62,width:7,height:12},G);E('path',{class:'ff',fill:'#6e5640',d:'M-5,-62 L0,-72 L5,-62 Z'},G);E('path',{class:'fi',d:'M0,-72 V-79 M-2.6,-76.4 H2.6'},G);
+ E('path',{class:'thin',d:'M-1.4,-53 V-58 Q0,-60 1.4,-58 V-53'},G);
+ E('path',{class:'ff',fill:'#efe8da',d:'M-17,0 V-32 L0,-50 L17,-32 V0 Z'},G);
+ E('path',{class:'ff',fill:'#7d5e48',d:'M-21,-30 L0,-53 L21,-30 L17,-30 L0,-48.6 L-17,-30 Z'},G);
+ E('circle',{class:'ff',fill:'#d9c5a8',cx:0,cy:-36,r:3.4},G);E('path',{class:'thin',d:'M-3.4,-36 H3.4 M0,-39.4 V-32.6'},G);
+ E('path',{class:'ff',fill:'#b39575',d:'M-6.5,0 V-17 Q0,-24 6.5,-17 V0 Z'},G);E('path',{class:'thin',d:'M0,0 V-20.4'},G);
+ [-12,12].forEach(x=>E('path',{class:'ff',fill:'#d9c5a8',d:`M${x-2.2},-12 V-22 Q${x},-25 ${x+2.2},-22 V-12 Z`},G));
+ E('path',{class:'fi',d:'M-22,0 H22'},G);
+ FX.ref={px,sc,paper:E('g',{class:'nodraw',style:'display:none'},G),L:null,P:[]};
+ E('rect',{class:'ff',fill:'#fbf8ee',x:.8,y:-19,width:5,height:7.4},FX.ref.paper);E('path',{class:'thin',d:'M1.8,-17 h3 M1.8,-15.6 h3 M1.8,-14.2 h3 M1.8,-12.8 h2.2'},FX.ref.paper);
+ E('circle',{class:'eye2',cx:3.3,cy:-18.3,r:.5},FX.ref.paper);
+ const Lg=E('g',{class:'nodraw'},groundL);FX.ref.L=Lg;const lp=person(Lg,'#1f1f1f');
+ E('rect',{class:'ff',fill:'#1f1f1f',x:-3.4,y:-27,width:6.8,height:2.2,rx:.6},lp);
+ lp.hammer=E('g',{},lp);E('path',{class:'fi',d:'M3.2,-17 L7.6,-21'},lp.hammer);E('rect',{class:'ff',fill:'#777',x:6.4,y:-24,width:3.4,height:2,transform:'rotate(-40 8 -23)'},lp.hammer);
+ lp.style.display='none';lp.sheet=E('rect',{class:'ff',fill:'#fbf8ee',x:-6,y:-16,width:3.2,height:4},lp);lp.armsDown.style.display='none';FX.ref.lp=lp;
+ [['#a8463a',{scarf:'#d9c7a0'}],['#3f6a8c',{hair:'#5a3a22'}],['#6b7a3a',{hair:'#2d2a26'}],['#8c5a8a',{scarf:'#e6d9b8'}]].forEach(([c,o])=>{const p=actor(groundL,c,o);FX.ref.P.push(p)})}
+function refTick(t){const R=FX.ref;if(!R)return;if(t<0){R.lp.style.display='none';R.P.forEach(p=>p.style.display='none');R.paper.style.display='none';return}const {W,groundY}=LY,{px,sc}=R,P=72,n=Math.floor(t/P),u=t-n*P,v=34*sc;
+ const door=px+1*sc,place=(g,x,face,op=1)=>{g.setAttribute('transform',`translate(${x.toFixed(1)} ${groundY.toFixed(1)}) scale(${face*sc} ${sc})`);g.style.opacity=op};
+ // Luter – tylko w pierwszym przebiegu dnia; potem tezy już wiszą
+ const lp=R.lp,xL=px+11*sc;
+ if(n===0&&u<16){lp.style.display='';const xs=W+30;
+  if(u<6){const x=xs+(xL-xs)*(u/6);place(lp,x,-1);walkLegs(lp,u*v);lp.hammer.setAttribute('transform','')}
+  else if(u<10){place(lp,xL,-1);walkLegs(lp,0);const sw=Math.max(0,Math.sin((u-6)*Math.PI*3));lp.hammer.setAttribute('transform',`rotate(${(-50*sw).toFixed(0)} 3.2 -17)`);lp.sheet.style.display=u>6.6?'none':''}
+  else{const q=(u-10)/6,x=xL+(xs-xL)*q;place(lp,x,1);walkLegs(lp,(u-10)*v);lp.hammer.setAttribute('transform','')}}
+ else lp.style.display='none';
+ R.paper.style.display=n>0||u>6.6?'':'none';
+ // ludzie
+ const start=n===0?17:3;
+ R.P.forEach((p,i)=>{const r=u-start-i*2.2,xr=px+(14+i*7)*sc,xs=W+30,dist=Math.abs(xr-door),walkT=dist/v;
+  if(r<0||r>14+walkT){p.style.display='none';return}p.style.display='';p.armsUp.style.display='none';p.armsDown.style.display='';
+  if(r<4){const x=xs+(xr-xs)*(r/4);place(p,x,-1);walkLegs(p,r*v*1.8)}
+  else if(r<8.5){place(p,xr,-1);walkLegs(p,0)}
+  else if(r<10.2){const j=Math.abs(Math.sin((r-8.5)*Math.PI*2.4));p.setAttribute('transform',`translate(${xr.toFixed(1)} ${(groundY-j*4*sc).toFixed(1)}) scale(${-sc} ${sc})`);p.armsUp.style.display='';p.armsDown.style.display='none';walkLegs(p,0)}
+  else{const q=Math.min(1,(r-10.2)/walkT),x=xr+(door-xr)*q,op=q<.92?1:Math.max(0,1-(q-.92)/.08-(r-10.2-walkT)/1);place(p,x,-1,op);walkLegs(p,(r-10.2)*v)}})}
+
+// --- 1 listopada i Niedziela Wieczności: skromne groby, krzyż i kamienie, gałązki świerku ---
+function groby(G,{hide}){hide(-50,50);
+ [[-32,'cross'],[0,'stone'],[32,'stone2']].forEach(([x,kind],i)=>{const g=E('g',{transform:`translate(${x} 0)`},G);
+  if(kind==='cross'){E('rect',{class:'ff',fill:'#d8d3c8',x:-1.6,y:-27,width:3.2,height:20},g);E('rect',{class:'ff',fill:'#d8d3c8',x:-6,y:-22,width:12,height:3},g)}
+  else E('path',{class:'ff',fill:'#d8d3c8',d:kind==='stone'?'M-7,-7 L-7,-21 Q-7,-27 0,-27 Q7,-27 7,-21 L7,-7 Z':'M-6.4,-7 L-6.4,-22 L6.4,-24 L6.4,-7 Z'},g);
+  E('path',{class:'ff',fill:'#8a7560',d:'M-12,0 Q-11,-8 0,-8 Q11,-8 12,0 Z'},g);
+  [-8,-3,4,9].forEach((xx,j)=>E('path',{class:'needle',d:`M${xx},-6 l${j%2?2:-2},-4 M${xx},-6 l0,-4.6 M${xx},-6 l${j%2?-2:2},-3.6`},g))})}
+
+// ---------- ruch scen (wywoływany co klatkę) ----------
+const bowC=p=>p<.25?Math.sin(p/.25*Math.PI/2):p<.55?1:p<.75?Math.cos((p-.55)/.2*Math.PI/2):0;   // pokłon: w dół, chwila, w górę, przerwa
+function feastTick(){if(!FEAST||!LY)return;const t=now(),T=tau(),{W,H,groundY,k,sceneW,mobile,th}=LY,door=W/2-sceneW*.12;
+ const sP=Math.min(1.3,th/50*1.2)*(mobile?.6:1);
+ // Królowie: karawana idzie grzbietem od wschodu i znika za zboczem
+ if(FX.magi){const P=80,u=((T%P)+P)%P,v=22*k,s=k*1.05,xd=(W+sceneW)/2+10,rb=x=>ridgeY(x+W*.37,W,H,LY.topBack,.06);
+  FX.magi.figs.forEach((f,i)=>{const dd=v*u-i*15*s;if(T<0||dd<0){f.style.display='none';return}f.style.display='';
+   const x=W+30-dd;let y=x>xd?rb(x):rb(xd)+(xd-x)*.6;const bob=Math.abs(Math.sin(dd/5))*1.3;
+   if(f.lA){const st=Math.floor(dd/6)%2;f.lA.style.display=st?'none':'';f.lB.style.display=st?'':'none'}
+   f.setAttribute('transform',`translate(${x.toFixed(1)} ${(y-bob).toFixed(1)}) scale(${(-s).toFixed(2)} ${s.toFixed(2)}) rotate(${(Math.sin(dd/5)*2).toFixed(1)})`)})}
+ // stajenka: Maryja kołysze się nad żłobkiem, zwierzęta, owce, anioł; 6.01 wszyscy się kłaniają
+ if(FX.nat){const N=FX.nat;
+  N.mary.setAttribute('transform',`rotate(${(Math.sin(t*1.1)*3.5).toFixed(2)} -18 0)`);
+  N.halo.setAttribute('r',(7+Math.sin(t*1.4)*1.4).toFixed(2));N.warm.style.opacity=(.85+Math.sin(t*1.9)*.15).toFixed(2);
+  const bw=N.epi?bowC(((t*.16)%1+1)%1):0;
+  N.ox.setAttribute('transform',N.epi?`rotate(${(bw*18).toFixed(1)} -24 -28)`:`translate(0 ${(Math.abs(Math.sin(t*1.8))*.9).toFixed(2)})`);
+  N.don.setAttribute('transform',N.epi?`rotate(${(-bw*18).toFixed(1)} 24 -28)`:'');N.ear.setAttribute('transform',(t%5.3)<.3?'rotate(-18 25 -33)':'');
+  N.sheep.forEach(([sp,hd,i])=>{const wx=+sp.dataset.x+Math.sin(t*.13+i*2.1)*3,b2=N.epi?bowC(((t*.16+.1*i)%1+1)%1):0;
+   sp.setAttribute('transform',`translate(${wx.toFixed(1)} ${sp.dataset.y}) rotate(${(b2*10).toFixed(1)})`);
+   hd.setAttribute('transform',`translate(0 ${(N.epi?b2*2.6:Math.max(0,Math.sin(t*.7+i*1.7))*2.2).toFixed(2)})`)});
+  N.bow.forEach(([g,x,ph,deg])=>{const b=N.epi?bowC(((t*.16+ph*.1)%1+1)%1):0;g.setAttribute('transform',`translate(${x} 0) rotate(${(b*deg).toFixed(1)})`)});
+  const A=N.angel,ua=((T%38)+38)%38,op=T<0?0:ua<3?ua/3:ua<16?1:ua<19?(19-ua)/3:0;A.style.opacity=op.toFixed(2);
+  A.setAttribute('transform',`translate(${(Math.sin(t*.5)*8-10).toFixed(1)} ${(-132+Math.sin(t*1.3)*2.5).toFixed(1)})`);
+  const fl=(.35+.65*Math.abs(Math.sin(t*4))).toFixed(2);N.wl.setAttribute('transform',`scale(1 ${fl})`);N.wr.setAttribute('transform',`scale(1 ${fl})`)}
+ // Niedziela Palmowa
+ if(FX.palm){const Pm=FX.palm,P=80,n=Math.floor(T/P),u=T-n*P,v=15*k,xs=W+30,xr=xs-v*u,rd=Pm.rider;
+  if(T<0){rd.style.display='none';Pm.crowd.forEach(p=>{p.style.display='none';p.leaf&&(p.leaf.style.display='none')})}
+  else{rd.style.display='';const op=xr>door?1:Math.max(0,1-(door-xr)/(30*k));rd.style.opacity=op.toFixed(2);
+   const st=Math.floor(v*u/5)%2;rd.lA.style.display=st?'none':'';rd.lB.style.display=st?'':'none';
+   put(rd,xr,groundY-Math.abs(Math.sin(v*u/5*Math.PI))*.8,-1,sP);
+   Pm.crowd.forEach((p,i)=>{if(mobile&&i>1){p.style.display='none';return}p.style.display='';const face=xr>p.xf?1:-1;
+    put(p,p.xf,groundY,face,sP);p.fr.setAttribute('transform',`translate(6 -24) rotate(${(Math.sin(t*4+i*1.3)*25).toFixed(0)})`);
+    if(!p.leaf){p.leaf=E('g',{class:'nodraw'},Pm.laid);frondSmall(p.leaf,13)}
+    const tt=(xs-(p.xf+28*sP))/v,xl=p.xf-14*sP;                       // rzut gałązki przed osiołka
+    if(u<tt){p.leaf.style.display='none'}else{p.leaf.style.display='';const q=Math.min(1,(u-tt)/.9),x=p.xf+(xl-p.xf)*q,y=groundY-24*sP*(1-q)-Math.sin(q*Math.PI)*14*sP;
+     p.leaf.setAttribute('transform',`translate(${x.toFixed(1)} ${(y-1).toFixed(1)}) scale(${sP.toFixed(2)}) rotate(${(-80*q+(1-q)*20).toFixed(0)})`)}})}}
+ // Wielkanoc: kobiety idą do grobu, zaglądają, zdumione biegną z radością z powrotem
+ if(FX.easter){const Eo=FX.easter,P=60,n=Math.floor(T/P),u=T-n*P,tombX=Eo.px-24*Eo.sc,vw=26*k,vr=72*k;
+  Eo.women.forEach((w,i)=>{const r=u-i*1.3,xt=tombX-i*9*sP,Tw=(xt-door)/vw;w.armsUp.style.display='none';w.armsDown.style.display='';
+   if(T<0||r<0){w.style.display='none';return}w.style.display='';w.style.opacity=1;
+   if(r<Tw){const x=door+vw*r;w.style.opacity=Math.min(1,r).toFixed(2);put(w,x,groundY,1,sP);walkLegs(w,r*vw/sP)}
+   else if(r<Tw+3){put(w,xt,groundY,1,sP,Math.min(1,(r-Tw)/.6)*14);walkLegs(w,0)}
+   else if(r<Tw+4.4){const j=Math.abs(Math.sin((r-Tw-3)*Math.PI*2.2));put(w,xt,groundY-j*5*sP,1,sP);w.armsUp.style.display='';w.armsDown.style.display='none'}
+   else{const x=xt-vr*(r-Tw-4.4);if(x<door-20*k){w.style.display='none';return}
+    const j=Math.abs(Math.sin((r-Tw-4.4)*Math.PI*2.6));put(w,x,groundY-j*6*sP,-1,sP);w.armsUp.style.display='';w.armsDown.style.display='none';walkLegs(w,(r-Tw)*vr/sP);
+    w.style.opacity=Math.min(1,Math.max(0,(x-door+20*k)/(20*k))).toFixed(2)}});
+  if(FX.angelE)FX.angelE.setAttribute('transform',`translate(25 ${(-22+Math.sin(t*1.2)*.8).toFixed(2)})`)}
+ // Zesłanie Ducha Świętego: uczniowie modlą się; nadlatuje gołębica, nad każdym zapala się ognisty język
+ if(FX.pent){const Pn=FX.pent,P=52,n=Math.floor(T/P),u=T-n*P,hoverX=mobile?W*.66:Pn.px,hoverY=H*.2;
+  let dx,dy,vis=true;
+  if(T<0||u>40)vis=false;else if(u<12){const q=1-Math.pow(1-u/12,2);dx=-30+(hoverX+30)*q;dy=hoverY-30+30*q}
+  else if(u<32){const w=u-12;dx=hoverX+Math.sin(w*.8)*14;dy=hoverY+Math.sin(w*1.6)*5}
+  else{const q=(u-32)/8;dx=hoverX+(W+40-hoverX)*q*q;dy=hoverY-H*.15*q}
+  const D=FX.dove;D.style.display=vis?'':'none';
+  if(vis){D.setAttribute('transform',`translate(${dx.toFixed(1)} ${dy.toFixed(1)}) scale(${(k*1.7).toFixed(2)})`);
+   D.w1.setAttribute('transform',`scale(1 ${(.35+.65*Math.abs(Math.sin(t*7))).toFixed(2)})`);D.w2.setAttribute('transform',`scale(1 ${(.3+.7*Math.abs(Math.sin(t*7+.4))).toFixed(2)})`)}
+  const ord=[4,0,6,2,8,1,5,3,7];
+  Pn.flames.forEach((fl,i)=>{const [hx,hy]=Pn.heads[i],x=Pn.px+hx*Pn.sc,y=groundY+(hy-2.5)*Pn.sc,t0=14+ord.indexOf(i)*.8;
+   if(T<0||u<t0||u>49){fl.style.display='none';return}fl.style.display='';
+   const g=Math.min(1,(u-t0)/1.2),out=u>47?(49-u)/2:1,fz=(1+Math.sin(t*9+i)*.12)*Pn.sc*.95*g;
+   fl.style.opacity=Math.min(g,out).toFixed(2);
+   fl.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${fz.toFixed(2)} ${(fz*(1+Math.sin(t*7+i*2)*.15)).toFixed(2)})`)})}
+ if(FX.ref)refTick(T)}
+
+// ---------- podgląd: wybór daty ----------
+function seasonOf(d){const m=d.getMonth();return m<2||m===11?'zima':m<5?'wiosna':m<8?'lato':'jesien'}
+function applyDate(d){if(typeof setS==='function')setS(seasonOf(d));drawFeast();
+ const fo=document.getElementById('fname');if(fo){const f=feastOf(d);fo.value=f?f.name:'zwykły dzień'}}

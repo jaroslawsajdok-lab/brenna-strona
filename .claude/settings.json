@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 make_compact.py)",
+      "Bash(python3 make_page.py)",
+      "Bash(python3 narzedzia/zrzuty.py:*)",
+      "Bash(python3 narzedzia/sceny.py:*)",
+      "Bash(node:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Read(**)",
+      "Edit(src/**)",
+      "Bash(python make_compact.py)",
+      "Bash(python make_page.py)",
+      "Bash(python narzedzia/zrzuty.py:*)",
+      "Bash(python narzedzia/sceny.py:*)",
+      "Bash(py make_page.py)"
+    ],
+    "deny": [
+      "Edit(src/naglowek.html)",
+      "Edit(src/header2_js.txt)"
+    ]
+  }
+}

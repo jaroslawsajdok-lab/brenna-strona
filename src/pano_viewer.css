@@ -1,0 +1,47 @@
+/* ===== przeglądarka spaceru 360° ===== */
+.pv{position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;background:#d9d4c7;outline:none}
+.pv-view{position:absolute;inset:0;overflow:hidden;cursor:grab;touch-action:none}
+.pv-view:active{cursor:grabbing}
+.pv-cam{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.pv-stage,.pv-cube{position:absolute;transform-style:preserve-3d}
+.pv-cube{transition:opacity .6s ease}
+.pv-face{position:absolute;left:-512px;top:-512px;width:1024px;height:1024px;backface-visibility:hidden;transform-style:preserve-3d}
+.pv-face img{position:absolute;display:block;max-width:none;pointer-events:none}
+.pv-hot{position:absolute;inset:0;pointer-events:none;perspective:600px}
+.pv-spot{position:absolute;left:0;top:0;width:58px;height:58px;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto}
+.pv-spot svg{width:100%;height:100%;overflow:visible}
+.pv-spot circle{fill:rgba(247,245,239,.78);stroke:#1d1d1b;stroke-width:1.6}
+.pv-spot path{fill:none;stroke:#2f5d45;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.pv-spot:hover circle,.pv-spot:focus-visible circle{fill:#2f5d45}
+.pv-spot:hover path,.pv-spot:focus-visible path{stroke:#fff}
+.pv-ui{position:absolute;inset:0;pointer-events:none}
+.pv-ui button{pointer-events:auto;cursor:pointer;font:inherit;color:#1d1d1b}
+.pv-ui svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pv-b{position:absolute;top:50%;width:46px;height:46px;margin-top:-23px;border-radius:50%;border:1.6px solid #1d1d1b;background:rgba(247,245,239,.92);display:grid;place-items:center;padding:0}
+.pv-prev{left:5%}.pv-next{right:5%}
+.pv-b:hover,.pv-s:hover{background:#2f5d45;color:#fff;border-color:#2f5d45}
+.pv-bar{pointer-events:auto;position:absolute;left:50%;bottom:7%;transform:translateX(-50%);display:flex;align-items:center;gap:2px;padding:4px;border:1.6px solid #1d1d1b;border-radius:40px;background:rgba(247,245,239,.94)}
+.pv-s{width:38px;height:38px;border-radius:50%;border:0;background:transparent;display:grid;place-items:center;padding:0}
+.pv-s svg{width:19px;height:19px}
+.pv-n{min-width:52px;text-align:center;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:#1d1d1b}
+.pv-ui button:focus-visible,.pv-spot:focus-visible{outline:2px solid #2f5d45;outline-offset:2px}
+/* pełny ekran: okno staje się prostokątem na cały ekran, sterowanie większe */
+.pv-full{width:100vw!important;height:100vh!important;border-radius:0!important;background:#1d1d1b}
+.pv-full .rose-in,.pv-full.rose-in{inset:0!important;border-radius:0!important}
+.pv-full .tracery,.pv-full figcaption{display:none!important}
+.pv-full .pv-bar{bottom:28px;transform:translateX(-50%) scale(1.2)}
+.pv-full .pv-b{width:56px;height:56px;margin-top:-28px}
+.pv-full .pv-prev{left:24px}.pv-full .pv-next{right:24px}
+
+.pv-busy .pv-n{opacity:.45}
+.pv-busy .pv-veil::after{content:"";position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px;border:2px solid rgba(247,245,239,.9);border-top-color:transparent;border-radius:50%;animation:pvspin .8s linear infinite}
+@keyframes pvspin{to{transform:rotate(360deg)}}
+
+.pv-err{position:absolute;left:12%;right:12%;top:50%;transform:translateY(-50%);text-align:center;background:rgba(247,245,239,.95);border:1.5px solid #1d1d1b;border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.4;color:#1d1d1b}
+.pv-err a{color:#2f5d45;font-weight:700}
+.pv-veil{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .25s ease;background:radial-gradient(circle at 50% 50%,#efe6d6 0,#d8c6aa 70%,#b89b78 100%)}
+.pv-veil.on{opacity:1}
+.pv-veil::after{content:none}
+.pv-busy .pv-veil.on::after{content:"";position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px;border:2px solid #7a5c40;border-top-color:transparent;border-radius:50%;animation:pvspin .8s linear infinite}
+.pv-hot,.pv-ui{z-index:2}
+.pv-tile{position:absolute;left:0;top:0;transform-origin:0 0;backface-visibility:hidden;background-repeat:no-repeat}

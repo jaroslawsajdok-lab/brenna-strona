@@ -1,0 +1,70 @@
+/* ===== tabela nabożeństw: edycja wierszy ===== */
+.titleblock .ctl,.rowtools{display:none}
+body.editing .titleblock .ctl{display:table-cell;width:1%;white-space:nowrap;text-align:center;vertical-align:middle;background:#efe8da;padding:6px 8px}
+.titleblock .ctl button{width:34px;height:34px;margin:2px;padding:0;border-radius:50%;border:1.3px solid var(--ink);background:var(--paper);color:var(--ink);font-size:15px;line-height:1;cursor:pointer}
+.titleblock .ctl button:hover{background:var(--ink);color:var(--paper)}
+.titleblock .ctl .rm:hover{background:#b3302a;border-color:#7d1f1a}
+.titleblock .ctl .st[aria-pressed=true],.titleblock tr.feast .ctl .st{background:var(--amber);border-color:var(--ink);color:var(--ink)}
+.titleblock tr:first-child .ctl .up,.titleblock tr:last-child .ctl .dn{visibility:hidden}
+.titleblock tr.past{display:none}
+body.editing .titleblock tr.past{display:table-row}
+body.editing .titleblock tr.past td:not(.ctl){opacity:.45;text-decoration:line-through;text-decoration-thickness:1px}
+.titleblock tr.gone{opacity:0;transition:opacity .2s}
+.titleblock tr.fresh td{animation:rowIn 1.6s ease}
+@keyframes rowIn{0%,40%{background:#e6efe1}100%{background:transparent}}
+.titleblock td[contenteditable]:empty::before{content:attr(data-ph);color:#8a8c85;font-weight:400}
+.titleblock td[contenteditable]:focus{outline:2px solid var(--spruce);outline-offset:-2px;background:#fff}
+body.editing .rowtools{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:18px}
+.rowtools p{margin:0;flex:1 1 260px;font-size:14px;color:var(--muted)}
+.addrow{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:17px;font-weight:700;padding:10px 20px;border-radius:40px;border:1.5px solid var(--spruce-d,#24493a);background:var(--spruce);color:#fff;cursor:pointer}
+.addrow:hover{background:var(--spruce-d,#24493a)}
+@media (max-width:640px){
+ body.editing .titleblock tr{display:grid;grid-template-columns:74px minmax(0,1fr) 62px 62px}
+ body.editing .titleblock td.tbc{font-size:11px!important;padding-left:2px;padding-right:2px}
+ body.editing .titleblock td:nth-child(3),body.editing .titleblock td:nth-child(4){font-size:16px;padding-left:3px;padding-right:3px;white-space:nowrap}
+ body.editing .titleblock tr.past{display:grid}
+ body.editing .titleblock th.ctl{display:none}
+ body.editing .titleblock td.ctl{grid-column:1/-1;width:auto;display:flex;justify-content:flex-end;gap:6px;padding:5px 8px;border-top:0}
+ body.editing .titleblock td:nth-child(3),body.editing .titleblock td:nth-child(4),body.editing .titleblock th:nth-child(3),body.editing .titleblock th:nth-child(4){width:auto}
+ .titleblock .ctl button{width:38px;height:38px}
+ body.editing .titleblock td:first-child{width:auto;white-space:normal;font-size:13px;padding-left:7px;padding-right:4px}
+ .editbar{font-size:13px;white-space:nowrap;padding:8px 8px 8px 14px;gap:10px;max-width:calc(100vw - 20px)}
+}
+@media (max-width:520px){.titleblock td.tbc{font-size:12px!important;white-space:normal!important}}
+/* ===== pasek „najbliższe nabożeństwo” ===== */
+.nextbar{display:block;text-decoration:none;color:var(--ink);background:#efe8da;border-bottom:1.5px solid var(--ink);position:relative}
+.nextbar[hidden]{display:none}
+.nextbar::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:5px;background:var(--wood-tex-m);background-size:240px 60px;border-bottom:1.3px solid var(--ink);opacity:.9}
+.nb-in{display:flex;align-items:center;gap:10px 22px;padding-top:12px;padding-bottom:12px}
+.nb-lab,.nb-when,.nb-t,.nb-go{flex:none}
+.nb-lab{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--spruce);padding-right:22px;border-right:1.3px solid rgba(29,29,27,.35)}
+.nb-when{display:flex;align-items:baseline;gap:10px}
+.nb-when b{font-family:'PT Sans Narrow','PT Sans',sans-serif;font-size:22px;line-height:1.1}
+.nb-when i{font-style:normal;font-size:13px;font-weight:700;padding:2px 10px;border-radius:20px;background:var(--paper);border:1.2px solid var(--ink)}
+.nextbar.today .nb-when i{background:var(--amber)}
+.nb-name{font-size:16px;color:var(--muted);flex:1 1 auto;min-width:0}
+.nextbar.feast .nb-name{color:var(--spruce);font-weight:700}
+.nb-t{display:flex;gap:8px}
+.nb-t>span{display:grid;justify-items:center;min-width:76px;padding:4px 10px 5px;background:var(--paper);border:1.3px solid var(--ink);border-radius:4px;line-height:1.1}
+.nb-t small{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.nb-t b{font-size:19px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nb-t b.tx{font-size:14px;font-weight:700;padding-top:2px}
+.nb-go{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--spruce)}
+.nb-go svg{width:20px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+.nextbar:hover .nb-go svg{transform:translateX(4px)}
+.nextbar:hover{background:#ece3d2}
+.nextbar:focus-visible{outline:3px solid var(--spruce);outline-offset:-3px}
+@media (max-width:760px){
+ .nb-in{display:grid;grid-template-columns:1fr;gap:5px;padding-top:10px;padding-bottom:12px}
+ .nb-lab{border:0;padding:0;font-size:11px}
+ .nb-when b{font-size:21px}
+ .nb-name{font-size:15px}
+ .nb-t{margin-top:4px}.nb-t>span{flex:1;min-width:0;padding:3px 8px}.nb-t b{font-size:17px}.nb-t small{font-size:10px}
+ .nb-go{display:none}
+}
+.titleblock td.none::after{content:"—";color:var(--muted);font-weight:400}
+body.editing .titleblock td.none::after{content:none}
+body.editing .titleblock td.none:empty::before{content:"brak";color:#8a8c85;font-size:14px;font-weight:400}
+.nb-only{font-style:normal;font-size:13px;color:var(--muted);align-self:center;white-space:nowrap;padding-left:4px}
+@media (max-width:760px){.nb-only{max-width:none;flex:1}}
+body.editing .phonebtn,body.editing details.preview{display:none!important}

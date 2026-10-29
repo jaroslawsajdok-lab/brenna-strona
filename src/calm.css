@@ -1,0 +1,126 @@
+/* ===== spokojny środek strony (nagłówek i pasek menu bez zmian) ===== */
+:root{--ground:#f3f3f0;--tone:#e8ebe5;--rule:#d6d9d1;--ink-soft:#3b3d38}
+main{background:var(--ground);color:var(--ink)}
+main p{color:var(--ink)}
+section{padding:112px 0}
+.now{padding-top:72px}
+
+/* skala pisma: 14 · 17 · 20 · 30 · 52 */
+main h2{color:var(--ink);font-size:clamp(36px,4.2vw,52px);letter-spacing:-.015em;line-height:1;margin:0 0 .6em}
+main h2::after{content:none!important;display:none!important}
+main h3{font-size:20px}
+.lead{font-size:20px;color:var(--ink-soft)}
+
+/* bez fal, choinek i gradientów w działach */
+.verse::before,.listen::before,.parish::before,.contact::before{content:none!important}
+.verse{background:var(--spruce);background-image:none;padding:104px 0}
+.verse blockquote p{font-size:clamp(26px,3vw,36px);line-height:1.2;max-width:24em}
+.listen,.parish{background:var(--tone)}
+.todo{background:#f6ead2;color:#6b5220}
+.ph,.poster,.album .ph,.pastor .ph{background-image:none!important;background-color:var(--tone)}
+.video .screen::before{content:none}
+
+/* aktualności: zdjęcia bez ramek i cieni, wpisy oddziela przestrzeń */
+.post{border-top:0!important;padding:20px 0}
+.post .ph{box-shadow:none!important;margin:4px 0 0!important;border-radius:0}
+.post time{font-size:14px;color:var(--ink-soft)}
+.post h3{font-size:20px}
+
+/* nabożeństwa: zwykła tabela, linie tylko wewnątrz tabeli */
+.sheet{padding:0}
+.titleblock{box-shadow:none!important;border:0!important;background:#fff}
+.titleblock th{background:var(--spruce)!important;color:#fff!important;border:0!important;font-weight:700}
+.titleblock th,.titleblock td{border:0;border-bottom:1px solid var(--rule)}
+.titleblock tr:last-child td{border-bottom:0}
+.titleblock td:nth-child(3),.titleblock td:nth-child(4),.titleblock td:first-child b{font-size:20px}
+.titleblock tr.next td{background:#f5ecd9}
+.titleblock tr.next td:first-child{box-shadow:none}
+.titleblock td.tbc{font-size:14px!important}
+.weekly dl div{border-top:0;padding:0 0 18px}
+.weekly dd{color:var(--ink-soft)}
+
+/* kalendarz: kartki bez listwy, plakaty bez drążka */
+.days li{border-top:0;padding:14px 0}
+.days time{border:0!important;background:var(--spruce);color:#e8efe4;padding:10px 0 8px}
+.days time::before{content:none!important}
+.days time b{color:#fff;font-size:30px}
+.days p{color:var(--ink-soft)}
+.posters{padding-top:0;align-self:start}
+.posters::before,.poster::before{content:none!important}
+.poster{border:0;overflow:hidden}
+.poster figcaption{background:var(--ink);color:#fff;border:0;font-size:14px}
+.p2{margin-top:56px}
+
+/* kazania */
+.sermons li{border-top:0;padding:12px 0}
+.sermons li .play{background:var(--spruce)!important;color:#fff!important;border:0!important;display:grid;place-items:center;padding:0}
+.sermons li .play:hover{background:var(--spruce-d)!important}
+.play svg{width:16px;height:16px;fill:currentColor;margin-left:2px}
+.sermons p,.dur{color:var(--ink-soft)}
+
+/* galeria: równa siatka zamiast „jedno duże + cztery małe” */
+.albums{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:auto;gap:28px 20px}
+.a1{grid-column:auto;grid-row:auto}
+.album .ph{flex:none;aspect-ratio:4/3;box-shadow:none!important;margin:0!important;border-radius:0}
+.album:hover .ph{box-shadow:none!important;outline:3px solid var(--spruce);outline-offset:0}
+.album small{color:var(--ink-soft)}
+
+/* parafia */
+.groups li{border-top:0;padding:6px 0;color:var(--ink-soft)}
+.pastor .ph{box-shadow:none!important;border:0}
+
+/* sprawy w parafii: pola zamiast linii, zwykły plus */
+.qa details{border:0!important;background:#fff;margin:0 0 8px;padding:0 20px}
+.qa summary::after{content:"+"!important;width:auto;height:auto;border:0;border-radius:0;background:none!important;font-size:26px;line-height:1;color:var(--spruce);transform:none!important}
+.qa details[open] summary::after{content:"−"!important}
+.qa details p{color:var(--ink-soft)}
+
+/* pasek „najbliższe nabożeństwo” jako jedno zdanie */
+.nextbar{background:#e9ede6!important;border-bottom:0!important}
+.nextbar::after{content:none!important}
+.nextbar .nb-s{display:block;padding-top:14px;padding-bottom:14px;font-size:17px;line-height:1.45;color:var(--ink)}
+.nextbar .nb-s b{font-weight:700}
+.nextbar .nb-s span{text-decoration:underline;text-decoration-color:rgba(47,93,69,.5);text-underline-offset:3px;color:var(--spruce);font-weight:700;white-space:nowrap}
+.nextbar:hover{background:#dfe6dc!important}
+.nextbar.today{background:#f5ecd9!important}
+
+/* przyciski testowe tylko w trybie podglądu (adres z ?podglad) */
+html:not(.dev) details.preview,html:not(.dev) .phonebtn{display:none!important}
+
+/* ikony rysowane zamiast znaków */
+.ico{width:1em;height:1em;vertical-align:-.12em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+@media (max-width:900px){
+ section{padding:72px 0}
+ .now{padding-top:48px}
+ .verse{padding:72px 0}
+ .verse blockquote p{font-size:24px}
+ .albums{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px 14px}
+}
+@media (max-width:520px){.albums{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 12px}}
+body.editing [data-edit]::before{content:attr(data-edit)!important}
+
+/* runda 2: pięć rozmiarów pisma, bez kresek w kontakcie, kartka kalendarza w jednej linii */
+html,body{background:var(--ground)}
+main small,main time,main figcaption,main figcaption strong,.dur,.sermons p,.video p,.album small,.cinfo dt,.titleblock th,.titleblock td:first-child,.todo,.fend small,.days time,.cform-h p,.cform label,.maplink,.rose figcaption{font-size:14px!important}
+main h3,.qa summary,.cinfo dd,.lead,.cform h3,.sermons h3{font-size:20px!important}
+.weekly dd,.rooms,.rooms b,.rose .visit,.cform button,.groups li,.days p,.post .ptext p,.weekly dt,.cform input,.cform textarea{font-size:17px!important}
+.verse blockquote p{font-size:clamp(24px,2.6vw,30px)!important}
+.verse footer,.verse footer span{font-size:14px}
+.cinfo{border-top:0}
+.cinfo div{border-bottom:0;padding:10px 0}
+.maptabs{border:0;background:var(--tone);padding:4px;gap:4px;border-radius:4px}
+.maptabs button{background:transparent;border-radius:3px}
+.maptabs button+button{border-left:0}
+.maptabs button[aria-selected=true]{background:var(--spruce)}
+.gmap{border:0}
+.cform{border-top:0}
+.days li{grid-template-columns:104px 1fr}
+.days time{display:flex;align-items:baseline;justify-content:center;gap:6px;padding:8px 0}
+.days time b{display:inline;font-size:30px!important;line-height:1}
+@media (max-width:900px){.days li{grid-template-columns:96px 1fr}}
+main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
+.days time{white-space:nowrap}
+.maptabs button{font-size:14px!important}
+.foot2,.flinks a{font-size:14px}.fid b{font-size:17px}
+.video .screen{border:0}
