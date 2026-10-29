@@ -1118,20 +1118,23 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
  .now-h,.now>.post,.now>.more{grid-column:1}
 }
 
-/* spacer na cały ekran */
-dialog.tour{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#1d1d1b;color:var(--ink)}
-dialog.tour::backdrop{background:#1d1d1b}
-.tour-h{position:absolute;left:0;right:0;top:0;height:64px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 12px 0 24px;background:var(--ground)}
-.tour-h p{margin:0;display:flex;flex-wrap:wrap;gap:0 12px;align-items:baseline;min-width:0}
-.tour-h b{font-size:20px}
-.tour-h span{font-size:14px;color:var(--ink-soft)}
-.tour-x{flex:none;min-height:44px;padding:0 20px;border:0;background:var(--spruce);color:#fff;font:inherit;font-weight:700;font-size:17px;cursor:pointer}
-.tour-x:hover{background:var(--spruce-d)}
-.tour-v{position:absolute;left:0;right:0;top:64px;bottom:0}
-.tour-v iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;opacity:0;transition:opacity .3s}
-.tour.ready .tour-v iframe{opacity:1}
-.tour-wait{position:absolute;left:0;right:0;top:45%;margin:0;text-align:center;color:#e8ebe5;font-size:17px}
-@media (max-width:520px){.tour-h{padding-left:16px}}
+/* spacer w kole drzwi; „Pełny ekran” powiększa samo koło */
+/* ramka wyższa od koła, środek w tym samym miejscu: pasek miniatur 3DVista wypada pod obręcz */
+.rose-in iframe{position:absolute;left:0;right:auto;bottom:auto;top:-45%;width:100%;height:190%;border:0;opacity:0;transition:opacity .5s}
+@media (max-width:700px){.rose-in iframe{top:-75%;height:250%}}
+.rose-in:fullscreen iframe,.rose-in.big iframe{top:0;height:100%}
+.rose.opened.loaded .rose-in iframe{opacity:1}
+.rose-fs{position:absolute;left:50%;top:96%;transform:translate(-50%,-50%);z-index:5;display:none;align-items:center;min-height:44px;padding:0 22px;border-radius:40px;border:1.6px solid #1d1d1b;background:var(--paper);color:var(--ink);font:inherit;font-size:17px;font-weight:700;cursor:pointer;white-space:nowrap}
+.rose-fs:hover,.rose-fs:focus-visible{background:var(--spruce);border-color:var(--spruce);color:#fff}
+.rose.opened .rose-fs{display:inline-flex}
+.rose-in:fullscreen,.rose-in.big{position:fixed!important;inset:0!important;width:100%;height:100%;border-radius:0!important;clip-path:none!important;z-index:9999;background:#1d1d1b}
+.rose-in.big{height:100dvh}
+.rose-x{display:none;position:absolute;top:12px;right:12px;z-index:3;min-height:44px;padding:0 20px;border:0;background:var(--spruce);color:#fff;font:inherit;font-size:17px;font-weight:700;cursor:pointer}
+.rose-x:hover{background:var(--spruce-d)}
+.rose-in:fullscreen .rose-x,.rose-in.big .rose-x{display:block}
+.rose-guard{display:none;position:absolute;inset:0;z-index:2;touch-action:pan-y}
+@media (pointer:coarse){.rose.opened .rose-guard{display:block}}
+.rose-in:fullscreen .rose-guard,.rose-in.big .rose-guard{display:none!important}
 
 </style></head>
 <body data-season="jesien">
@@ -1240,7 +1243,7 @@ dialog.tour::backdrop{background:#1d1d1b}
   <button class="visit" type="button">Zwiedź kościół</button>
   <figcaption>
    <strong>Kościół św. Bartłomieja Apostoła w Brennej</strong>
-   Otwórz drzwi i rozejrzyj się po wnętrzu. Spacer otworzy się na cały ekran.
+   Otwórz drzwi i rozejrzyj się po wnętrzu. „Pełny ekran” powiększy widok.
   </figcaption>
  </figure>
  <div class="now-h">
@@ -2355,28 +2358,34 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
  mk('path',{class:'lead',d:'M-46,87.5 L-46,104'});mk('circle',{class:'ln2',cx:-46,cy:87.5,r:1.4,fill:'#1d1d1b'})})();
 // =====================================================================
 // Drzwi do spaceru 360°: rysują się kreską, po kliknięciu odrysowują się (kolor schodzi, kreski
-// się zwijają, w kole zostaje zdjęcie nawy), potem spacer otwiera się na cały ekran.
-// W oknie działa oryginalny odtwarzacz 3DVista z luteranie-wirtualne-muzea.pl;
-// #media=N otwiera wycieczkę od N-tego punktu (9 – nawa). Po zamknięciu drzwi rysują się z powrotem.
+// się zwijają, w kole zostaje zdjęcie nawy), a w kole wczytuje się spacer. „Pełny ekran”
+// powiększa samo koło (bez przeładowania spaceru); „Zamknij pełny ekran” albo Esc wraca do koła.
+// W kole działa oryginalny odtwarzacz 3DVista z luteranie-wirtualne-muzea.pl; #media=9 – nawa.
 // =====================================================================
 (function(){const fig=document.querySelector('.rose');if(!fig)return;
- const TOUR='https://luteranie-wirtualne-muzea.pl/wirtualnyspacer/brenna/index.htm',START=9;
+ const TOUR='https://luteranie-wirtualne-muzea.pl/wirtualnyspacer/brenna/index.htm#media=9';
  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
- const dlg=document.createElement('dialog');dlg.className='tour';dlg.setAttribute('aria-label','Spacer po kościele w Brennej');
- dlg.innerHTML='<div class="tour-h"><p><b>Kościół w Brennej</b><span>spacer 360°</span></p><button type="button" class="tour-x">Zamknij</button></div>'+
-  '<div class="tour-v"><p class="tour-wait">Wczytywanie spaceru…</p><iframe title="Spacer 360° po kościele w Brennej" allow="fullscreen; gyroscope; accelerometer; xr-spatial-tracking" allowfullscreen></iframe></div>';
- document.body.appendChild(dlg);
- const fr=dlg.querySelector('iframe'),visit=fig.querySelector('.visit');let busy=false;
- fr.addEventListener('load',()=>dlg.classList.add('ready'));
+ const box=fig.querySelector('.rose-in'),visit=fig.querySelector('.visit');
+ const fs=document.createElement('button');fs.type='button';fs.className='rose-fs';fs.textContent='Pełny ekran';fig.appendChild(fs);
+ const x=document.createElement('button');x.type='button';x.className='rose-x';x.textContent='Zamknij pełny ekran';box.appendChild(x);
+ let fr=null,started=false;
  const draw=()=>{fig.classList.remove('inked');void fig.offsetWidth;fig.classList.add('inked')};
- function openTour(){if(!fr.src)fr.src=`${TOUR}#media=${START}`;
-  dlg.showModal();document.documentElement.style.overflow='hidden';fr.focus()}
- function open(){if(busy)return;busy=true;
-  if(!fr.src)fr.src=`${TOUR}#media=${START}`;          // spacer wczytuje się, gdy drzwi się odrysowują
-  fig.classList.add('undraw');setTimeout(openTour,reduce?0:1700)}
- dlg.querySelector('.tour-x').onclick=()=>dlg.close();
- dlg.addEventListener('close',()=>{document.documentElement.style.overflow='';fig.classList.remove('undraw');draw();busy=false;
-  visit.focus({preventScroll:true})});
+ function open(){if(started)return;started=true;
+  fr=document.createElement('iframe');fr.title='Spacer 360° po kościele w Brennej';fr.allow='fullscreen; gyroscope; accelerometer; xr-spatial-tracking';
+  fr.addEventListener('load',()=>fig.classList.add('loaded'));fr.src=TOUR;box.appendChild(fr);   // wczytuje się, gdy drzwi się odrysowują
+  // na ekranie dotykowym osłona przepuszcza przewijanie strony; pierwsze stuknięcie włącza obracanie
+  const g=document.createElement('div');g.className='rose-guard';g.addEventListener('click',()=>g.remove());box.appendChild(g);
+  fig.classList.add('undraw');setTimeout(()=>fig.classList.add('opened'),reduce?0:1700)}
+ // pełny ekran: prawdziwy, gdy przeglądarka pozwala; inaczej (np. iPhone) koło rozciąga się na całe okno
+ const isBig=()=>document.fullscreenElement===box||box.classList.contains('big');
+ function big(on){
+  if(on){if(box.requestFullscreen)box.requestFullscreen().catch(()=>setFake(true));else setFake(true)}
+  else{if(document.fullscreenElement===box)document.exitFullscreen();setFake(false)}}
+ function setFake(on){box.classList.toggle('big',on);document.documentElement.style.overflow=on?'hidden':'';sync()}
+ function sync(){const on=isBig();fig.classList.toggle('full',on);if(!on)fs.focus({preventScroll:true})}
+ document.addEventListener('fullscreenchange',sync);
+ addEventListener('keydown',e=>{if(e.key==='Escape'&&box.classList.contains('big'))setFake(false)});
+ fs.addEventListener('click',()=>big(true));x.addEventListener('click',()=>big(false));
  visit.addEventListener('click',open);fig.querySelector('.doors').addEventListener('click',open);
  // pierwsze rysowanie dopiero, gdy drzwi są dobrze widoczne
  fig.classList.add('sketch');new IntersectionObserver((es,ob)=>{if(es[0].isIntersecting){draw();ob.disconnect()}},{threshold:.6}).observe(fig)})();
