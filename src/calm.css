@@ -177,3 +177,56 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 
 /* Kazania bez wideo (transmisji nie będzie): jedna kolumna */
 .listen-in{grid-template-columns:minmax(0,760px)!important}
+
+/* ===== drzwi zastąpione planem kościoła (dział #kosciol) ===== */
+/* Aktualności: tytuł po lewej, wpisy po prawej – bez pustej połowy po zdjęciu drzwi */
+.now{display:grid!important;grid-template-columns:minmax(0,4fr) minmax(0,7fr);column-gap:64px;align-items:start}
+.now-h{grid-column:1;grid-row:1/span 8}
+.now>.post,.now>.more{grid-column:2}
+@media (max-width:900px){.now{grid-template-columns:minmax(0,1fr)}.now-h{grid-row:auto}.now>.post,.now>.more{grid-column:1}}
+
+/* kościół: fakty i podgląd miejsca po lewej, schemat z punktami po prawej */
+.church{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px 64px;align-items:start}
+.church-t>p{margin:0}
+.church-pv{margin:32px 0 0;cursor:pointer}
+.church-pv img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;background:var(--tone)}
+.church-pv figcaption{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;margin-top:12px}
+.church-pv .cp-n{font-size:20px;color:var(--ink)}
+.church-pv .cp-g{color:var(--ink-soft)}
+.church-go{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;margin-top:20px;background:var(--spruce);color:#fff;font-weight:700;font-size:17px;text-decoration:none}
+.church-go:hover{background:var(--spruce-d)}
+.cp-svg{display:block;width:100%;height:auto;overflow:visible}
+.cp-wall{fill:#fff;stroke:var(--ink);stroke-width:2}
+.cp-emp{fill:var(--tone)}
+.cp-svg text{font-family:'PT Sans',sans-serif;font-size:14px;fill:var(--ink-soft);text-anchor:middle}
+.cp-svg text.l{text-anchor:start}
+.pt{cursor:pointer;outline:none}
+.pt .hit{fill:transparent}
+.pt .dot{fill:#fff;stroke:var(--spruce);stroke-width:3;transition:fill .15s}
+.pt:hover .dot,.pt.on .dot{fill:var(--spruce)}
+.pt:focus-visible .hit{fill:none;stroke:var(--spruce);stroke-width:2}
+.cp-note,.cp-credit{font-size:14px;color:var(--ink-soft);margin:16px 0 0}
+.cp-credit a{color:var(--spruce);font-weight:700}
+.church-list{display:none;list-style:none;margin:0;padding:0}
+.church-list li span{display:block;font-weight:700;font-size:17px;margin-bottom:8px}
+.church-list div{display:flex;flex-wrap:wrap;gap:8px}
+.church-list button{min-height:44px;padding:0 16px;border:0;background:#fff;font:inherit;font-size:17px;color:var(--ink);cursor:pointer}
+.church-list button:hover,.church-list button:focus-visible{background:var(--spruce);color:#fff}
+@media (max-width:900px){.church{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.cp-svg,.cp-hint{display:none}.church-list{display:grid;gap:20px}}
+
+/* spacer na cały ekran */
+dialog.tour{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#1d1d1b;color:var(--ink)}
+dialog.tour::backdrop{background:#1d1d1b}
+.tour-h{position:absolute;left:0;right:0;top:0;height:64px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 12px 0 24px;background:var(--ground)}
+.tour-h p{margin:0;display:flex;flex-wrap:wrap;gap:0 12px;align-items:baseline;min-width:0}
+.tour-n{font-size:20px}
+.tour-g{font-size:14px;color:var(--ink-soft)}
+.tour-x{flex:none;min-height:44px;padding:0 20px;border:0;background:var(--spruce);color:#fff;font:inherit;font-weight:700;font-size:17px;cursor:pointer}
+.tour-x:hover{background:var(--spruce-d)}
+.tour-v{position:absolute!important;left:0;right:0;top:64px;bottom:0}
+.tour .pv-fs{display:none}
+.tour .pv-b{width:48px;height:48px;margin-top:-24px}
+.tour .pv-s{width:44px;height:44px}
+.tour .pv-n{min-width:0;padding:0 10px;font-size:14px;white-space:nowrap}
+@media (max-width:520px){.tour-h{padding-left:16px}.tour-g{display:none}}

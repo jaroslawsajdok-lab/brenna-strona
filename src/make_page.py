@@ -30,13 +30,6 @@ JS0=r'''
  // linia odniesienia do opisu, jak na rysunku
  mk('path',{class:'lead',d:'M-46,87.5 L-46,104'});mk('circle',{class:'ln2',cx:-46,cy:87.5,r:1.4,fill:'#1d1d1b'})})();
 PANOJS
-// drzwi: klik otwiera skrzydła, w tym czasie wczytuje się spacer
-(function(){const fig=document.querySelector('.rose'),spacer=document.getElementById('spacer');if(!fig||!spacer)return;
- const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let started=false;
- const open=()=>{if(started)return;started=true;fig.classList.remove('closed');fig.classList.add('open');
-  mountPano(spacer,{start:9,yaw:0,pitch:-6});setTimeout(()=>fig.classList.add('opened'),reduce?0:2750)};
- fig.querySelector('.visit').addEventListener('click',open);fig.querySelector('.doors').addEventListener('click',open);
- fig.classList.add('sketch');new IntersectionObserver((es,ob)=>{if(es[0].isIntersecting){fig.classList.add('inked');ob.disconnect()}},{threshold:.35}).observe(fig)})();
 document.querySelector('.mapframe button')?.addEventListener('click',e=>{const f=e.target.parentElement;f.innerHTML=`<iframe src="${f.dataset.src}" title="Mapa dojazdu do kancelarii parafialnej" loading="lazy"></iframe>`});
 
 // ===== pasek łączący: przykleja się i rozrasta po przewinięciu pod animację =====
@@ -73,7 +66,7 @@ document.querySelectorAll('.jnav a').forEach((a,i)=>{a.style.transitionDelay=(.3
   ov.querySelector('.phclose').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});
   addEventListener('keydown',function k(e){if(e.key==='Escape'&&ov){close();removeEventListener('keydown',k)}})};})();
 '''
-JS=JS0.replace('PANOJS',open('pano_viewer.js',encoding='utf-8').read()+'\n'+open('post_editor.js',encoding='utf-8').read()+'\n'+open('services_editor.js',encoding='utf-8').read()+'\n'+open('login.js',encoding='utf-8').read())
+JS=JS0.replace('PANOJS',open('pano_viewer.js',encoding='utf-8').read()+'\n'+open('tour_plan.js',encoding='utf-8').read()+'\n'+open('post_editor.js',encoding='utf-8').read()+'\n'+open('services_editor.js',encoding='utf-8').read()+'\n'+open('login.js',encoding='utf-8').read())
 h=h.replace('</script>\n</body>',JS+'\n</script>\n</body>',1)
 import base64
 for k,f in [('DOOR_LEFT','door/left.webp'),('DOOR_RIGHT','door/right.webp'),('DOOR_RING','door/ring.webp')]:

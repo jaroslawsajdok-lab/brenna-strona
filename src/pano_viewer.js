@@ -34,7 +34,8 @@ const FACE_T={f:'rotateY(0deg)',r:'rotateY(-90deg)',b:'rotateY(180deg)',l:'rotat
 
 function mountPano(host,opt={}){
  const S=1024;                                  // rozmiar sześcianu w układzie CSS
- const st={i:0,yaw:opt.yaw??-1.6,pitch:opt.pitch??-14,hfov:96,auto:true,drag:null,vy:0,vp:0,hold:0,lvl:-1,raf:0,last:0,vis:true};
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const st={i:0,yaw:opt.yaw??-1.6,pitch:opt.pitch??-14,hfov:96,auto:opt.auto!==false&&!reduce,drag:null,vy:0,vp:0,hold:0,lvl:-1,raf:0,last:0,vis:true};
  host.classList.add('pv');host.innerHTML='';
  const view=E('div','pv-view'),cam=E('div','pv-cam'),stage=E('div','pv-stage');
  view.appendChild(cam);cam.appendChild(stage);host.appendChild(view);
@@ -83,7 +84,7 @@ function mountPano(host,opt={}){
  const veilOn=()=>new Promise(r=>{if(veil.classList.contains('on'))return r();veil.classList.add('on');setTimeout(r,260)});
  function show(i,yaw){
   st.i=(i+PANOS.length)%PANOS.length;st.lvl=-1;const my=++gen;const first=!st.ready;
-  ui.querySelector('.pv-n').textContent=`${st.i+1} / ${PANOS.length}`;host.classList.add('pv-busy');
+  ui.querySelector('.pv-n').textContent=opt.name?opt.name(st.i):`${st.i+1} / ${PANOS.length}`;opt.onShow&&opt.onShow(st.i);host.classList.add('pv-busy');
   const c=build(0);c.style.visibility='hidden';stage.appendChild(c);
   return Promise.all([whenLoaded(c,6000),first?0:veilOn()]).then(async([ok])=>{if(my!==gen){c.remove();return}
    if(!ok&&!stage.querySelector('.pv-cube:not([style*=hidden])')){c.remove();fail();return}
@@ -99,7 +100,7 @@ function mountPano(host,opt={}){
   whenLoaded(c,15000).then(ok=>{if(my!==gen||!c.parentNode||ok<c._imgs.length*.9){c.remove();return}swap(c)})}
  // strzałki na podłodze prowadzące do sąsiednich punktów
  function hotspots(){hot.innerHTML='';PANOS[st.i][1].forEach(([to,yaw,back,pit])=>{const j=PANOS.findIndex(p=>p[0].startsWith(to));if(j<0)return;
-  const b=E('button','pv-spot');b.setAttribute('aria-label',`Przejdź do punktu ${j+1}`);b.dataset.yaw=yaw;b.dataset.pit=pit;
+  const b=E('button','pv-spot');b.setAttribute('aria-label',opt.name?`Przejdź: ${opt.name(j)}`:`Przejdź do punktu ${j+1}`);b.dataset.yaw=yaw;b.dataset.pit=pit;
   b.innerHTML='<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17"/><path d="M12 24l8-8 8 8"/></svg>';
   b.onclick=e=>{e.stopPropagation();stopAuto();st.pitch=-8;show(j,back+180)};hot.appendChild(b)})}
 
