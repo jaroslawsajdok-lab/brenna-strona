@@ -1139,45 +1139,25 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 /* runda 7 (Claude Code, 5): brak w stopce czytelny na zieleni */
 .flinks a.todo{color:#6b5220!important;text-decoration:none}
 
-/* Kazania bez wideo (transmisji nie będzie): jedna kolumna */
-.listen-in{grid-template-columns:minmax(0,760px)!important}
-
-/* ===== drzwi zastąpione planem kościoła (dział #kosciol) ===== */
-/* Aktualności: tytuł po lewej, wpisy po prawej – bez pustej połowy po zdjęciu drzwi */
-.now{display:grid!important;grid-template-columns:minmax(0,4fr) minmax(0,7fr);column-gap:64px;align-items:start}
-.now-h{grid-column:1;grid-row:1/span 8}
-.now>.post,.now>.more{grid-column:2}
-@media (max-width:900px){.now{grid-template-columns:minmax(0,1fr)}.now-h{grid-row:auto}.now>.post,.now>.more{grid-column:1}}
-
-/* kościół: fakty i podgląd miejsca po lewej, schemat z punktami po prawej */
-.church{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px 64px;align-items:start}
-.church-t>p{margin:0}
-.church-pv{margin:32px 0 0;cursor:pointer}
-.church-pv img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;background:var(--tone)}
-.church-pv figcaption{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;margin-top:12px}
-.church-pv .cp-n{font-size:20px;color:var(--ink)}
-.church-pv .cp-g{color:var(--ink-soft)}
-.church-go{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;margin-top:20px;background:var(--spruce);color:#fff;font-weight:700;font-size:17px;text-decoration:none}
-.church-go:hover{background:var(--spruce-d)}
-.cp-svg{display:block;width:100%;height:auto;overflow:visible}
-.cp-wall{fill:#fff;stroke:var(--ink);stroke-width:2}
-.cp-emp{fill:var(--tone)}
-.cp-svg text{font-family:'PT Sans',sans-serif;font-size:14px;fill:var(--ink-soft);text-anchor:middle}
-.cp-svg text.l{text-anchor:start}
-.pt{cursor:pointer;outline:none}
-.pt .hit{fill:transparent}
-.pt .dot{fill:#fff;stroke:var(--spruce);stroke-width:3;transition:fill .15s}
-.pt:hover .dot,.pt.on .dot{fill:var(--spruce)}
-.pt:focus-visible .hit{fill:none;stroke:var(--spruce);stroke-width:2}
-.cp-note,.cp-credit{font-size:14px;color:var(--ink-soft);margin:16px 0 0}
-.cp-credit a{color:var(--spruce);font-weight:700}
-.church-list{display:none;list-style:none;margin:0;padding:0}
-.church-list li span{display:block;font-weight:700;font-size:17px;margin-bottom:8px}
-.church-list div{display:flex;flex-wrap:wrap;gap:8px}
-.church-list button{min-height:44px;padding:0 16px;border:0;background:#fff;font:inherit;font-size:17px;color:var(--ink);cursor:pointer}
-.church-list button:hover,.church-list button:focus-visible{background:var(--spruce);color:#fff}
-@media (max-width:900px){.church{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:700px){.cp-svg,.cp-hint{display:none}.church-list{display:grid;gap:20px}}
+/* ===== szkic kościoła w miejscu dawnych drzwi: trzy punkty otwierają spacer 360° ===== */
+.now{display:grid!important;grid-template-columns:minmax(0,7fr) minmax(0,5fr);column-gap:64px;align-items:start}
+.now-h,.now>.post,.now>.more{grid-column:1}
+.sketch{grid-column:2;grid-row:1/span 8;margin:0}
+.sk-art{position:relative}
+.sk-art svg{display:block;width:100%;height:auto;overflow:visible;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sk-art path{vector-effect:non-scaling-stroke}
+.sk-art .th{stroke-width:1.2}
+.pin{position:absolute;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px 0 14px;border:0;background:var(--spruce);color:#fff;font:inherit;font-size:17px;font-weight:700;white-space:nowrap;cursor:pointer}
+.pin::before{content:"";flex:none;width:10px;height:10px;border-radius:50%;background:#fff}
+.pin:hover{background:var(--spruce-d)}
+.sketch figcaption{margin-top:24px;color:var(--ink-soft)}
+.sketch figcaption strong{display:block;font-size:17px!important;color:var(--ink);margin-bottom:4px}
+.sketch figcaption a{color:var(--spruce);font-weight:700}
+@media (max-width:900px){
+ .now{grid-template-columns:minmax(0,1fr)}
+ .sketch{grid-column:1;grid-row:auto;max-width:420px;width:100%;justify-self:center;margin:0 0 56px}
+ .now-h,.now>.post,.now>.more{grid-column:1}
+}
 
 /* spacer na cały ekran */
 dialog.tour{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#1d1d1b;color:var(--ink)}
@@ -1286,7 +1266,7 @@ dialog.tour::backdrop{background:#1d1d1b}
 <div class="joint" id="joint"><svg class="jlines" preserveAspectRatio="none" viewBox="0 0 1000 62" aria-hidden="true"><path pathLength="1" d="M500,61 H0 M500,61 H1000"/><path pathLength="1" d="M500,4 H0 M500,4 H1000" class="dash"/></svg><div class="joint-in wrap">
  <a class="jmark" href="#top" aria-label="Na górę strony"><svg viewBox="20 -6 250 250" aria-hidden="true"><path pathLength="1" d="M108.5,31 V54 M101,38.5 H115 M98.5,130 V59 L108.5,47.5 L118.5,59 V130 M98.5,91 L28,182 M118.5,89.5 L217,202 M39,195 L80.5,141 H141 L186,195 M196,-3 V14 M192.5,1.5 H199.5 M181.6,61 L196,14 L210.9,61 M177,124 V61 H181.5 M215.5,124 V61 H211 M142,124.5 H256" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Brenna-Górki</span></a>
  <nav class="jnav" aria-label="Szybka nawigacja">
-  <a href="#aktualnosci">Aktualności</a><a href="#nabozenstwa">Nabożeństwa</a><a href="#kalendarz">Kalendarz</a><a href="#kazania">Kazania</a><a href="#galerie">Galerie</a><a href="#parafia">Parafia</a><a href="#kontakt">Kontakt</a>
+  <a href="#aktualnosci">Aktualności</a><a href="#nabozenstwa">Nabożeństwa</a><a href="#kalendarz">Kalendarz</a><a href="#galerie">Galerie</a><a href="#parafia">Parafia</a><a href="#kontakt">Kontakt</a>
  </nav>
  <button class="jmenu" type="button" aria-expanded="false">Menu</button>
 </div></div>
@@ -1295,6 +1275,32 @@ dialog.tour::backdrop{background:#1d1d1b}
 <!-- ============ TERAZ: aktualności opływające okno ============ -->
 <section class="now wrap" id="aktualnosci" aria-labelledby="h-akt">
 
+ <figure class="sketch" aria-labelledby="sk-c">
+  <div class="sk-art">
+   <svg viewBox="18 -12 210 226" aria-hidden="true">
+    <path d="M108.5,31 V54 M101,38.5 H115"/>
+    <path d="M98.5,130 V59 L108.5,47.5 L118.5,59 V130"/>
+    <path d="M98.5,60 L108.7,71 L118.5,60"/>
+    <path class="th" d="M102,70 L104,129 M102.6,88.5 H109 M103.2,106 H109"/>
+    <path d="M98.5,91 L28,182"/>
+    <path d="M118.5,89.5 L217,202"/>
+    <path d="M69,130.3 H154"/>
+    <path d="M39,195 L80.5,141 H141 L186,195"/>
+    <path class="th" d="M80.5,141 V170.5 M60,170.5 V195 M140.5,141 V170.5 M160,170.5 V195 M58.5,170.5 H84.5 M137,170.5 H165"/>
+    <path d="M100,150 L64.5,195"/>
+    <path d="M119,150 L160,195"/>
+    <path d="M89,190 L110.3,157 L134,190"/>
+    <path class="th" d="M102,171 H120.5 M102,171 V190 M112,171 V190 M120.5,171 V190"/>
+    <path d="M38,195 H64.5 M160,195 H188"/>
+    <path d="M67,190.3 H157 M70.5,190.3 V204 H153.5 V190.3 M70.5,198 H153.5"/>
+    <path class="th" d="M22,204 H224"/>
+   </svg>
+   <button type="button" class="pin" data-i="0" style="left:69%;top:10%">Z góry</button>
+   <button type="button" class="pin" data-i="8" style="left:44%;top:82%">Wewnątrz</button>
+   <button type="button" class="pin" data-i="6" style="left:84%;top:93%">Obok</button>
+  </div>
+  <figcaption id="sk-c"><strong>Kościół św. Bartłomieja Apostoła w Brennej</strong> Zajrzyj do środka, obejdź go dookoła albo zobacz z lotu ptaka. Zdjęcia 360°: <a href="https://luteranie-wirtualne-muzea.pl/wirtualnyspacer/brenna/index.htm" target="_blank" rel="noopener">Wirtualne muzea – luteranie.pl</a></figcaption>
+ </figure>
  <div class="now-h">
   <h2 id="h-akt">Aktualności</h2>
   <p class="lead" data-edit="tekst">Ogłoszenia i wydarzenia z naszej parafii.</p>
@@ -1373,22 +1379,6 @@ dialog.tour::backdrop{background:#1d1d1b}
  </div>
 </section>
 
-<!-- ============ KAZANIA I WIDEO ============ -->
-<section class="listen" id="kazania" aria-labelledby="h-kaz">
- <div class="wrap listen-in">
-  <div>
-   <h2 id="h-kaz">Kazania</h2>
-   <ul class="sermons" data-edit="nagrania">
-    <li><button class="play" aria-label="Odtwórz"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg></button><div><h3>Dziękczynne Święto Żniw</h3><p>4 października 2026, Brenna</p></div></li>
-    <li><button class="play" aria-label="Odtwórz"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg></button><div><h3>18. niedziela po Trójcy Świętej</h3><p>27 września 2026, Górki</p></div></li>
-    <li><button class="play" aria-label="Odtwórz"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg></button><div><h3>17. niedziela po Trójcy Świętej</h3><p>20 września 2026, Brenna</p></div></li>
-   </ul>
-   <p class="todo">Przykładowe pozycje – nagrań jeszcze nie ma. Do ustalenia z proboszczem, czy kazania będą nagrywane.</p>
-   <a class="more" href="#">Archiwum nagrań</a>
-  </div>
- </div>
-</section>
-
 <!-- ============ GALERIE ============ -->
 <section class="wrap gallery" id="galerie" aria-labelledby="h-gal">
  <h2 id="h-gal">Galerie</h2>
@@ -1423,39 +1413,6 @@ dialog.tour::backdrop{background:#1d1d1b}
    </ul>
    <p class="rooms" data-edit="tekst"><b>Pokoje gościnne.</b> Przy parafii można zatrzymać się na nocleg. Zapytaj w kancelarii o wolne terminy.</p>
   </div>
- </div>
-</section>
-
-<!-- ============ KOŚCIÓŁ: plan z punktami spaceru 360° ============ -->
-<section class="wrap church" id="kosciol" aria-labelledby="h-kos">
- <div class="church-t">
-  <h2 id="h-kos">Kościół w Brennej</h2>
-  <p data-edit="tekst">Kościół św. Bartłomieja Apostoła zbudowano w latach 1985–1988 według projektu Edwarda Kisiela. Stromy dwuspadowy dach nawiązuje do beskidzkiej architektury, w murach jest miejscowy piaskowiec z Brennej. Na emporze stoją jedenastogłosowe organy z 2019 roku.</p>
-  <figure class="church-pv">
-   <img src="https://luteranie-wirtualne-muzea.pl/wirtualnyspacer/brenna/media/panorama_891B952F_848B_2D6D_41B1_A65B31943C6B_0/f/3/0_0.webp?v=1789060995726" alt="Ołtarz – kościół w Brennej" width="512" height="512">
-   <figcaption><b class="cp-n">Ołtarz</b> <span class="cp-g">Sala nabożeństw</span></figcaption>
-  </figure>
-  <a class="church-go" href="https://luteranie-wirtualne-muzea.pl/wirtualnyspacer/brenna/index.htm" target="_blank" rel="noopener">Rozejrzyj się w 360°</a>
- </div>
- <div class="church-plan">
-  <svg class="cp-svg" viewBox="0 0 600 490" role="img" aria-label="Schemat kościoła z miejscami spaceru: sala nabożeństw z ołtarzem i emporą, wejście, teren wokół kościoła, dolna kondygnacja i widoki z lotu ptaka">
-   <rect class="cp-emp" x="150" y="282" width="240" height="88"/>
-   <rect class="cp-wall" x="150" y="40" width="240" height="330"/>
-   <rect class="cp-wall" x="240" y="370" width="60" height="36"/>
-   <rect class="cp-wall cp-low" x="410" y="186" width="180" height="150"/>
-   <text x="270" y="72">Ołtarz</text>
-   <text x="270" y="196">Sala nabożeństw</text>
-   <text x="270" y="308">Empora z organami (piętro)</text>
-   <text x="312" y="400" class="l">Wejście</text>
-   <text x="290" y="457" class="l">Alejka</text>
-   <text x="70" y="172">Wokół</text><text x="70" y="188">kościoła</text>
-   <text x="500" y="174">Dolna kondygnacja</text>
-   <text x="500" y="46">Z lotu ptaka</text>
-   <g class="cp-pts"></g>
-  </svg>
-  <ul class="church-list"></ul>
-  <p class="cp-note"><span class="cp-hint">Najedź na punkt, żeby zobaczyć to miejsce; kliknij, żeby się rozejrzeć. </span><span class="todo">Schemat poglądowy, nie w skali. Rozmieszczenie punktów i nazwy miejsc do potwierdzenia przez parafię.</span></p>
-  <p class="cp-credit">Zdjęcia i spacer: <a href="https://luteranie-wirtualne-muzea.pl/wirtualnyspacer/brenna/index.htm" target="_blank" rel="noopener">Wirtualne muzea – luteranie.pl</a></p>
  </div>
 </section>
 
@@ -2602,57 +2559,33 @@ function mountPano(host,opt={}){
  return {show,state:st}}
 
 // =====================================================================
-// Plan kościoła: schemat z punktami spaceru 360°, podgląd miejsca, spacer na pełnym ekranie
-// Kolejność = PANOS (numery 1–22 w wycieczce 3DVista). Nazwy nadane na podstawie zdjęć – robocze.
+// Szkic kościoła: trzy punkty (z góry, obok, wewnątrz) otwierają spacer 360° na cały ekran
+// Nazwy miejsc w kolejności PANOS (numery 1–22 w wycieczce 3DVista), nadane na podstawie zdjęć – robocze.
 // =====================================================================
 const PLACES=[
- ['Kościół z góry','Z lotu ptaka',420,80],['Droga i łąki','Z lotu ptaka',460,80],['Wieś w dolinie','Z lotu ptaka',500,80],
- ['Dolina Brennicy','Z lotu ptaka',540,80],['Dach kościoła','Z lotu ptaka',580,80],
- ['Alejka do kościoła','Wokół kościoła',270,452],['Przed kościołem','Wokół kościoła',70,330],
- ['Wejście','Kościół',270,388],
- ['Nawa','Sala nabożeństw',270,226],['Ołtarz','Sala nabożeństw',270,104],['Przy ołtarzu','Sala nabożeństw',210,104],['Obok ołtarza','Sala nabożeństw',330,104],
- ['Widok z empory','Empora z organami',210,342],['Ławki na emporze','Empora z organami',270,342],['Przy organach','Empora z organami',330,342],
- ['Schody na dół','Dolna kondygnacja',440,236],['Korytarz','Dolna kondygnacja',500,236],['Sala katechetyczna','Dolna kondygnacja',560,236],
- ['Sala parafialna','Dolna kondygnacja',470,300],['Sala parafialna, drugi koniec','Dolna kondygnacja',530,300],
- ['Przy kościele','Wokół kościoła',70,210],['Teren za kościołem','Wokół kościoła',70,270]];
-const placeName=i=>PLACES[i][1]==='Kościół'?PLACES[i][0]:`${PLACES[i][0]} · ${PLACES[i][1]}`;
-const placeFace=i=>`${PANO_BASE}panorama_${PANOS[i][0]}_0/f/3/0_0.webp${PANO_VER}`;
+ ['Kościół z góry','Z lotu ptaka'],['Droga i łąki','Z lotu ptaka'],['Wieś w dolinie','Z lotu ptaka'],
+ ['Dolina Brennicy','Z lotu ptaka'],['Dach kościoła','Z lotu ptaka'],
+ ['Alejka do kościoła','Wokół kościoła'],['Przed kościołem','Wokół kościoła'],['Wejście','Wokół kościoła'],
+ ['Nawa','Wewnątrz'],['Ołtarz','Wewnątrz'],['Przy ołtarzu','Wewnątrz'],['Obok ołtarza','Wewnątrz'],
+ ['Widok z empory','Empora z organami'],['Ławki na emporze','Empora z organami'],['Przy organach','Empora z organami'],
+ ['Schody na dół','Dolna kondygnacja'],['Korytarz','Dolna kondygnacja'],['Sala katechetyczna','Dolna kondygnacja'],
+ ['Sala parafialna','Dolna kondygnacja'],['Sala parafialna, drugi koniec','Dolna kondygnacja'],
+ ['Przy kościele','Wokół kościoła'],['Teren za kościołem','Wokół kościoła']];
 
-(function(){const sec=document.getElementById('kosciol');if(!sec)return;
- const NS='http://www.w3.org/2000/svg',pts=sec.querySelector('.cp-pts'),list=sec.querySelector('.church-list'),
-  img=sec.querySelector('.church-pv img'),nm=sec.querySelector('.cp-n'),gr=sec.querySelector('.cp-g'),go=sec.querySelector('.church-go');
- let cur=9;
- function preview(i){cur=i;img.src=placeFace(i);img.alt=`${PLACES[i][0]} – kościół w Brennej`;nm.textContent=PLACES[i][0];gr.textContent=PLACES[i][1];
-  pts.querySelectorAll('.pt').forEach(g=>g.classList.toggle('on',+g.dataset.i===i))}
- // punkty na schemacie (myszą i klawiaturą); na telefonie zamiast nich lista
- PLACES.forEach(([n,g,x,y],i)=>{const e=document.createElementNS(NS,'g');e.setAttribute('class','pt');e.dataset.i=i;
-  e.setAttribute('transform',`translate(${x} ${y})`);e.setAttribute('tabindex','0');e.setAttribute('role','button');
-  e.setAttribute('aria-label',`${n}, ${g.toLowerCase()} – otwórz widok 360°`);
-  e.innerHTML=`<title>${n}</title><circle class="hit" r="20"/><circle class="dot" r="9"/>`;
-  e.addEventListener('mouseenter',()=>preview(i));e.addEventListener('focus',()=>preview(i));
-  e.addEventListener('click',()=>open(i));e.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();open(i)}});
-  pts.appendChild(e)});
- const groups=[...new Set(PLACES.map(p=>p[1]))];
- list.innerHTML=groups.map(g=>`<li><span>${g==='Kościół'?'Wejście':g}</span><div>${PLACES.map((p,i)=>p[1]===g?`<button type="button" data-i="${i}">${p[0]}</button>`:'').join('')}</div></li>`).join('');
- list.addEventListener('click',e=>{const b=e.target.closest('button');if(b)open(+b.dataset.i)});
- for(let i=0;i<PLACES.length;i++)new Image().src=placeFace(i);   // podgląd bez czekania
- preview(cur);
-
- // spacer w oknie na cały ekran: nazwa miejsca, „Zamknij”, bez samoczynnego obracania
+(function(){const fig=document.querySelector('.sketch');if(!fig)return;
  const dlg=document.createElement('dialog');dlg.className='tour';dlg.setAttribute('aria-label','Spacer po kościele w Brennej');
  dlg.innerHTML='<div class="tour-h"><p><b class="tour-n"></b><span class="tour-g"></span></p><button type="button" class="tour-x">Zamknij</button></div><div class="tour-v"></div>';
  document.body.appendChild(dlg);
- const tn=dlg.querySelector('.tour-n'),tg=dlg.querySelector('.tour-g');let pano=null;
- function open(i){preview(i);
+ const tn=dlg.querySelector('.tour-n'),tg=dlg.querySelector('.tour-g');let pano=null,from=null;
+ function open(i,btn){from=btn;
   if(!dlg.open){dlg.showModal();document.documentElement.style.overflow='hidden'}
   if(!pano)pano=mountPano(dlg.querySelector('.tour-v'),{start:i,yaw:0,pitch:-4,auto:false,name:i=>PLACES[i][0],
-   onShow:i=>{tn.textContent=PLACES[i][0];tg.textContent=PLACES[i][1];preview(i)}});
+   onShow:i=>{tn.textContent=PLACES[i][0];tg.textContent=PLACES[i][1]}});
   else{pano.state.pitch=-4;pano.show(i,0)}
   dlg.querySelector('.tour-v').focus()}
  dlg.querySelector('.tour-x').onclick=()=>dlg.close();
- dlg.addEventListener('close',()=>{document.documentElement.style.overflow='';go.focus({preventScroll:true})});
- go.addEventListener('click',e=>{e.preventDefault();open(cur)});
- sec.querySelector('.church-pv').addEventListener('click',()=>open(cur))})();
+ dlg.addEventListener('close',()=>{document.documentElement.style.overflow='';from&&from.focus({preventScroll:true})});
+ fig.querySelectorAll('.pin').forEach(b=>b.addEventListener('click',()=>open(+b.dataset.i,b)))})();
 
 // ===== aktualności: lista wpisów, przeglądarka zdjęć i okno edycji wpisu =====
 // W prototypie wpisy żyją w pamięci strony. W WordPressie ten sam obiekt {title,date,html,main,gallery}

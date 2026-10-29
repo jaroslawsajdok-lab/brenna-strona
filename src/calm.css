@@ -175,45 +175,25 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 /* runda 7 (Claude Code, 5): brak w stopce czytelny na zieleni */
 .flinks a.todo{color:#6b5220!important;text-decoration:none}
 
-/* Kazania bez wideo (transmisji nie będzie): jedna kolumna */
-.listen-in{grid-template-columns:minmax(0,760px)!important}
-
-/* ===== drzwi zastąpione planem kościoła (dział #kosciol) ===== */
-/* Aktualności: tytuł po lewej, wpisy po prawej – bez pustej połowy po zdjęciu drzwi */
-.now{display:grid!important;grid-template-columns:minmax(0,4fr) minmax(0,7fr);column-gap:64px;align-items:start}
-.now-h{grid-column:1;grid-row:1/span 8}
-.now>.post,.now>.more{grid-column:2}
-@media (max-width:900px){.now{grid-template-columns:minmax(0,1fr)}.now-h{grid-row:auto}.now>.post,.now>.more{grid-column:1}}
-
-/* kościół: fakty i podgląd miejsca po lewej, schemat z punktami po prawej */
-.church{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px 64px;align-items:start}
-.church-t>p{margin:0}
-.church-pv{margin:32px 0 0;cursor:pointer}
-.church-pv img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;background:var(--tone)}
-.church-pv figcaption{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;margin-top:12px}
-.church-pv .cp-n{font-size:20px;color:var(--ink)}
-.church-pv .cp-g{color:var(--ink-soft)}
-.church-go{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;margin-top:20px;background:var(--spruce);color:#fff;font-weight:700;font-size:17px;text-decoration:none}
-.church-go:hover{background:var(--spruce-d)}
-.cp-svg{display:block;width:100%;height:auto;overflow:visible}
-.cp-wall{fill:#fff;stroke:var(--ink);stroke-width:2}
-.cp-emp{fill:var(--tone)}
-.cp-svg text{font-family:'PT Sans',sans-serif;font-size:14px;fill:var(--ink-soft);text-anchor:middle}
-.cp-svg text.l{text-anchor:start}
-.pt{cursor:pointer;outline:none}
-.pt .hit{fill:transparent}
-.pt .dot{fill:#fff;stroke:var(--spruce);stroke-width:3;transition:fill .15s}
-.pt:hover .dot,.pt.on .dot{fill:var(--spruce)}
-.pt:focus-visible .hit{fill:none;stroke:var(--spruce);stroke-width:2}
-.cp-note,.cp-credit{font-size:14px;color:var(--ink-soft);margin:16px 0 0}
-.cp-credit a{color:var(--spruce);font-weight:700}
-.church-list{display:none;list-style:none;margin:0;padding:0}
-.church-list li span{display:block;font-weight:700;font-size:17px;margin-bottom:8px}
-.church-list div{display:flex;flex-wrap:wrap;gap:8px}
-.church-list button{min-height:44px;padding:0 16px;border:0;background:#fff;font:inherit;font-size:17px;color:var(--ink);cursor:pointer}
-.church-list button:hover,.church-list button:focus-visible{background:var(--spruce);color:#fff}
-@media (max-width:900px){.church{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:700px){.cp-svg,.cp-hint{display:none}.church-list{display:grid;gap:20px}}
+/* ===== szkic kościoła w miejscu dawnych drzwi: trzy punkty otwierają spacer 360° ===== */
+.now{display:grid!important;grid-template-columns:minmax(0,7fr) minmax(0,5fr);column-gap:64px;align-items:start}
+.now-h,.now>.post,.now>.more{grid-column:1}
+.sketch{grid-column:2;grid-row:1/span 8;margin:0}
+.sk-art{position:relative}
+.sk-art svg{display:block;width:100%;height:auto;overflow:visible;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sk-art path{vector-effect:non-scaling-stroke}
+.sk-art .th{stroke-width:1.2}
+.pin{position:absolute;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px 0 14px;border:0;background:var(--spruce);color:#fff;font:inherit;font-size:17px;font-weight:700;white-space:nowrap;cursor:pointer}
+.pin::before{content:"";flex:none;width:10px;height:10px;border-radius:50%;background:#fff}
+.pin:hover{background:var(--spruce-d)}
+.sketch figcaption{margin-top:24px;color:var(--ink-soft)}
+.sketch figcaption strong{display:block;font-size:17px!important;color:var(--ink);margin-bottom:4px}
+.sketch figcaption a{color:var(--spruce);font-weight:700}
+@media (max-width:900px){
+ .now{grid-template-columns:minmax(0,1fr)}
+ .sketch{grid-column:1;grid-row:auto;max-width:420px;width:100%;justify-self:center;margin:0 0 56px}
+ .now-h,.now>.post,.now>.more{grid-column:1}
+}
 
 /* spacer na cały ekran */
 dialog.tour{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#1d1d1b;color:var(--ink)}

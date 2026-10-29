@@ -14,7 +14,8 @@ Teraz: jeden plik HTML jako prototyp. Docelowo: WordPress na hostingu luteranie.
 ## Czego NIE ruszamy
 - **Nagłówek** (animowany rysunek kreską: kościoły, las, pory roku, sceny roku liturgicznego, menu w nagłówku) i **zielony pasek menu `.joint`**, który przykleja się u góry. Jarosław: „genialne w swej prostocie”. Wygląd i zachowanie zostają.
 - Sceny świąteczne w nagłówku zmieniamy tylko na wyraźną prośbę parafii.
-- Drzwi do spaceru 360° zostały zastąpione (29.10.2026, decyzja Jarosława) **planem kościoła** w dziale „Kościół w Brennej” (`#kosciol`): kreskowy schemat z 22 punktami spaceru, podgląd miejsca, spacer w oknie na cały ekran. Schemat i nazwy miejsc są robocze – do potwierdzenia przez parafię.
+- **Szkic kościoła ze spacerem 360°** (29.10.2026 zastąpił drzwi): kreskowy rysunek kościoła w Brennej w dziale Aktualności (po prawej, na telefonie na górze), trzy przyciski „Z góry”, „Obok”, „Wewnątrz” otwierają spacer na cały ekran. Nazwy 22 miejsc w `tour.js` są robocze – do potwierdzenia przez parafię.
+- Działu Kazania nie ma (transmisji i nagrań nie będzie).
 
 ## Kierunek wyglądu (poniżej nagłówka)
 Strona ma nie wyglądać na zrobioną przez AI. Obowiązuje:
@@ -40,7 +41,7 @@ Strona ma nie wyglądać na zrobioną przez AI. Obowiązuje:
 | `post_editor.js/.css` | aktualności: okno edycji (tytuł, data, zdjęcie główne z punktem kadru, treść, galeria), przeglądarka zdjęć |
 | `login.js` | logowanie (róża Lutra w stopce lub `#edycja`; prototyp: `proboszcz` / `brenna`), tryb edycji, las w stopce, przełącznik mapy, flaga `?podglad` |
 | `pano_viewer.js/.css` | własna przeglądarka spaceru 360° (kafle 3DVista z luteranie-wirtualne-muzea.pl) |
-| `tour_plan.js` | plan kościoła: nazwy i położenie 22 punktów na schemacie (`PLACES`, kolejność jak `PANOS`), podgląd (przednia ściana panoramy), okno spaceru |
+| `tour.js` | szkic kościoła: nazwy 22 miejsc spaceru (`PLACES`, kolejność jak `PANOS`), okno spaceru na cały ekran |
 | `make_page.py` | **składa `brenna-strona.html`** (nagłówek + treść + wszystkie CSS/JS + obrazy drzwi jako data URI) |
 | `door/`, `door_svg.py`, `door_parts.html` | dawne drzwi do spaceru – nieużywane, do usunięcia |
 | `font/` | PT Sans i PT Sans Narrow (fontsource) – do wgrania na serwer w WordPressie |
@@ -62,7 +63,7 @@ Przyciski podglądu (pora roku, święta, czas, telefon) pokazują się tylko z 
 ## Wiadome braki (stan na 29.10.2026)
 - Brak prawdziwych zdjęć poza miniaturami aktualności (galeria, plakaty, duszpasterz puste). Potrzebne: kościół w Brennej, kościół w Górkach, ludzie, wnętrze – od parafii / z FB za zgodą proboszcza.
 - Treści zastępcze do usunięcia lub uzupełnienia: nagrania kazań z wymyślonymi długościami, „Tu proboszcz wpisze…”, „imię i nazwisko” duszpasterza, hasło tygodnia (nieaktualne, powinno liczyć się samo z roku kościelnego), adres kościoła w Górkach, link „Polityka prywatności”.
-- Do decyzji z proboszczem: czy zostają działy Kalendarz (dubluje tabelę i aktualności), Kazania, Galerie.
+- Do decyzji z proboszczem: czy zostają działy Kalendarz (dubluje tabelę i aktualności) i Galerie.
 - Prototyp nie zapisuje zmian (po odświeżeniu znikają) – zapis będzie w WordPressie.
 
 ## Plan WordPressa
