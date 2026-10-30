@@ -54,7 +54,7 @@ python3 make_page.py         # po każdej zmianie – składa brenna-strona.html
 cd ..
 python3 narzedzia/zrzuty.py  # zrzuty 1440/768/390 do zrzuty/, wykrywa przewijanie w bok i błędy JS
 python3 narzedzia/sceny.py zielone reformacja   # sceny świąteczne nagłówka
-python3 narzedzia/spakuj.py  # jeden plik do pokazania: pokaz/brenna-strona-pokaz.html (czcionki i zdjęcia w środku; spacer i mapa wymagają internetu)
+python3 narzedzia/spakuj.py  # wersja pokazowa w jednym pliku: pokaz/brenna-strona-pokaz.html (czcionki i zdjęcia w środku, panele podglądu zawsze, przycisk „Edycja strony (pokaz)”; spacer i mapa wymagają internetu)
 ```
 Komputer Jarosława to Windows: polecenie to `python` (albo `py`), nie `python3`.
 Wymaga: Python 3 + `pip install playwright` + `python -m playwright install chromium`.

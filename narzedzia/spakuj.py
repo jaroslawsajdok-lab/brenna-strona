@@ -1,4 +1,6 @@
 """Pakuje stronę do jednego pliku do pokazania (mail, pendrive): czcionki i zdjęcia w środku.
+Wersja pokazowa: panele podglądu animacji zawsze widoczne, przycisk „Edycja strony (pokaz)”
+z wpisanym loginem prototypu (proboszcz / brenna). Kod strony w src/ się nie zmienia.
 Użycie:  python narzedzia/spakuj.py        (najpierw: cd src && python make_page.py)
 Wynik:   pokaz/brenna-strona-pokaz.html
 Bez internetu nie działają tylko spacer 360° i mapa Google (to ramki z innych stron)."""
@@ -49,9 +51,34 @@ def images(h):
         return f'src="{cache[url]}"'
     return re.sub(r'src="(https?://[^"]+\.(?:jpe?g|png|webp)(?:\?[^"]*)?)"', repl, h)
 
+
+# ---- wersja pokazowa: panele podglądu zawsze, wejście do edycji jednym przyciskiem ----
+DEMO_CSS = """<style>
+.demobtn{position:fixed;right:14px;bottom:62px;z-index:80;font:inherit;font-size:14px;font-weight:700;min-height:44px;padding:0 18px;border-radius:30px;border:1.5px solid #1d1d1b;background:#2f5d45;color:#fff;cursor:pointer}
+.demobtn:hover{background:#24493a}
+body.admin .demobtn,html.in-phone .demobtn{display:none}
+.login .demo-hint{background:#f6ead2;color:#6b5220;padding:8px 12px;font-size:14px;margin:0 0 12px}
+</style>"""
+DEMO_JS = """<script>
+(function(){const D=document.querySelector('dialog.login');
+ const fill=()=>{if(!D)return;D.querySelector('[name=u]').value='proboszcz';D.querySelector('[name=p]').value='brenna'};
+ if(D){const p=document.createElement('p');p.className='demo-hint';p.textContent='Wersja pokazowa: login „proboszcz”, hasło „brenna” (już wpisane).';
+  D.querySelector('h2').after(p);D.addEventListener('close',fill);fill()}
+ const b=document.createElement('button');b.type='button';b.className='demobtn';b.textContent='Edycja strony (pokaz)';
+ b.onclick=()=>{fill();location.hash='edycja'};document.body.appendChild(b)})();
+</script>"""
+
+def demo(h):
+    a = "(function(){if(/podglad/.test(location.search+location.hash))document.documentElement.classList.add('dev')})();"
+    assert h.count(a) == 1, 'nie znaleziono przełącznika podglądu'
+    h = h.replace(a, "document.documentElement.classList.add('dev');")
+    h = h.replace('</style></head>', '</style>' + DEMO_CSS + '</head>', 1)
+    return h.replace('</body>', DEMO_JS + '\n</body>', 1)
+
 h = SRC.read_text(encoding='utf-8')
 h, n = re.subn(r'<link rel="preconnect"[^>]*>\s*<link rel="preconnect"[^>]*>\s*<link href="https://fonts\.googleapis\.com[^>]*>', fonts(), h, count=1)
 assert n == 1, 'nie znaleziono linku do Google Fonts'
 h = images(h)
+h = demo(h)
 OUT.parent.mkdir(exist_ok=True); OUT.write_text(h, encoding='utf-8')
 print(f'ok  {OUT.relative_to(ROOT)}  {OUT.stat().st_size // 1024} KB')
