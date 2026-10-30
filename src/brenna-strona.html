@@ -1136,6 +1136,24 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 @media (pointer:coarse){.rose.opened .rose-guard{display:block}}
 .rose-in:fullscreen .rose-guard,.rose-in.big .rose-guard{display:none!important}
 
+/* ===== Dokumenty: osobna podstrona (w prototypie widok #dokumenty) ===== */
+body:not(.on-docs) #dokumenty{display:none}
+body.on-docs main>*:not(#dokumenty){display:none!important}
+.docs{padding-top:56px}
+.docs-back{display:inline-flex;align-items:center;min-height:44px;font-size:17px;font-weight:700;color:var(--spruce);margin-bottom:16px}
+.docs-in{display:grid;gap:56px;margin-top:40px;max-width:880px}
+.docs-g h3{margin:0 0 16px}
+.docs-g ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.doc{display:grid;gap:4px;background:#fff;padding:16px 20px}
+.doc-n{font-size:17px;font-weight:700;color:var(--ink)}
+a.doc-n{color:var(--spruce);text-decoration:underline;text-underline-offset:3px}
+.doc-m{font-size:14px;color:var(--ink-soft);justify-self:start}
+.doc-m.todo,.doc-n.todo{font-weight:400;padding:2px 8px}
+.doc-add{display:none;margin-top:12px;min-height:44px;padding:0 18px;border:0;background:var(--spruce);color:#fff;font:inherit;font-size:17px;font-weight:700;cursor:pointer}
+body.editing .doc-add{display:inline-flex;align-items:center}
+/* pasek trybu edycji na telefonie: tekst w dwóch liniach, przyciski się mieszczą */
+@media (max-width:520px){.editbar{white-space:normal!important;flex-wrap:wrap;justify-content:center;width:calc(100vw - 24px);max-width:none!important;border-radius:16px!important;padding:10px 12px!important;font-size:14px!important;text-align:center}}
+
 </style></head>
 <body data-season="jesien">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="fglow"><stop offset="0" stop-color="#ffcf6b" stop-opacity=".75"/><stop offset="1" stop-color="#ffcf6b" stop-opacity="0"/></radialGradient><radialGradient id="warm"><stop offset="0" stop-color="#ffd27a" stop-opacity=".85"/><stop offset=".6" stop-color="#e8a24a" stop-opacity=".35"/><stop offset="1" stop-color="#e8a24a" stop-opacity="0"/></radialGradient><radialGradient id="starglow"><stop offset="0" stop-color="#fff6d0" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d0" stop-opacity="0"/></radialGradient><radialGradient id="whiteglow"><stop offset="0" stop-color="#fffdf2" stop-opacity=".95"/><stop offset="1" stop-color="#fff8dc" stop-opacity="0"/></radialGradient><linearGradient id="snowg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d6e1eb"/></linearGradient></defs></svg><a class="skip" href="#tresc">Przejdź do treści</a><header id="hero"><h1 class="sr">Parafia Ewangelicko-Augsburska Brenna-Górki</h1>
@@ -1222,12 +1240,12 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 </g></svg>
  <svg id="front" aria-hidden="true"></svg>
  <button id="burger" aria-expanded="false" aria-controls="menu">Menu</button>
- <nav id="menu" aria-label="Menu główne"><a class="peak" href="#aktualnosci">Aktualności</a><a class="peak" href="#nabozenstwa">Nabożeństwa</a><a class="peak" href="#parafia">Parafia</a><a class="peak" href="#dojazd">Jak dojechać</a><a class="peak" href="#kontakt">Kontakt</a></nav>
+ <nav id="menu" aria-label="Menu główne"><a class="peak" href="#aktualnosci">Aktualności</a><a class="peak" href="#nabozenstwa">Nabożeństwa</a><a class="peak" href="#parafia">Parafia</a><a class="peak" href="#dojazd">Jak dojechać</a><a class="peak" href="#kontakt">Kontakt</a><a class="peak" href="#dokumenty">Dokumenty</a></nav>
 </header>
 <div class="joint" id="joint"><svg class="jlines" preserveAspectRatio="none" viewBox="0 0 1000 62" aria-hidden="true"><path pathLength="1" d="M500,61 H0 M500,61 H1000"/><path pathLength="1" d="M500,4 H0 M500,4 H1000" class="dash"/></svg><div class="joint-in wrap">
  <a class="jmark" href="#top" aria-label="Na górę strony"><svg viewBox="20 -6 250 250" aria-hidden="true"><path pathLength="1" d="M108.5,31 V54 M101,38.5 H115 M98.5,130 V59 L108.5,47.5 L118.5,59 V130 M98.5,91 L28,182 M118.5,89.5 L217,202 M39,195 L80.5,141 H141 L186,195 M196,-3 V14 M192.5,1.5 H199.5 M181.6,61 L196,14 L210.9,61 M177,124 V61 H181.5 M215.5,124 V61 H211 M142,124.5 H256" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Brenna-Górki</span></a>
  <nav class="jnav" aria-label="Szybka nawigacja">
-  <a href="#aktualnosci">Aktualności</a><a href="#nabozenstwa">Nabożeństwa</a><a href="#kalendarz">Kalendarz</a><a href="#galerie">Galerie</a><a href="#parafia">Parafia</a><a href="#kontakt">Kontakt</a>
+  <a href="#aktualnosci">Aktualności</a><a href="#nabozenstwa">Nabożeństwa</a><a href="#kalendarz">Kalendarz</a><a href="#galerie">Galerie</a><a href="#parafia">Parafia</a><a href="#kontakt">Kontakt</a><a href="#dokumenty">Dokumenty</a>
  </nav>
  <button class="jmenu" type="button" aria-expanded="false">Menu</button>
 </div></div>
@@ -1433,6 +1451,36 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
  </div>
 </section>
 
+<!-- ============ DOKUMENTY (osobna podstrona; w prototypie widok pod adresem #dokumenty) ============ -->
+<section class="wrap docs" id="dokumenty" aria-labelledby="h-dok">
+ <a class="docs-back" href="#top">Strona główna</a>
+ <h2 id="h-dok">Dokumenty</h2>
+ <p class="lead" data-edit="tekst">Dokumenty parafii do przeczytania i pobrania.</p>
+ <div class="docs-in" data-edit="dokumenty">
+  <div class="docs-g">
+   <h3>Ochrona małoletnich</h3>
+   <ul>
+    <li class="doc"><span class="doc-n">Standardy ochrony małoletnich w Parafii Ewangelicko-Augsburskiej Brenna-Górki</span><span class="doc-m todo">plik do dodania</span></li>
+    <li class="doc"><span class="doc-n">Standardy ochrony małoletnich – wersja skrócona dla dzieci i młodzieży</span><span class="doc-m todo">plik do dodania</span></li>
+    <li class="doc"><a class="doc-n" href="#aktualnosci">Komunikat o zespole do spraw zbadania przypadków skrzywdzenia</a><span class="doc-m">w Aktualnościach, 20 września 2026</span></li>
+   </ul>
+  </div>
+  <div class="docs-g">
+   <h3>Ochrona danych osobowych (RODO)</h3>
+   <ul>
+    <li class="doc"><span class="doc-n">Klauzula informacyjna o przetwarzaniu danych osobowych</span><span class="doc-m todo">plik do dodania</span></li>
+    <li class="doc"><span class="doc-n">Polityka prywatności strony internetowej</span><span class="doc-m todo">plik do dodania</span></li>
+   </ul>
+  </div>
+  <div class="docs-g">
+   <h3>Inne dokumenty</h3>
+   <ul>
+    <li class="doc"><span class="doc-n todo">Tu proboszcz doda pozostałe dokumenty parafii.</span></li>
+   </ul>
+  </div>
+ </div>
+</section>
+
 </main>
 
 <footer class="foot2">
@@ -1442,7 +1490,7 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
   <ul class="flinks">
    <li><a href="https://www.luteranie.pl">luteranie.pl</a></li>
    <li><a href="https://luteranie-wirtualne-muzea.pl/wirtualnyspacer/brenna/index.htm">Wirtualny spacer po kościele</a></li>
-   <li><a href="#" class="todo">Polityka prywatności (do napisania)</a></li>
+   <li><a href="#dokumenty">Dokumenty, RODO</a></li>
   </ul>
   <div class="fend"><small>© 2026 Parafia Brenna-Górki</small>
    <button class="seal" type="button" aria-label="Logowanie do edycji strony"><svg viewBox="-30 -30 60 60" aria-hidden="true"><circle r="27"/><path d="M0,-9 C-3,-15 -12,-17 -12,-10 C-12,-4 -4,1 0,6 C4,1 12,-4 12,-10 C12,-17 3,-15 0,-9 Z M0,-7 V3 M-4,-3 H4 M-4,-13 C-10,-27 10,-27 4,-13 M10,-6 C24,-9 22,10 9,4 M7,9 C14,22 -2,26 -1,13 M-7,9 C-14,22 2,26 1,13 M-10,-6 C-24,-9 -22,10 -9,4"/></svg></button>
@@ -2389,6 +2437,35 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
  visit.addEventListener('click',open);fig.querySelector('.doors').addEventListener('click',open);
  // pierwsze rysowanie dopiero, gdy drzwi są dobrze widoczne
  fig.classList.add('sketch');new IntersectionObserver((es,ob)=>{if(es[0].isIntersecting){draw();ob.disconnect()}},{threshold:.6}).observe(fig)})();
+
+// =====================================================================
+// Dokumenty: w prototypie osobna „podstrona” w tym samym pliku – adres #dokumenty chowa resztę
+// treści i pokazuje sam dział pod nagłówkiem. W WordPressie to zwykła podstrona /dokumenty/.
+// W trybie edycji przy każdej grupie „+ Dodaj plik” (prototyp: plik widać do odświeżenia strony;
+// w WordPressie trafi do biblioteki mediów).
+// =====================================================================
+(function(){const sec=document.getElementById('dokumenty');if(!sec)return;
+ function route(){const h=location.hash;if(h==='#edycja')return;
+  const on=h==='#dokumenty';const was=document.body.classList.contains('on-docs');
+  document.body.classList.toggle('on-docs',on);
+  if(on){scrollTo(0,0)}
+  else if(was){const t=h&&h.length>1&&document.querySelector(h);requestAnimationFrame(()=>t?t.scrollIntoView():scrollTo(0,0))}}
+ addEventListener('hashchange',route);route();
+ // wejście prosto z adresu …#dokumenty: przeglądarka przewija do kotwicy po wczytaniu – wracamy na górę jak na nowej stronie
+ addEventListener('load',()=>{if(document.body.classList.contains('on-docs'))setTimeout(()=>scrollTo(0,0),0)});
+
+ const size=b=>b<1048576?Math.max(1,Math.round(b/1024))+' KB':(b/1048576).toFixed(1).replace('.',',')+' MB';
+ sec.querySelectorAll('.docs-g').forEach(g=>{
+  const b=document.createElement('button');b.type='button';b.className='doc-add';b.textContent='+ Dodaj plik';
+  const f=document.createElement('input');f.type='file';f.accept='.pdf,.doc,.docx,.odt';f.hidden=true;
+  b.onclick=()=>f.click();
+  f.onchange=()=>{const file=f.files[0];if(!file)return;
+   const li=document.createElement('li');li.className='doc';
+   const a=document.createElement('a');a.className='doc-n';a.href=URL.createObjectURL(file);a.target='_blank';a.rel='noopener';
+   a.textContent=file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ');
+   const m=document.createElement('span');m.className='doc-m';m.textContent=`${file.name.split('.').pop().toUpperCase()}, ${size(file.size)}`;
+   li.append(a,m);g.querySelector('ul').appendChild(li);f.value=''};
+  g.append(b,f)})})();
 
 // ===== aktualności: lista wpisów, przeglądarka zdjęć i okno edycji wpisu =====
 // W prototypie wpisy żyją w pamięci strony. W WordPressie ten sam obiekt {title,date,html,main,gallery}

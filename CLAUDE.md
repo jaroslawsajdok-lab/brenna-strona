@@ -14,6 +14,7 @@ Teraz: jeden plik HTML jako prototyp. Docelowo: WordPress na hostingu luteranie.
 ## Czego NIE ruszamy
 - **Nagłówek** (animowany rysunek kreską: kościoły, las, pory roku, sceny roku liturgicznego, menu w nagłówku) i **zielony pasek menu `.joint`**, który przykleja się u góry. Jarosław: „genialne w swej prostocie”. Wygląd i zachowanie zostają.
 - Sceny świąteczne w nagłówku zmieniamy tylko na wyraźną prośbę parafii.
+- Menu w nagłówku ma 6 pozycji (3 + 3 wokół kościoła); „Dokumenty” dopisuje `make_page.py` przy składaniu (plików nagłówka nie edytujemy).
 - **Drzwi do spaceru 360°** (okrągłe drewniane drzwi z różą Lutra w dziale Aktualności, po prawej; na telefonie na górze działu) – jedyne miejsce, gdzie drewno ma zostać. Rysują się kreską, gdy pojawią się na ekranie; po kliknięciu odrysowują się (kolor schodzi, kreski się zwijają) i w kole zostaje spacer. „Pełny ekran” powiększa koło, „Zamknij pełny ekran”/Esc wraca. Skrzydła się nie obracają.
 - Działu Kazania nie ma (transmisji i nagrań nie będzie).
 
@@ -42,6 +43,7 @@ Strona ma nie wyglądać na zrobioną przez AI. Obowiązuje:
 | `login.js` | logowanie (róża Lutra w stopce lub `#edycja`; prototyp: `proboszcz` / `brenna`), tryb edycji, las w stopce, przełącznik mapy, flaga `?podglad` |
 | `pano_viewer.js/.css` | dawna własna przeglądarka spaceru (CSS 3D) – nieużywana: przy dużym ekranie rozjeżdżała się w kwadraty; zastąpiona oryginalnym odtwarzaczem |
 | `tour.js` | drzwi (rysowanie, odrysowanie po kliknięciu), spacer w kole i „Pełny ekran”: oryginalny odtwarzacz 3DVista z luteranie-wirtualne-muzea.pl w ramce (w kole wyższa niż koło, żeby pasek miniatur wypadł pod obręcz; na dotyku osłona przepuszcza przewijanie), `#media=N` otwiera od N-tego punktu (drzwi otwierają od 9 – nawa) |
+| `docs.js` | podstrona Dokumenty (ochrona małoletnich, RODO, inne): w prototypie widok `#dokumenty` w tym samym pliku; w trybie edycji „+ Dodaj plik” |
 | `make_page.py` | **składa `brenna-strona.html`** (nagłówek + treść + wszystkie CSS/JS + obrazy drzwi jako data URI) |
 | `door/`, `door_svg.py`, `door_parts.html` | drzwi do spaceru (generator SVG drzwi wklejonych w `page_content.html`) |
 | `font/` | PT Sans i PT Sans Narrow (fontsource) – do wgrania na serwer w WordPressie |
@@ -63,7 +65,7 @@ Przyciski podglądu (pora roku, święta, czas, telefon) pokazują się tylko z 
 
 ## Wiadome braki (stan na 29.10.2026)
 - Brak prawdziwych zdjęć poza miniaturami aktualności (galeria, plakaty, duszpasterz puste). Potrzebne: kościół w Brennej, kościół w Górkach, ludzie, wnętrze – od parafii / z FB za zgodą proboszcza.
-- Treści zastępcze do usunięcia lub uzupełnienia: nagrania kazań z wymyślonymi długościami, „Tu proboszcz wpisze…”, „imię i nazwisko” duszpasterza, hasło tygodnia (nieaktualne, powinno liczyć się samo z roku kościelnego), adres kościoła w Górkach, link „Polityka prywatności”.
+- Treści zastępcze do usunięcia lub uzupełnienia: nagrania kazań z wymyślonymi długościami, „Tu proboszcz wpisze…”, „imię i nazwisko” duszpasterza, hasło tygodnia (nieaktualne, powinno liczyć się samo z roku kościelnego), adres kościoła w Górkach, pliki na podstronie Dokumenty (standardy ochrony małoletnich + wersja skrócona, klauzula RODO, polityka prywatności).
 - Do decyzji z proboszczem: czy zostają działy Kalendarz (dubluje tabelę i aktualności) i Galerie.
 - Prototyp nie zapisuje zmian (po odświeżeniu znikają) – zapis będzie w WordPressie.
 
@@ -72,6 +74,7 @@ Przyciski podglądu (pora roku, święta, czas, telefon) pokazują się tylko z 
   - tabela nabożeństw (wiersze: data, nazwa, Brenna, Górki, święto) zapisywana przez REST API,
   - aktualności jako wpisy z obrazkiem wyróżniającym + galerią (biblioteka mediów),
   - bloki tekstu „data-edit” zapisywane jako opcje / meta,
+  - podstrona `/dokumenty/` z plikami z biblioteki mediów (grupy: ochrona małoletnich, RODO, inne),
   - edycja na stronie (nie w panelu WP): logowanie przez `wp_signon`, rola „Redaktor parafii” z ograniczonymi uprawnieniami, nonce, rewizje,
   - panel do włączania/wyłączania animacji nagłówka (dla Jarosława, nie dla proboszcza).
 - Bez importu z Facebooka i bez kalendarzy po API – proboszcz wpisuje wszystko ręcznie.

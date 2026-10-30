@@ -7,6 +7,9 @@ css=open('page_style.css',encoding='utf-8').read()
 h=h.replace('<title>Brenna-Górki – nagłówek kompaktowy</title>','<title>Parafia Ewangelicko-Augsburska Brenna-Górki</title>',1)
 h=h.replace('family=PT+Sans:wght@400;700','family=PT+Sans:wght@400;700&family=PT+Sans+Narrow:wght@700',1)
 
+# menu w nagłówku: dodatkowa pozycja „Dokumenty” (nagłówek sam rozkłada pozycje 3 + 3 wokół kościoła)
+h=h.replace('<a class="peak" href="#kontakt">Kontakt</a></nav>','<a class="peak" href="#kontakt">Kontakt</a><a class="peak" href="#dokumenty">Dokumenty</a></nav>',1);assert 'href="#dokumenty"' in h
+
 # treść strony zamiast opisu prototypu
 h,n=re.subn(r'<p class="below">.*?</p>',lambda m:content,h,count=1,flags=re.S);assert n==1
 
@@ -66,7 +69,7 @@ document.querySelectorAll('.jnav a').forEach((a,i)=>{a.style.transitionDelay=(.3
   ov.querySelector('.phclose').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});
   addEventListener('keydown',function k(e){if(e.key==='Escape'&&ov){close();removeEventListener('keydown',k)}})};})();
 '''
-JS=JS0.replace('PANOJS',open('tour.js',encoding='utf-8').read()+'\n'+open('post_editor.js',encoding='utf-8').read()+'\n'+open('services_editor.js',encoding='utf-8').read()+'\n'+open('login.js',encoding='utf-8').read())
+JS=JS0.replace('PANOJS',open('tour.js',encoding='utf-8').read()+'\n'+open('docs.js',encoding='utf-8').read()+'\n'+open('post_editor.js',encoding='utf-8').read()+'\n'+open('services_editor.js',encoding='utf-8').read()+'\n'+open('login.js',encoding='utf-8').read())
 h=h.replace('</script>\n</body>',JS+'\n</script>\n</body>',1)
 import base64
 for k,f in [('DOOR_LEFT','door/left.webp'),('DOOR_RIGHT','door/right.webp'),('DOOR_RING','door/ring.webp')]:
