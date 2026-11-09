@@ -1,0 +1,29 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/",
+  "preferredVersions": {
+    "php": "8.2",
+    "wp": "latest"
+  },
+  "steps": [
+    {
+      "step": "setSiteOptions",
+      "options": {
+        "blogname": "Parafia Brenna-Górki (test lokalny)"
+      }
+    },
+    {
+      "step": "activatePlugin",
+      "pluginPath": "/wordpress/wp-content/plugins/parafia/parafia.php"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require '/wordpress/wp-load.php'; wp_insert_user(['user_login'=>'proboszcz-test','user_pass'=>'Test-Brenna-2026','role'=>'redaktor_parafii','display_name'=>'Proboszcz (test)']); update_option('parafia_token','TESTLINK123'); foreach(['Koncert organowy','Tydzień Dobrej Nowiny','Komunikat'] as $i=>$t) wp_insert_post(['post_title'=>$t,'post_content'=>'<p>Treść testowa wpisu „'.$t.'”.</p>','post_status'=>'publish','post_date'=>date('Y-m-d H:i:s',time()-($i+1)*86400*5)]);"
+    },
+    {
+      "step": "writeFile",
+      "path": "/wordpress/wp-content/mu-plugins/udawana-captcha.php",
+      "data": "<?php // test: jak AIOS – logowanie przez REST (okienko) wymaga CAPTCHA, zwykła strona logowania przechodzi\nadd_filter('authenticate',function($u){ if(defined('REST_REQUEST')&&REST_REQUEST&&!is_wp_error($u)&&$u) return new WP_Error('aiowps_captcha','Wpisz poprawnie kod CAPTCHA.'); return $u; },99);"
+    }
+  ]
+}

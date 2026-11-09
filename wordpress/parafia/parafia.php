@@ -79,7 +79,10 @@ add_filter('auth_cookie_expiration', function ($len, $user_id, $remember) {
 
 // redaktor parafii nie potrzebuje panelu WordPressa – po zalogowaniu w panelu trafia na stronę
 add_filter('login_redirect', function ($to, $req, $user) {
-	return (!is_wp_error($user) && $user && !user_can($user, 'edit_posts') && user_can($user, PARAFIA_CAP)) ? home_url('/') : $to;
+	if (is_wp_error($user) || !$user || !user_can($user, PARAFIA_CAP)) return $to;
+	// link „Zaloguj przez stronę logowania WordPressa” z okienka prosi o powrót na stronę (#edycja) – trzymamy się tego
+	if ($req && wp_validate_redirect($req, false) && strpos($req, '/wp-admin') === false) return $req;
+	return !user_can($user, 'edit_posts') ? home_url('/') : $to;
 }, 10, 3);
 
 /* ------------------------------------------------------------------
@@ -112,6 +115,7 @@ function parafia_boot() {
 		'canEdit' => $edit,
 		'nonce' => $edit ? wp_create_nonce('wp_rest') : '',
 		'ajax' => $edit ? admin_url('admin-ajax.php') : '',
+		'loginUrl' => wp_login_url(home_url('/#edycja')),   // zwykłe logowanie WordPressa (działa też z CAPTCHA wtyczek bezpieczeństwa)
 		'blocks' => (object) get_option('parafia_blocks', []),
 		'services' => get_option('parafia_services', []),
 		'posts' => array_map('parafia_post_data', $posts),
@@ -188,8 +192,16 @@ function parafia_rest_login(WP_REST_Request $r) {
 		'remember' => (bool) $r->get_param('r'),
 	], is_ssl());
 	if (is_wp_error($user)) {
-		set_transient($key, $fails + 1, 10 * MINUTE_IN_SECONDS);
-		return new WP_Error('parafia', 'Nieprawidłowy login lub hasło.', ['status' => 403]);
+		// złe dane – ogólny komunikat; inny powód (np. CAPTCHA albo blokada wtyczki bezpieczeństwa) – jego treść,
+		// żeby było wiadomo, że trzeba użyć zwykłej strony logowania WordPressa
+		$plain = ['invalid_username', 'incorrect_password', 'invalid_email', 'empty_username', 'empty_password'];
+		$codes = $user->get_error_codes();
+		if (array_intersect($codes, $plain) || !$codes) {
+			set_transient($key, $fails + 1, 10 * MINUTE_IN_SECONDS);
+			return new WP_Error('parafia', 'Nieprawidłowy login lub hasło.', ['status' => 403]);
+		}
+		$why = trim(wp_strip_all_tags($user->get_error_message()));
+		return new WP_Error('parafia', 'Logowanie zablokowała ochrona strony' . ($why ? ' („' . $why . '”)' : '') . '. Użyj strony logowania WordPressa (link poniżej).', ['status' => 403]);
 	}
 	if (!user_can($user, PARAFIA_CAP)) {
 		wp_logout();

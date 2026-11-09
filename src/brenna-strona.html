@@ -1192,6 +1192,10 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 .rowtools .addsun:hover{background:var(--tone)!important}
 @media (max-width:520px){.mbtn span{display:none}.mbtn{padding:0 10px}}
 
+/* logowanie: link do zwykłej strony logowania WordPressa po nieudanej próbie */
+.login .lg-alt{margin:16px 0 0;font-size:14px;color:var(--ink-soft)}
+.login .lg-alt a{color:var(--spruce);font-weight:700}
+
 </style></head>
 <body data-season="jesien">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="fglow"><stop offset="0" stop-color="#ffcf6b" stop-opacity=".75"/><stop offset="1" stop-color="#ffcf6b" stop-opacity="0"/></radialGradient><radialGradient id="warm"><stop offset="0" stop-color="#ffd27a" stop-opacity=".85"/><stop offset=".6" stop-color="#e8a24a" stop-opacity=".35"/><stop offset="1" stop-color="#e8a24a" stop-opacity="0"/></radialGradient><radialGradient id="starglow"><stop offset="0" stop-color="#fff6d0" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d0" stop-opacity="0"/></radialGradient><radialGradient id="whiteglow"><stop offset="0" stop-color="#fffdf2" stop-opacity=".95"/><stop offset="1" stop-color="#fff8dc" stop-opacity="0"/></radialGradient><linearGradient id="snowg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d6e1eb"/></linearGradient></defs></svg><a class="skip" href="#tresc">Przejdź do treści</a><header id="hero"><h1 class="sr">Parafia Ewangelicko-Augsburska Brenna-Górki</h1>
@@ -2473,7 +2477,10 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
   let r=await go();
   if(r.status===403&&P.ajax){                       // nonce wygasł (strona otwarta długo) – pobierz nowy i spróbuj raz jeszcze
    const n=await fetch(P.ajax+'?action=rest-nonce',{credentials:'same-origin'});if(n.ok){P.nonce=(await n.text()).trim();r=await go()}}
-  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.message||('Błąd '+r.status));return j};
+  const j=await r.json().catch(()=>({}));
+  // niektóre serwery (wtyczki bezpieczeństwa) zamieniają kod błędu na 200 – błąd poznajemy też po treści odpowiedzi
+  const bad=!r.ok||(j&&j.code&&j.data&&j.data.status>=400);
+  if(bad)throw new Error(j.message||('Błąd '+r.status));return j};
  P.upload=async function(blobOrFile,name){const f=new FormData();f.append('file',blobOrFile,name||blobOrFile.name||'zdjecie.jpg');return P.call('media',{form:f})};
 
  // --- (1) zapisane treści wracają na stronę ---
@@ -2939,8 +2946,12 @@ function toast(t){const el=document.createElement('div');el.className='ped-toast
  D.querySelector('form').addEventListener('submit',e=>{e.preventDefault();const err=D.querySelector('.err'),u=D.querySelector('[name=u]').value.trim().toLowerCase(),p=D.querySelector('[name=p]').value;
   if(Date.now()<lockUntil){err.textContent=`Zbyt wiele prób. Spróbuj ponownie za ${Math.ceil((lockUntil-Date.now())/1000)} s.`;return}
   if(WP){const b=D.querySelector('.go');b.disabled=true;err.textContent='';
-   WP.call('login',{body:{u,p,r:D.querySelector('[name=r]').checked}}).then(()=>{location.hash='edycja';location.reload()})
-    .catch(x=>{b.disabled=false;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');err.textContent=x.message});return}
+   WP.call('login',{body:{u:D.querySelector('[name=u]').value.trim(),p,r:D.querySelector('[name=r]').checked}}).then(()=>{location.hash='edycja';location.reload()})
+    .catch(x=>{b.disabled=false;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');err.textContent=x.message;
+     // po nieudanej próbie: zwykłe logowanie WordPressa (przechodzi przez CAPTCHA i blokady wtyczek bezpieczeństwa)
+     if(WP.loginUrl&&!D.querySelector('.lg-alt')){const a=document.createElement('p');a.className='lg-alt';
+      a.innerHTML=`Nie działa? <a href="${WP.loginUrl}">Zaloguj się przez stronę logowania WordPressa</a> – po zalogowaniu wrócisz tu do edycji.`;
+      D.querySelector('.lbtns').after(a)}});return}
   if(u==='proboszcz'&&p==='brenna'){fails=0;st.set('brenna-admin','1',D.querySelector('[name=r]').checked);D.querySelector('[name=p]').value='';D.close();admin(true);edit(true);return}
   fails++;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');D.querySelector('[name=p]').select();
   if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Zbyt wiele prób. Spróbuj ponownie za 30 s.'}else err.textContent='Nieprawidłowy login lub hasło.'});

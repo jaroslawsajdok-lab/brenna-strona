@@ -13,7 +13,10 @@
   let r=await go();
   if(r.status===403&&P.ajax){                       // nonce wygasł (strona otwarta długo) – pobierz nowy i spróbuj raz jeszcze
    const n=await fetch(P.ajax+'?action=rest-nonce',{credentials:'same-origin'});if(n.ok){P.nonce=(await n.text()).trim();r=await go()}}
-  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.message||('Błąd '+r.status));return j};
+  const j=await r.json().catch(()=>({}));
+  // niektóre serwery (wtyczki bezpieczeństwa) zamieniają kod błędu na 200 – błąd poznajemy też po treści odpowiedzi
+  const bad=!r.ok||(j&&j.code&&j.data&&j.data.status>=400);
+  if(bad)throw new Error(j.message||('Błąd '+r.status));return j};
  P.upload=async function(blobOrFile,name){const f=new FormData();f.append('file',blobOrFile,name||blobOrFile.name||'zdjecie.jpg');return P.call('media',{form:f})};
 
  // --- (1) zapisane treści wracają na stronę ---

@@ -275,3 +275,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 .rowtools .addsun{background:#fff!important;color:var(--spruce)!important}
 .rowtools .addsun:hover{background:var(--tone)!important}
 @media (max-width:520px){.mbtn span{display:none}.mbtn{padding:0 10px}}
+
+/* logowanie: link do zwykłej strony logowania WordPressa po nieudanej próbie */
+.login .lg-alt{margin:16px 0 0;font-size:14px;color:var(--ink-soft)}
+.login .lg-alt a{color:var(--spruce);font-weight:700}

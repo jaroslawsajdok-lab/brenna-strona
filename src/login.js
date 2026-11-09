@@ -40,8 +40,12 @@
  D.querySelector('form').addEventListener('submit',e=>{e.preventDefault();const err=D.querySelector('.err'),u=D.querySelector('[name=u]').value.trim().toLowerCase(),p=D.querySelector('[name=p]').value;
   if(Date.now()<lockUntil){err.textContent=`Zbyt wiele prób. Spróbuj ponownie za ${Math.ceil((lockUntil-Date.now())/1000)} s.`;return}
   if(WP){const b=D.querySelector('.go');b.disabled=true;err.textContent='';
-   WP.call('login',{body:{u,p,r:D.querySelector('[name=r]').checked}}).then(()=>{location.hash='edycja';location.reload()})
-    .catch(x=>{b.disabled=false;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');err.textContent=x.message});return}
+   WP.call('login',{body:{u:D.querySelector('[name=u]').value.trim(),p,r:D.querySelector('[name=r]').checked}}).then(()=>{location.hash='edycja';location.reload()})
+    .catch(x=>{b.disabled=false;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');err.textContent=x.message;
+     // po nieudanej próbie: zwykłe logowanie WordPressa (przechodzi przez CAPTCHA i blokady wtyczek bezpieczeństwa)
+     if(WP.loginUrl&&!D.querySelector('.lg-alt')){const a=document.createElement('p');a.className='lg-alt';
+      a.innerHTML=`Nie działa? <a href="${WP.loginUrl}">Zaloguj się przez stronę logowania WordPressa</a> – po zalogowaniu wrócisz tu do edycji.`;
+      D.querySelector('.lbtns').after(a)}});return}
   if(u==='proboszcz'&&p==='brenna'){fails=0;st.set('brenna-admin','1',D.querySelector('[name=r]').checked);D.querySelector('[name=p]').value='';D.close();admin(true);edit(true);return}
   fails++;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');D.querySelector('[name=p]').select();
   if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Zbyt wiele prób. Spróbuj ponownie za 30 s.'}else err.textContent='Nieprawidłowy login lub hasło.'});
