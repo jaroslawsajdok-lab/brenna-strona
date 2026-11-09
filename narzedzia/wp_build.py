@@ -8,7 +8,8 @@ import re, shutil, tarfile, zipfile, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / 'src' / 'brenna-strona.html'
 DIST = ROOT / 'dist'; THEME = DIST / 'brenna'; PLUGIN = ROOT / 'wordpress' / 'parafia'
-VERSION = '1.1.0'
+VERSION = '1.1.0'        # motyw + wtyczka „Parafia” (zmienia narzedzia/wydanie.py)
+DOCS_VERSION = '1.0.0'   # PDF-y – podnoś tylko, gdy zmienią się pliki w src/dokumenty (wtedy WordPress pobierze 8 MB)
 
 STYLE = f"""/*
 Theme Name: Brenna-Górki
@@ -79,6 +80,9 @@ def zipdir(folder, out):
             if f.is_file(): z.write(f, f'{folder.name}/{f.relative_to(folder).as_posix()}')
     print(f'ok  {out.relative_to(ROOT)}  {out.stat().st_size // 1024} KB')
 zipdir(THEME, DIST / 'brenna.zip')
+# wersja wtyczki z jednego miejsca (VERSION) – nagłówek parafia.php poprawiany przy każdym budowaniu
+pp = PLUGIN / 'parafia.php'
+pp.write_text(re.sub(r'(\* Version: )\S+', r'\g<1>' + VERSION, pp.read_text(encoding='utf-8'), count=1), encoding='utf-8')
 zipdir(PLUGIN, DIST / 'parafia.zip')
 
 # pliki dokumentów (standardy ochrony małoletnich itd.) jako osobna wtyczka
@@ -89,9 +93,14 @@ shutil.copytree(ROOT / 'src' / 'dokumenty', DOCS / 'dokumenty')
 /**
  * Plugin Name: Parafia Brenna-Górki – dokumenty
  * Description: Pliki PDF do podstrony Dokumenty (standardy ochrony małoletnich z załącznikami). Wystarczy, że jest wgrana – włączać nie trzeba.
- * Version: """ + VERSION + """
+ * Version: """ + DOCS_VERSION + """
  * Author: Jarosław Sajdok
  */
 if (!defined('ABSPATH')) exit;
 """, encoding='utf-8')
 zipdir(DOCS, DIST / 'parafia-dokumenty.zip')
+
+# wersje części – plik w każdym wydaniu na GitHubie; z niego WordPress wie, co jest do aktualizacji
+import json
+(DIST / 'wersje.json').write_text(json.dumps({'parafia': VERSION, 'brenna': VERSION, 'parafia-dokumenty': DOCS_VERSION}), encoding='utf-8')
+print(f'ok  dist/wersje.json  motyw i wtyczka {VERSION}, dokumenty {DOCS_VERSION}')

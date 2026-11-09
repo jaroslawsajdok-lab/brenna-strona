@@ -14,6 +14,8 @@ const PARAFIA_THEME = 'brenna';
 const PARAFIA_CAP   = 'edit_parafia';
 const PARAFIA_COOKIE = 'parafia_nowa';
 
+require_once __DIR__ . '/aktualizacje.php';   // aktualizacje jednym kliknięciem z wydań na GitHubie
+
 /* ------------------------------------------------------------------
  * Włączenie / wyłączenie wtyczki: rola „Redaktor parafii”, prawo edycji dla administratora, klucz linku próbnego
  * ------------------------------------------------------------------ */
@@ -292,6 +294,24 @@ function parafia_admin_page() {
 		echo '<p>Kiedy treści będą gotowe:</p>';
 		if ($has) $btn('live', 'Włącz nową stronę dla wszystkich', true);
 	}
+
+	// wersje i aktualizacje z GitHuba
+	if (!function_exists('get_plugin_data')) require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	$docs_file = WP_PLUGIN_DIR . '/parafia-dokumenty/parafia-dokumenty.php';
+	$inst = ['parafia' => get_plugin_data(__FILE__, false, false)['Version'] ?? '',
+		'brenna' => $has ? wp_get_theme(PARAFIA_THEME)->get('Version') : '',
+		'parafia-dokumenty' => is_readable($docs_file) ? (get_plugin_data($docs_file, false, false)['Version'] ?? '') : ''];
+	$rel = parafia_release();
+	$names = ['parafia' => 'Wtyczka „Parafia”', 'brenna' => 'Motyw „Brenna-Górki”', 'parafia-dokumenty' => 'Dokumenty (PDF)'];
+	echo '<h2>Wersje</h2><table class="widefat striped" style="max-width:640px"><thead><tr><th></th><th>zainstalowana</th><th>najnowsza</th></tr></thead><tbody>';
+	foreach ($names as $k => $n) {
+		$new = $rel['ver'][$k] ?? '';
+		$mark = ($new && $inst[$k] && version_compare($new, $inst[$k], '>')) ? ' <b>– jest nowsza</b>' : '';
+		echo '<tr><td>' . esc_html($n) . '</td><td>' . esc_html($inst[$k] ?: '—') . '</td><td>' . esc_html($new ?: '—') . $mark . '</td></tr>';
+	}
+	echo '</tbody></table><p><a class="button" href="' . esc_url(admin_url('update-core.php?force-check=1')) . '">Sprawdź aktualizacje</a> ';
+	if ($rel) echo 'Ostatnie wydanie: <a href="' . esc_url($rel['url']) . '" target="_blank" rel="noopener">' . esc_html($rel['tag']) . '</a>';
+	echo '</p><p>Nowe wersje instalujesz w <b>Kokpit → Aktualizacje</b> przyciskiem „Aktualizuj” – bez wgrywania plików. Treści proboszcza zostają.</p>';
 
 	echo '<h2>Redaktorzy</h2><p>Proboszcz potrzebuje konta z rolą <b>Redaktor parafii</b> (Użytkownicy → Dodaj nowego → Rola: Redaktor parafii). Loguje się na stronie: róża Lutra w stopce albo adres strony z <code>#edycja</code> na końcu. Zaznaczone „Zapamiętaj mnie” trzyma go zalogowanym przez rok. Administrator też może edytować.</p>';
 
