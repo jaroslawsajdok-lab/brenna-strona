@@ -7,6 +7,7 @@ Python ze Sklepu Microsoft nie widzi logowania gh – wtedy uruchom z Git Basha 
   GH_TOKEN=$(gh auth token) python narzedzia/wydanie.py 1.2.0 "opis zmian\""""
 import re, sys, shutil, pathlib, subprocess
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')   # konsola Windows (cp1250) nie zna „→”
 if len(sys.argv) < 3 or not re.fullmatch(r'\d+\.\d+\.\d+', sys.argv[1]):
     sys.exit(__doc__)
 ver, notes = sys.argv[1], sys.argv[2]
