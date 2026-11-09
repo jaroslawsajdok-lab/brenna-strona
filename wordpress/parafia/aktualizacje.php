@@ -7,7 +7,7 @@
  */
 if (!defined('ABSPATH')) exit;
 
-const PARAFIA_REPO = 'OWNER/brenna-strona';
+const PARAFIA_REPO = 'jaroslawsajdok-lab/brenna-strona';
 const PARAFIA_PARTS = [   // nazwa w wersje.json => [rodzaj, plik wtyczki / katalog motywu, plik w wydaniu]
 	'parafia'           => ['plugin', 'parafia/parafia.php', 'parafia.zip'],
 	'parafia-dokumenty' => ['plugin', 'parafia-dokumenty/parafia-dokumenty.php', 'parafia-dokumenty.zip'],
