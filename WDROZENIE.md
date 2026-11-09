@@ -1,6 +1,7 @@
 # Wgranie nowej strony na brenna.luteranie.pl
 
-Dwa pliki z folderu `dist/`: **`parafia.zip`** (wtyczka) i **`brenna.zip`** (motyw).
+Trzy pliki z folderu `dist/`: **`parafia.zip`** (wtyczka), **`brenna.zip`** (motyw) i **`parafia-dokumenty.zip`**
+(pliki PDF: standardy ochrony małoletnich z załącznikami, ok. 8 MB).
 Nowa strona startuje w **trybie próbnym**: odwiedzający dalej widzą starą stronę, a nową widzą tylko
 redaktorzy parafii i osoby ze stałym linkiem. Zmiana na nową stronę dla wszystkich to jeden przycisk.
 
@@ -11,6 +12,12 @@ Wtyczki → Dodaj nową → wyszukaj „UpdraftPlus” → Zainstaluj → Włąc
 ## 1. Wtyczka
 Wtyczki → Dodaj nową → **Wyślij wtyczkę na serwer** → wybierz `parafia.zip` → Zainstaluj → **Włącz**.
 W menu kokpitu pojawi się pozycja **Parafia**.
+
+## 1a. Dokumenty (raz)
+Wtyczki → Dodaj nową → Wyślij wtyczkę na serwer → `parafia-dokumenty.zip` → Zainstaluj. **Włączać nie trzeba** –
+to tylko pliki PDF, do których prowadzą linki na podstronie Dokumenty.
+Jeśli WordPress odpowie, że plik jest za duży (limit wgrywania na hostingu bywa 8 MB), rozpakuj ZIP u siebie
+i wgraj folder `parafia-dokumenty` przez FTP do `wp-content/plugins/`.
 
 ## 2. Motyw
 Wygląd → Motywy → Dodaj nowy → **Wyślij motyw na serwer** → wybierz `brenna.zip` → Zainstaluj.
@@ -39,7 +46,7 @@ Kokpit → **Parafia** → **„Włącz nową stronę dla wszystkich”**. Powr�
 | Usunięcie aktualności | wpis trafia do **Kosza** (Wpisy → Kosz → Przywróć) |
 | Teksty, kalendarz, grupy, pytania, kontakt, lista dokumentów | ustawienia wtyczki; **Parafia → Historia zmian → Przywróć** |
 | Tabela nabożeństw | ustawienia wtyczki; historia jak wyżej |
-| Pliki na podstronie Dokumenty | **Media** |
+| Pliki na podstronie Dokumenty | standardy z załącznikami – wtyczka „Parafia – dokumenty”; pliki dodane przez proboszcza – **Media** |
 
 ## Gdyby coś nie działało
 - **Po zalogowaniu nic się nie dzieje / „Nie zapisano”** – wtyczka bezpieczeństwa (np. Wordfence,
@@ -52,5 +59,5 @@ Kokpit → **Parafia** → **„Włącz nową stronę dla wszystkich”**. Powr�
 
 ## Aktualizacja (nowa wersja motywu lub wtyczki)
 U Jarosława: `cd src && python make_page.py`, potem `python narzedzia/wp_build.py` → nowe ZIP-y w `dist/`.
-Na stronie: wgraj ZIP tak samo jak za pierwszym razem – WordPress zapyta „Zastąpić bieżącą wersję?” → Tak.
+Na stronie: wgraj ZIP tak samo (`parafia-dokumenty.zip` tylko wtedy, gdy zmieniły się PDF-y) jak za pierwszym razem – WordPress zapyta „Zastąpić bieżącą wersję?” → Tak.
 Treści proboszcza są w bazie, więc aktualizacja ich nie rusza.

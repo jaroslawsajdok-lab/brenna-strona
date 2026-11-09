@@ -1154,6 +1154,30 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 /* pasek trybu edycji na telefonie: tekst w dwóch liniach, przyciski się mieszczą */
 @media (max-width:520px){.editbar{white-space:normal!important;flex-wrap:wrap;justify-content:center;width:calc(100vw - 24px);max-width:none!important;border-radius:16px!important;padding:10px 12px!important;font-size:14px!important;text-align:center}}
 
+/* Dokumenty → ochrona małoletnich: dwa główne dokumenty, ramka pomocy, załączniki w grupach */
+.docs-in{max-width:1000px}
+.docs-note{margin:0 0 20px;color:var(--ink-soft);font-size:17px}
+.docs-main{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.doc-big{padding:22px 24px}
+.doc-big .doc-n{font-size:20px;line-height:1.3}
+.docs-help{background:var(--spruce);color:#fff;padding:24px 28px;margin:24px 0 40px}
+.docs-help h4{margin:0 0 8px;font-size:20px;color:#fff}
+.docs-help p{margin:0 0 8px;color:#fff;font-size:17px}
+.docs-help p:last-child{margin-bottom:0}
+.docs-help a{color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.docs-help .todo{font-size:14px}
+.docs-sub{font-size:20px;margin:0 0 16px}
+.docs-att{display:grid;gap:28px 40px}
+.att-g h5{margin:0 0 10px;font-size:17px;color:var(--ink)}
+.att-g ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.doc-s{padding:12px 16px}
+.doc-s .doc-n{font-size:17px;font-weight:400}
+.docs-g .docs-more{margin-top:40px}
+@media (min-width:900px){
+ .docs-main{grid-template-columns:1fr 1fr}
+ .docs-att{grid-template-columns:1fr 1fr;align-items:start}
+}
+
 </style></head>
 <body data-season="jesien">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="fglow"><stop offset="0" stop-color="#ffcf6b" stop-opacity=".75"/><stop offset="1" stop-color="#ffcf6b" stop-opacity="0"/></radialGradient><radialGradient id="warm"><stop offset="0" stop-color="#ffd27a" stop-opacity=".85"/><stop offset=".6" stop-color="#e8a24a" stop-opacity=".35"/><stop offset="1" stop-color="#e8a24a" stop-opacity="0"/></radialGradient><radialGradient id="starglow"><stop offset="0" stop-color="#fff6d0" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d0" stop-opacity="0"/></radialGradient><radialGradient id="whiteglow"><stop offset="0" stop-color="#fffdf2" stop-opacity=".95"/><stop offset="1" stop-color="#fff8dc" stop-opacity="0"/></radialGradient><linearGradient id="snowg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d6e1eb"/></linearGradient></defs></svg><a class="skip" href="#tresc">Przejdź do treści</a><header id="hero"><h1 class="sr">Parafia Ewangelicko-Augsburska Brenna-Górki</h1>
@@ -1457,11 +1481,27 @@ body.editing .doc-add{display:inline-flex;align-items:center}
  <h2 id="h-dok">Dokumenty</h2>
  <p class="lead" data-edit="tekst" data-key="tekst-7">Dokumenty parafii do przeczytania i pobrania.</p>
  <div class="docs-in" data-edit="dokumenty" data-key="dokumenty-1">
-  <div class="docs-g">
+  <div class="docs-g docs-moc">
    <h3>Ochrona małoletnich</h3>
-   <ul>
-    <li class="doc"><span class="doc-n">Standardy ochrony małoletnich w Parafii Ewangelicko-Augsburskiej Brenna-Górki</span><span class="doc-m todo">plik do dodania</span></li>
-    <li class="doc"><span class="doc-n">Standardy ochrony małoletnich – wersja skrócona dla dzieci i młodzieży</span><span class="doc-m todo">plik do dodania</span></li>
+   <p class="docs-note">Parafia stosuje Standardy ochrony małoletnich przyjęte uchwałą Rady Parafialnej z 25 lipca 2024 roku.</p>
+   <ul class="docs-main">
+    <li class="doc doc-big"><a class="doc-n" href="dokumenty/standardy-ochrony-maloletnich.pdf" target="_blank" rel="noopener">Standardy ochrony małoletnich w Parafii Ewangelicko-Augsburskiej Brenna-Górki</a><span class="doc-m">z dnia 25 lipca 2024 r. · PDF, 683 KB, 16 stron</span></li>
+    <li class="doc doc-big"><a class="doc-n" href="dokumenty/zalacznik-15.pdf" target="_blank" rel="noopener">Standardy ochrony małoletnich – wersja skrócona dla dzieci</a><span class="doc-m">załącznik nr 15 · PDF, 606 KB, 4 strony</span></li>
+   </ul>
+   <div class="docs-help">
+    <h4>Jeśli dziecku dzieje się krzywda</h4>
+    <p>Powiedz o tym proboszczowi albo osobie z Zespołu Wsparcia parafii <span class="todo">skład Zespołu Wsparcia – do uzupełnienia</span>. W nagłej sytuacji dzwoń pod <a href="tel:112">112</a>.</p>
+    <p>Dzieci i młodzież mogą bezpłatnie porozmawiać z kimś zaufanym: <a href="tel:116111">116 111</a> – Telefon Zaufania dla Dzieci i Młodzieży, <a href="tel:800121212">800 12 12 12</a> – Dziecięcy Telefon Zaufania Rzecznika Praw Dziecka.</p>
+   </div>
+   <h4 class="docs-sub">Załączniki do standardów</h4>
+   <div class="docs-att">
+    <div class="att-g"><h5>Rekrutacja i personel</h5><ul><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-01.pdf" target="_blank" rel="noopener">Informacja – ogłoszenia rekrutacyjne</a><span class="doc-m">nr 1 · PDF, 332 KB</span></li><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-02.pdf" target="_blank" rel="noopener">Zasady bezpiecznej rekrutacji</a><span class="doc-m">nr 2 · PDF, 792 KB</span></li><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-04.pdf" target="_blank" rel="noopener">Oświadczenie o zapoznaniu się ze Standardami</a><span class="doc-m">nr 4 · PDF, 484 KB</span></li><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-05.pdf" target="_blank" rel="noopener">Oświadczenie pracownika</a><span class="doc-m">nr 5 · PDF, 771 KB</span></li><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-06.pdf" target="_blank" rel="noopener">Oświadczenie o odbyciu szkolenia</a><span class="doc-m">nr 6 · PDF, 487 KB</span></li><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-07.pdf" target="_blank" rel="noopener">Zasady bezpiecznych relacji</a><span class="doc-m">nr 7 · PDF, 361 KB</span></li></ul></div>
+    <div class="att-g"><h5>Zgłoszenia i interwencja</h5><ul><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-08.pdf" target="_blank" rel="noopener">Karta adnotacji interwencji w placówce</a><span class="doc-m">nr 8 · PDF, 420 KB</span></li><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-09.pdf" target="_blank" rel="noopener">Wzór wniosku o wgląd w sytuację Małoletniego</a><span class="doc-m">nr 9 · PDF, 263 KB</span></li><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-10.pdf" target="_blank" rel="noopener">Wzór zawiadomienia o podejrzeniu popełnienia przestępstwa</a><span class="doc-m">nr 10 · PDF, 261 KB</span></li></ul></div>
+    <div class="att-g"><h5>Zgoda na wykorzystanie wizerunku dziecka</h5><ul><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-11a.pdf" target="_blank" rel="noopener">Zgoda Opiekunów na wykorzystanie wizerunku Małoletniego – od 13 roku życia</a><span class="doc-m">nr 11a · PDF, 366 KB</span></li><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-11b.pdf" target="_blank" rel="noopener">Zgoda Opiekunów na wykorzystanie wizerunku Małoletniego – do 13 roku życia</a><span class="doc-m">nr 11b · PDF, 365 KB</span></li></ul></div>
+    <div class="att-g"><h5>Monitoring i ocena ryzyka</h5><ul><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-12.pdf" target="_blank" rel="noopener">Monitoring standardów placówki – ankieta</a><span class="doc-m">nr 12 · PDF, 506 KB</span></li><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-13.pdf" target="_blank" rel="noopener">Ocena ryzyka placówki</a><span class="doc-m">nr 13 · PDF, 499 KB</span></li><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-14.pdf" target="_blank" rel="noopener">Obszary ryzyka w placówce</a><span class="doc-m">nr 14 · PDF, 484 KB</span></li></ul></div>
+    <div class="att-g"><h5>Przepisy</h5><ul><li class="doc doc-s"><a class="doc-n" href="dokumenty/zalacznik-03.pdf" target="_blank" rel="noopener">Wyciągi z przepisów</a><span class="doc-m">nr 3 · PDF, 606 KB</span></li></ul></div>
+   </div>
+   <ul class="docs-more">
     <li class="doc"><a class="doc-n" href="#aktualnosci">Komunikat o zespole do spraw zbadania przypadków skrzywdzenia</a><span class="doc-m">w Aktualnościach, 20 września 2026</span></li>
    </ul>
   </div>

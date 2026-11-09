@@ -1,6 +1,7 @@
 """Składa motyw WordPressa „Brenna-Górki” z gotowej strony prototypu i pakuje motyw + wtyczkę do ZIP-ów.
 Użycie:  python narzedzia/wp_build.py        (najpierw: cd src && python make_page.py)
-Wynik:   dist/brenna/ (motyw), dist/brenna.zip, dist/parafia.zip
+Wynik:   dist/brenna/ (motyw), dist/brenna.zip, dist/parafia.zip, dist/parafia-dokumenty.zip (pliki PDF z src/dokumenty –
+         osobna wtyczka wgrywana raz, żeby motyw był lekki przy aktualizacjach)
 Motyw to ta sama strona co src/brenna-strona.html; WordPress wstawia w niej tylko swoje znaczniki
 (wp_head, wp_footer) i dane wtyczki „Parafia” (zapisane teksty, nabożeństwa, aktualności, prawo edycji)."""
 import re, shutil, tarfile, zipfile, pathlib
@@ -35,6 +36,7 @@ if (!defined('ABSPATH')) exit;
 $html = file_get_contents(__DIR__ . '/page.html');
 $grab = function ($fn) { ob_start(); $fn(); return ob_get_clean(); };
 $html = str_replace('{{THEME}}', esc_url(get_template_directory_uri()), $html);
+$html = str_replace('{{DOCS}}', esc_url(content_url('plugins/parafia-dokumenty/dokumenty')), $html);   // pliki z wtyczki „Parafia – dokumenty”
 $html = str_replace('<!--WP_HEAD-->', $grab('wp_head'), $html);
 $html = str_replace('<!--PARAFIA_BOOT-->', function_exists('parafia_boot') ? $grab('parafia_boot') : '', $html);
 $html = str_replace('<!--WP_FOOTER-->', $grab('wp_footer'), $html);
@@ -63,6 +65,7 @@ assert h.count('<script>') == 1, 'oczekiwany jeden główny skrypt'
 h = h.replace('</head>', '<!--WP_HEAD-->\n</head>', 1)
 h = h.replace('<script>', '<!--PARAFIA_BOOT-->\n<script>', 1)
 i = h.rfind('</body>'); h = h[:i] + '<!--WP_FOOTER-->\n' + h[i:]
+h = h.replace('href="dokumenty/', 'href="{{DOCS}}/')
 (THEME / 'page.html').write_text(h, encoding='utf-8')
 (THEME / 'style.css').write_text(STYLE, encoding='utf-8')
 (THEME / 'functions.php').write_text(FUNCTIONS, encoding='utf-8')
@@ -77,3 +80,18 @@ def zipdir(folder, out):
     print(f'ok  {out.relative_to(ROOT)}  {out.stat().st_size // 1024} KB')
 zipdir(THEME, DIST / 'brenna.zip')
 zipdir(PLUGIN, DIST / 'parafia.zip')
+
+# pliki dokumentów (standardy ochrony małoletnich itd.) jako osobna wtyczka
+DOCS = DIST / 'parafia-dokumenty'
+if DOCS.exists(): shutil.rmtree(DOCS)
+shutil.copytree(ROOT / 'src' / 'dokumenty', DOCS / 'dokumenty')
+(DOCS / 'parafia-dokumenty.php').write_text("""<?php
+/**
+ * Plugin Name: Parafia Brenna-Górki – dokumenty
+ * Description: Pliki PDF do podstrony Dokumenty (standardy ochrony małoletnich z załącznikami). Wystarczy, że jest wgrana – włączać nie trzeba.
+ * Version: """ + VERSION + """
+ * Author: Jarosław Sajdok
+ */
+if (!defined('ABSPATH')) exit;
+""", encoding='utf-8')
+zipdir(DOCS, DIST / 'parafia-dokumenty.zip')

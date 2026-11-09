@@ -2,7 +2,7 @@
 Wersja pokazowa: panele podglądu animacji zawsze widoczne, przycisk „Edycja strony (pokaz)”
 z wpisanym loginem prototypu (proboszcz / brenna). Kod strony w src/ się nie zmienia.
 Użycie:  python narzedzia/spakuj.py        (najpierw: cd src && python make_page.py)
-Wynik:   pokaz/brenna-strona-pokaz.html
+Wynik:   pokaz/brenna-strona-pokaz.html (+ pokaz/dokumenty/) i pokaz/brenna-strona-pokaz.zip do wysłania
 Bez internetu nie działają tylko spacer 360° i mapa Google (to ramki z innych stron)."""
 import re, base64, tarfile, pathlib, urllib.request
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -82,3 +82,13 @@ h = images(h)
 h = demo(h)
 OUT.parent.mkdir(exist_ok=True); OUT.write_text(h, encoding='utf-8')
 print(f'ok  {OUT.relative_to(ROOT)}  {OUT.stat().st_size // 1024} KB')
+
+# PDF-y z podstrony Dokumenty leżą obok strony (linki „dokumenty/…”); do wysłania: jeden ZIP ze stroną i folderem
+import shutil, zipfile
+if (OUT.parent / 'dokumenty').exists(): shutil.rmtree(OUT.parent / 'dokumenty')
+shutil.copytree(ROOT / 'src' / 'dokumenty', OUT.parent / 'dokumenty')
+Z = OUT.parent / 'brenna-strona-pokaz.zip'
+with zipfile.ZipFile(Z, 'w', zipfile.ZIP_DEFLATED) as z:
+    z.write(OUT, OUT.name)
+    for f in sorted((OUT.parent / 'dokumenty').glob('*')): z.write(f, 'dokumenty/' + f.name)
+print(f'ok  {Z.relative_to(ROOT)}  {Z.stat().st_size // 1024} KB  (strona + dokumenty – rozpakować i otworzyć HTML)')

@@ -58,7 +58,8 @@ with sync_playwright() as p:
     pg.screenshot(path=str(OUT / 'wp-home.png'))
     # 7. wylogowanie
     pg.goto(B + '/'); pg.wait_for_timeout(1500); pg.evaluate("document.body.classList.add('editing')")
-    pg.click('.editbar .out'); pg.wait_for_timeout(3000)
+    with pg.expect_navigation(): pg.click('.editbar .out')
+    pg.wait_for_load_state('load'); pg.wait_for_timeout(1000)
     ok(pg.evaluate('!window.PARAFIA || !window.PARAFIA.canEdit'), 'po wylogowaniu brak edycji')
     ok(not errs, 'brak błędów JS ' + ('' if not errs else str(errs[:3])))
     b.close()
