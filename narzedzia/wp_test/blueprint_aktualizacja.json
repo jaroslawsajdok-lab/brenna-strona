@@ -1,0 +1,12 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/wp-admin/",
+  "preferredVersions": { "php": "8.2", "wp": "latest" },
+  "steps": [
+    { "step": "unzip", "zipFile": { "resource": "vfs", "path": "/stare/parafia.zip" }, "extractToPath": "/wordpress/wp-content/plugins" },
+    { "step": "unzip", "zipFile": { "resource": "vfs", "path": "/stare/parafia-dokumenty.zip" }, "extractToPath": "/wordpress/wp-content/plugins" },
+    { "step": "unzip", "zipFile": { "resource": "vfs", "path": "/stare/brenna.zip" }, "extractToPath": "/wordpress/wp-content/themes" },
+    { "step": "activatePlugin", "pluginPath": "/wordpress/wp-content/plugins/parafia/parafia.php" },
+    { "step": "runPHP", "code": "<?php require '/wordpress/wp-load.php'; update_option('parafia_token','TESTLINK123');" }
+  ]
+}

@@ -57,7 +57,22 @@ Kokpit → **Parafia** → **„Włącz nową stronę dla wszystkich”**. Powr�
 - **Coś poszło źle** – Wtyczki → „Parafia Brenna-Górki” → Wyłącz. Strona wraca do starego wyglądu
   (wszystkie dotychczasowe wpisy i zdjęcia zostają). W ostateczności: kopia z kroku 0.
 
-## Aktualizacja (nowa wersja motywu lub wtyczki)
-U Jarosława: `cd src && python make_page.py`, potem `python narzedzia/wp_build.py` → nowe ZIP-y w `dist/`.
-Na stronie: wgraj ZIP tak samo (`parafia-dokumenty.zip` tylko wtedy, gdy zmieniły się PDF-y) jak za pierwszym razem – WordPress zapyta „Zastąpić bieżącą wersję?” → Tak.
-Treści proboszcza są w bazie, więc aktualizacja ich nie rusza.
+## Skąd brać pliki
+Najnowsze ZIP-y są zawsze na GitHubie: **https://github.com/jaroslawsajdok-lab/brenna-strona/releases/latest**
+(sekcja „Assets”: `parafia.zip`, `brenna.zip`, `parafia-dokumenty.zip`). Pierwszy raz wgrywasz je ręcznie
+jak wyżej – od wersji 1.2.0 kolejne przychodzą same.
+
+## Aktualizacje (od wersji 1.2.0 – jednym kliknięciem)
+1. Kokpit → **Aktualizacje** (albo Parafia → „Sprawdź aktualizacje”).
+2. Przy „Parafia Brenna-Górki”, „Brenna-Górki” (motyw) i ewentualnie „dokumenty” zaznacz → **Aktualizuj**.
+3. Gotowe. Treści proboszcza są w bazie, aktualizacja ich nie rusza. Panel Parafia → **Wersje** pokazuje, co jest zainstalowane.
+
+WordPress sam sprawdza GitHuba co kilka godzin; „Sprawdź ponownie” w Kokpit → Aktualizacje sprawdza od razu.
+Dokumenty (8 MB PDF-ów) mają osobny numer wersji – pobierają się tylko, gdy zmienią się same pliki.
+
+## Jak powstaje nowa wersja (u Jarosława / Claude Code)
+```bash
+GH_TOKEN=$(gh auth token) python narzedzia/wydanie.py 1.3.0 "Co się zmieniło"
+```
+Skrypt: numer wersji → składa stronę i paczki → commit, tag, push → wydanie na GitHubie z ZIP-ami.
+Gdy zmieniły się PDF-y w `src/dokumenty`, najpierw podnieś `DOCS_VERSION` w `narzedzia/wp_build.py`.
