@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Parafia Brenna-Górki
  * Description: Zapis treści edytowanych na stronie (teksty, nabożeństwa, aktualności, dokumenty), logowanie redaktora parafii, nowy wygląd w trybie próbnym (stały link) i przełącznik „nowa strona dla wszystkich”. Działa z motywem „Brenna-Górki”.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Requires at least: 6.4
  * Requires PHP: 7.4
  * Author: Jarosław Sajdok
