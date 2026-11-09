@@ -19,13 +19,17 @@ require_once __DIR__ . '/aktualizacje.php';   // aktualizacje jednym kliknięcie
 /* ------------------------------------------------------------------
  * Włączenie / wyłączenie wtyczki: rola „Redaktor parafii”, prawo edycji dla administratora, klucz linku próbnego
  * ------------------------------------------------------------------ */
-register_activation_hook(__FILE__, function () {
-	add_role('redaktor_parafii', 'Redaktor parafii', [
-		'read' => true, 'upload_files' => true, PARAFIA_CAP => true,
-	]);
-	if ($admin = get_role('administrator')) $admin->add_cap(PARAFIA_CAP);
+// role i uprawnienia: przy włączeniu wtyczki i przy każdej zmianie wersji (aktualizacja przez podmianę plików
+// nie uruchamia haka włączenia). Prawo edycji strony parafii: Redaktor parafii, Administrator i wbudowany Redaktor WP.
+const PARAFIA_ROLES_VER = 2;
+function parafia_setup_roles() {
+	if (!get_role('redaktor_parafii')) add_role('redaktor_parafii', 'Redaktor parafii', ['read' => true, 'upload_files' => true, PARAFIA_CAP => true]);
+	foreach (['redaktor_parafii', 'administrator', 'editor'] as $r) if ($role = get_role($r)) $role->add_cap(PARAFIA_CAP);
 	if (!get_option('parafia_token')) update_option('parafia_token', wp_generate_password(20, false), false);
-});
+	update_option('parafia_roles_ver', PARAFIA_ROLES_VER, false);
+}
+register_activation_hook(__FILE__, 'parafia_setup_roles');
+add_action('init', function () { if ((int) get_option('parafia_roles_ver') < PARAFIA_ROLES_VER) parafia_setup_roles(); }, 0);
 register_deactivation_hook(__FILE__, function () {
 	// rola zostaje (żeby nie zgubić kont), ale wraca stary wygląd, jeśli nowy był włączony dla wszystkich
 	if (get_option('stylesheet') === PARAFIA_THEME && ($prev = get_option('parafia_prev_theme'))) switch_theme($prev);
@@ -205,7 +209,8 @@ function parafia_rest_login(WP_REST_Request $r) {
 	}
 	if (!user_can($user, PARAFIA_CAP)) {
 		wp_logout();
-		return new WP_Error('parafia', 'To konto nie ma prawa edycji strony parafii.', ['status' => 403]);
+		$roles = array_map(function ($r) { return translate_user_role(wp_roles()->roles[$r]['name'] ?? $r); }, (array) $user->roles);
+		return new WP_Error('parafia', 'To konto nie ma prawa edycji strony parafii' . ($roles ? ' (rola: ' . implode(', ', $roles) . ')' : '') . '. Administrator może zmienić rolę na „Redaktor parafii” w Użytkownicy → Edytuj.', ['status' => 403]);
 	}
 	delete_transient($key);
 	return ['ok' => true];
