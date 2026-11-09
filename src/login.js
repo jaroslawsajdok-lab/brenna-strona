@@ -8,8 +8,8 @@
  const l=document.querySelector('.flogo'),j=document.querySelector('.jmark svg');if(l&&j)l.appendChild(j.cloneNode(true))})();
 
 // ===== logowanie i tryb edycji =====
-// Prototyp: login „proboszcz”, hasło „brenna”. W WordPressie okno wysyła dane do wp_signon()
-// (logowanie WordPressa, ciasteczko sesji), a przyciski edycji widzi tylko zalogowany redaktor.
+// Prototyp: login „proboszcz”, hasło „brenna”. W WordPressie (window.PARAFIA) okno wysyła dane do wtyczki,
+// która loguje przez wp_signon() („Zapamiętaj mnie” = rok), a o prawie do edycji decyduje serwer (PARAFIA.canEdit).
 (function(){
  const ROSE='<svg viewBox="-30 -30 60 60" aria-hidden="true"><circle r="27"/><path d="M0,-9 C-3,-15 -12,-17 -12,-10 C-12,-4 -4,1 0,6 C4,1 12,-4 12,-10 C12,-17 3,-15 0,-9 Z M0,-7 V3 M-4,-3 H4 M-4,-13 C-10,-27 10,-27 4,-13 M10,-6 C24,-9 22,10 9,4 M7,9 C14,22 -2,26 -1,13 M-7,9 C-14,22 2,26 1,13 M-10,-6 C-24,-9 -22,10 -9,4"/></svg>';
  const D=document.createElement('dialog');D.className='login';D.setAttribute('aria-labelledby','lg-h');
@@ -29,7 +29,8 @@
  const edit=on=>{if(on&&!document.body.classList.contains('admin'))return;document.body.classList.toggle('editing',on);
   document.querySelectorAll(sel).forEach(el=>{if(el.closest('.screw,.ctl,.nextbar'))return;if(on)el.setAttribute('contenteditable','true');else el.removeAttribute('contenteditable')})};
  const admin=on=>{document.body.classList.toggle('admin',on);if(!on)edit(false)};
- if(st.get('brenna-admin')==='1')admin(true);
+ const WP=window.PARAFIA;
+ if(WP?WP.canEdit:st.get('brenna-admin')==='1')admin(true);
  let fails=0,lockUntil=0;
  const open=()=>{if(document.body.classList.contains('admin')){edit(true);return}D.querySelector('.err').textContent='';D.showModal();D.querySelector('[name=u]').focus()};
  document.querySelector('.seal')?.addEventListener('click',open);
@@ -38,12 +39,16 @@
  D.querySelector('.lx').onclick=D.querySelector('.no').onclick=()=>D.close();
  D.querySelector('form').addEventListener('submit',e=>{e.preventDefault();const err=D.querySelector('.err'),u=D.querySelector('[name=u]').value.trim().toLowerCase(),p=D.querySelector('[name=p]').value;
   if(Date.now()<lockUntil){err.textContent=`Zbyt wiele prób. Spróbuj ponownie za ${Math.ceil((lockUntil-Date.now())/1000)} s.`;return}
+  if(WP){const b=D.querySelector('.go');b.disabled=true;err.textContent='';
+   WP.call('login',{body:{u,p,r:D.querySelector('[name=r]').checked}}).then(()=>{location.hash='edycja';location.reload()})
+    .catch(x=>{b.disabled=false;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');err.textContent=x.message});return}
   if(u==='proboszcz'&&p==='brenna'){fails=0;st.set('brenna-admin','1',D.querySelector('[name=r]').checked);D.querySelector('[name=p]').value='';D.close();admin(true);edit(true);return}
   fails++;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');D.querySelector('[name=p]').select();
   if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Zbyt wiele prób. Spróbuj ponownie za 30 s.'}else err.textContent='Nieprawidłowy login lub hasło.'});
  pill.onclick=()=>edit(true);
- if(bar){bar.innerHTML='Tryb edycji: kliknij tekst, aby go zmienić. <button type="button" id="editdone">Zakończ</button><button type="button" class="out">Wyloguj</button>';
-  bar.querySelector('#editdone').onclick=()=>edit(false);bar.querySelector('.out').onclick=()=>{st.del('brenna-admin');admin(false)}}
+ if(bar){bar.innerHTML='Tryb edycji: kliknij tekst, aby go zmienić. <span class="savestat" role="status"></span><button type="button" id="editdone">Zakończ</button><button type="button" class="out">Wyloguj</button>';
+  bar.querySelector('#editdone').onclick=()=>{edit(false);WP&&WP.flush&&WP.flush()};
+  bar.querySelector('.out').onclick=async()=>{if(WP){await (WP.flush&&WP.flush());await WP.call('logout').catch(()=>{});location.reload();return}st.del('brenna-admin');admin(false)}}
 })();
 // ===== mapa: przełącznik Brenna / Górki =====
 (function(){const box=document.querySelector('.mapbox');if(!box)return;const f=box.querySelector('.gmap'),l=box.querySelector('.maplink'),tabs=[...box.querySelectorAll('[role=tab]')];

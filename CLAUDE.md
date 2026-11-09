@@ -43,6 +43,7 @@ Strona ma nie wyglądać na zrobioną przez AI. Obowiązuje:
 | `login.js` | logowanie (róża Lutra w stopce lub `#edycja`; prototyp: `proboszcz` / `brenna`), tryb edycji, las w stopce, przełącznik mapy, flaga `?podglad` |
 | `pano_viewer.js/.css` | dawna własna przeglądarka spaceru (CSS 3D) – nieużywana: przy dużym ekranie rozjeżdżała się w kwadraty; zastąpiona oryginalnym odtwarzaczem |
 | `tour.js` | drzwi (rysowanie, odrysowanie po kliknięciu), spacer w kole i „Pełny ekran”: oryginalny odtwarzacz 3DVista z luteranie-wirtualne-muzea.pl w ramce (w kole wyższa niż koło, żeby pasek miniatur wypadł pod obręcz; na dotyku osłona przepuszcza przewijanie), `#media=N` otwiera od N-tego punktu (drzwi otwierają od 9 – nawa) |
+| `wp.js` | łącznik z WordPressem (działa tylko, gdy wtyczka wstawi `window.PARAFIA`): wkleja zapisane bloki `[data-key]` i wiersze nabożeństw, w trybie edycji zapisuje sam po kilku sekundach, `PARAFIA.call/upload` dla pozostałych modułów |
 | `docs.js` | podstrona Dokumenty (ochrona małoletnich, RODO, inne): w prototypie widok `#dokumenty` w tym samym pliku; w trybie edycji „+ Dodaj plik” |
 | `make_page.py` | **składa `brenna-strona.html`** (nagłówek + treść + wszystkie CSS/JS + obrazy drzwi jako data URI) |
 | `door/`, `door_svg.py`, `door_parts.html` | drzwi do spaceru (generator SVG drzwi wklejonych w `page_content.html`) |
@@ -56,12 +57,21 @@ python3 make_page.py         # po każdej zmianie – składa brenna-strona.html
 cd ..
 python3 narzedzia/zrzuty.py  # zrzuty 1440/768/390 do zrzuty/, wykrywa przewijanie w bok i błędy JS
 python3 narzedzia/sceny.py zielone reformacja   # sceny świąteczne nagłówka
+python3 narzedzia/wp_build.py # motyw + ZIP-y do WordPressa: dist/brenna.zip, dist/parafia.zip
 python3 narzedzia/spakuj.py  # wersja pokazowa w jednym pliku: pokaz/brenna-strona-pokaz.html (czcionki i zdjęcia w środku, panele podglądu zawsze, przycisk „Edycja strony (pokaz)”; spacer i mapa wymagają internetu)
 ```
 Komputer Jarosława to Windows: polecenie to `python` (albo `py`), nie `python3`.
 Wymaga: Python 3 + `pip install playwright` + `python -m playwright install chromium`.
 Do pomiaru „czy wygląda na AI” używaj skilla taste-skill (lint + inspect) i oglądaj zrzuty – nie oceniaj z samego kodu.
 Przyciski podglądu (pora roku, święta, czas, telefon) pokazują się tylko z `?podglad` w adresie.
+
+## WordPress (stan: wersja 1.0 gotowa do wgrania, przetestowana lokalnie)
+- Wtyczka: `wordpress/parafia/parafia.php` (źródło). Motyw składa `narzedzia/wp_build.py` z `src/brenna-strona.html` → `dist/brenna/`, ZIP-y w `dist/` (poza gitem).
+- Bloki edytowalne mają stałe klucze `data-key` (np. `tekst-1`, `nabozenstwa`) – **nie zmieniać ich**, bo pod nimi są zapisane treści proboszcza. Nowy blok = nowy klucz.
+- Tryb próbny: nowy wygląd widzi redaktor parafii i ktoś ze stałym linkiem `/?nowa=klucz`; przełącznik „nowa strona dla wszystkich” w kokpicie → Parafia.
+- Aktualności = zwykłe wpisy WP (te same co na starej stronie), zdjęcia i dokumenty w Mediach, teksty i nabożeństwa w opcjach wtyczki z historią (Parafia → Historia zmian).
+- Test lokalny: `narzedzia/wp_test/` (blueprint Playground + `test_flow.py`; dane testowego konta w blueprint.json). Uruchomienie w Git Bash wymaga `MSYS_NO_PATHCONV=1`.
+- Instrukcja wgrania: `WDROZENIE.md`.
 
 ## Wiadome braki (stan na 29.10.2026)
 - Brak prawdziwych zdjęć poza miniaturami aktualności (galeria, plakaty, duszpasterz puste). Potrzebne: kościół w Brennej, kościół w Górkach, ludzie, wnętrze – od parafii / z FB za zgodą proboszcza.

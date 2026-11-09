@@ -16,8 +16,10 @@ let posts=[...sec.querySelectorAll('article.post')].map(a=>{const im=a.querySele
  const p={id:++uid,title:a.querySelector('h3').textContent.trim(),date:a.querySelector('time').getAttribute('datetime'),
   html:[...a.querySelectorAll('p')].map(x=>'<p>'+x.innerHTML+'</p>').join(''),main:im?{src:im.getAttribute('src'),fx:50,fy:50}:null,gallery:[]};
  a.remove();return p});
+// WordPress: wpisy z bazy (każdy ma wp – numer wpisu; zdjęcia mają id w bibliotece mediów)
+const WP=window.PARAFIA;
+if(WP&&Array.isArray(WP.posts))posts=WP.posts.map(x=>({...x,id:++uid}));
 const lead=sec.querySelector('.lead');
-if(lead)lead.textContent='Ogłoszenia i wydarzenia z naszej parafii.';
 const addBtn=document.createElement('button');addBtn.type='button';addBtn.className='addpost';addBtn.innerHTML='<span aria-hidden="true">+</span> Dodaj aktualność';
 (lead||sec.querySelector('h2')).after(addBtn);
 const SHOW=4;
@@ -114,7 +116,8 @@ function ask(q,yes,no,cb,danger){const C=$('.ped-confirm');C.hidden=false;$('#pe
 const tryClose=()=>{if(snap()!==orig)ask('Zamknąć bez zapisywania zmian?','Zamknij','Wróć do edycji',shut,true);else shut()};
 D.addEventListener('cancel',e=>{e.preventDefault();if(!$('.ped-confirm').hidden){$('.ped-confirm').hidden=true;return}tryClose()});
 $('.ped-x').onclick=tryClose;$('.ped-foot .ped-cancel').onclick=tryClose;
-$('.ped-del').onclick=()=>ask('Usunąć ten wpis ze strony?','Usuń wpis','Nie usuwaj',()=>{posts=posts.filter(x=>x.id!==editing.id);shut();render();toast('Wpis usunięty')},true);
+$('.ped-del').onclick=()=>ask('Usunąć ten wpis ze strony?','Usuń wpis','Nie usuwaj',()=>{const gone=editing;posts=posts.filter(x=>x.id!==gone.id);shut();render();toast('Wpis usunięty');
+ if(WP&&gone.wp)WP.call('posts/'+gone.wp,{method:'DELETE'}).catch(e=>toast('Nie usunięto z bazy: '+e.message))},true);
 
 // zdjęcie główne
 const ICON='<svg viewBox="0 0 54 54" aria-hidden="true"><rect x="5" y="11" width="44" height="33" rx="3"/><circle cx="19" cy="22" r="4.5"/><path d="M5 38 L19 28 L28 35 L37 26 L49 36"/></svg>';
@@ -198,6 +201,15 @@ $('.ped-in').addEventListener('submit',e=>{e.preventDefault();const title=fT.val
  if(!title){$('.ped-title').classList.add('bad');msg.textContent='Wpisz tytuł wpisu.';fT.focus();return}
  const p={...cur,title,date:fD.value||todayISO(),html:clean(txt.innerHTML)};
  if(editing){Object.assign(editing,p)}else{p.id=++uid;posts.push(p)}
- shut();render(p.id||editing.id);toast(editing?'Zmiany zapisane':'Wpis opublikowany')});
+ const saved=editing||p;shut();render(p.id||editing.id);
+ if(!WP){toast(editing?'Zmiany zapisane':'Wpis opublikowany');return}
+ toast('Zapisywanie wpisu…');persist(saved).then(()=>toast(editing?'Zmiany zapisane':'Wpis opublikowany')).catch(e=>toast('Nie zapisano: '+e.message))});
+// WordPress: nowe zdjęcia (adresy blob:) do biblioteki mediów, potem wpis do bazy
+async function persist(p){
+ const up=async im=>{if(!im||!/^blob:/.test(im.src))return im;const b=await (await fetch(im.src)).blob();const m=await WP.upload(b,'zdjecie.jpg');return {...im,src:m.url,mid:m.id}};
+ p.main=await up(p.main);p.gallery=await Promise.all((p.gallery||[]).map(up));
+ const r=await WP.call('posts',{body:{wp:p.wp||0,title:p.title,date:p.date,html:p.html,
+  main:p.main?{id:p.main.mid||0,src:p.main.src,fx:p.main.fx,fy:p.main.fy}:null,gallery:(p.gallery||[]).map(g=>g.mid||0).filter(Boolean)}});
+ p.wp=r.wp;render()}
 function toast(t){const el=document.createElement('div');el.className='ped-toast';el.setAttribute('role','status');el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.remove(),3100)}
 })();

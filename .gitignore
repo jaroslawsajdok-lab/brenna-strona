@@ -4,3 +4,4 @@ zrzuty/
 __pycache__/
 *.pyc
 pokaz/
+dist/

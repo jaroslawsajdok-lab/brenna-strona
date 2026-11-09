@@ -1,0 +1,10 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/",
+  "preferredVersions": { "php": "8.2", "wp": "latest" },
+  "steps": [
+    { "step": "setSiteOptions", "options": { "blogname": "Parafia Brenna-Górki (test lokalny)" } },
+    { "step": "activatePlugin", "pluginPath": "/wordpress/wp-content/plugins/parafia/parafia.php" },
+    { "step": "runPHP", "code": "<?php require '/wordpress/wp-load.php'; wp_insert_user(['user_login'=>'proboszcz-test','user_pass'=>'Test-Brenna-2026','role'=>'redaktor_parafii','display_name'=>'Proboszcz (test)']); update_option('parafia_token','TESTLINK123'); foreach(['Koncert organowy','Tydzień Dobrej Nowiny','Komunikat'] as $i=>$t) wp_insert_post(['post_title'=>$t,'post_content'=>'<p>Treść testowa wpisu „'.$t.'”.</p>','post_status'=>'publish','post_date'=>date('Y-m-d H:i:s',time()-($i+1)*86400*5)]);" }
+  ]
+}

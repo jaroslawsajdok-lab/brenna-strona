@@ -2,7 +2,7 @@
 // Dokumenty: w prototypie osobna „podstrona” w tym samym pliku – adres #dokumenty chowa resztę
 // treści i pokazuje sam dział pod nagłówkiem. W WordPressie to zwykła podstrona /dokumenty/.
 // W trybie edycji przy każdej grupie „+ Dodaj plik” (prototyp: plik widać do odświeżenia strony;
-// w WordPressie trafi do biblioteki mediów).
+// w WordPressie od razu trafia do biblioteki mediów).
 // =====================================================================
 (function(){const sec=document.getElementById('dokumenty');if(!sec)return;
  function route(){const h=location.hash;if(h==='#edycja')return;
@@ -24,5 +24,9 @@
    const a=document.createElement('a');a.className='doc-n';a.href=URL.createObjectURL(file);a.target='_blank';a.rel='noopener';
    a.textContent=file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ');
    const m=document.createElement('span');m.className='doc-m';m.textContent=`${file.name.split('.').pop().toUpperCase()}, ${size(file.size)}`;
-   li.append(a,m);g.querySelector('ul').appendChild(li);f.value=''};
+   li.append(a,m);g.querySelector('ul').appendChild(li);f.value='';
+   // WordPress: plik do biblioteki mediów, na liście zostaje jego stały adres (zapis listy robi wp.js)
+   const WP=window.PARAFIA;if(WP){m.textContent='wysyłanie…';
+    WP.upload(file).then(r=>{a.href=r.url;m.textContent=`${file.name.split('.').pop().toUpperCase()}, ${size(file.size)}`})
+     .catch(e=>{m.textContent='nie wysłano: '+e.message;m.classList.add('todo')})}};
   g.append(b,f)})})();

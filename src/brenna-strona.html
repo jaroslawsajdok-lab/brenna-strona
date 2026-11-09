@@ -1266,7 +1266,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
  </figure>
  <div class="now-h">
   <h2 id="h-akt">Aktualności</h2>
-  <p class="lead" data-edit="tekst">Ogłoszenia i wydarzenia z naszej parafii.</p>
+  <p class="lead" data-edit="tekst" data-key="tekst-1">Ogłoszenia i wydarzenia z naszej parafii.</p>
  </div>
 
  <article class="post">
@@ -1293,7 +1293,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 <!-- ============ SŁOWO NA TYDZIEŃ ============ -->
 <section class="verse" aria-label="Hasło tygodnia">
  <div class="wrap">
-  <blockquote data-edit="tekst">
+  <blockquote data-edit="tekst" data-key="tekst-2">
    <p>Uzdrów mnie, Panie, a będę uzdrowiony, wybaw mnie, a będę wybawiony.</p>
    <footer>Jeremiasz 17,14 <span>hasło 19. niedzieli po Trójcy Świętej</span></footer>
   </blockquote>
@@ -1304,7 +1304,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 <section class="wrap services" id="nabozenstwa" aria-labelledby="h-nab">
  <h2 id="h-nab">Nabożeństwa</h2>
  <div class="sheet">
-  <table class="titleblock" data-edit="tabela">
+  <table class="titleblock" data-edit="tabela" data-key="nabozenstwa">
    <thead><tr><th scope="col">Data</th><th scope="col">Niedziela</th><th scope="col">Brenna</th><th scope="col">Górki</th></tr></thead>
    <tbody>
     <tr class="next feast"><td><b>31.10</b> sobota</td><td>Święto Reformacji</td><td class="tbc">wg ogłoszeń</td><td class="tbc">wg ogłoszeń</td></tr>
@@ -1313,7 +1313,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
     <tr><td><b>15.11</b> niedziela</td><td>przedostatnia niedziela roku kościelnego</td><td>8:30</td><td>10:15</td></tr>
    </tbody>
   </table>
-  <div class="weekly" data-edit="tekst">
+  <div class="weekly" data-edit="tekst" data-key="tekst-3">
    <h3>W tygodniu</h3>
    <dl>
     <div><dt>Godzina biblijna</dt><dd>czwartek 17:30. Brenna: 1., 3. i 5. czwartek miesiąca, Górki: 2. i 4.</dd></div>
@@ -1329,7 +1329,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 <section class="wrap agenda" id="kalendarz" aria-labelledby="h-kal">
  <div class="cal">
   <h2 id="h-kal">Kalendarz</h2>
-  <ol class="days" data-edit="kalendarz">
+  <ol class="days" data-edit="kalendarz" data-key="kalendarz-1">
    <li><time datetime="2026-10-11"><b>11</b> paź</time><div><h3>Koncert „Organowo i nie tylko”</h3><p>17:00, kościół w Brennej. IV koncert VII Jesiennych Koncertów Kameralnych.</p></div></li>
    <li><time datetime="2026-10-16"><b>16</b> paź</time><div><h3>Próba zespołu „Świetliki”</h3><p>17:30. O 18:00 spotkanie młodzieży i konfirmantów w Brennej.</p></div></li>
    <li><time datetime="2026-10-31"><b>31</b> paź</time><div><h3>Święto Reformacji</h3><p>Nabożeństwo świąteczne. Szczegóły w ogłoszeniach.</p></div></li>
@@ -1337,8 +1337,8 @@ body.editing .doc-add{display:inline-flex;align-items:center}
   <a class="more" href="#">Pełny kalendarz parafii</a>
  </div>
  <div class="posters" aria-label="Plakaty">
-  <figure class="poster p1" data-edit="plakat"><img src="https://brenna.luteranie.pl/wp-content/uploads/2026/08/jkk.jpg" alt="Plakat: VII Jesienne Koncerty Kameralne" loading="lazy" onerror="this.remove()"><figcaption>Jesienne Koncerty Kameralne</figcaption></figure>
-  <figure class="poster p2" data-edit="plakat"><img src="https://brenna.luteranie.pl/wp-content/uploads/2026/06/tdn-brenna-2026.jpg" alt="Plakat: Tydzień Dobrej Nowiny" loading="lazy" onerror="this.remove()"><figcaption>Tydzień Dobrej Nowiny</figcaption></figure>
+  <figure class="poster p1" data-edit="plakat" data-key="plakat-1"><img src="https://brenna.luteranie.pl/wp-content/uploads/2026/08/jkk.jpg" alt="Plakat: VII Jesienne Koncerty Kameralne" loading="lazy" onerror="this.remove()"><figcaption>Jesienne Koncerty Kameralne</figcaption></figure>
+  <figure class="poster p2" data-edit="plakat" data-key="plakat-2"><img src="https://brenna.luteranie.pl/wp-content/uploads/2026/06/tdn-brenna-2026.jpg" alt="Plakat: Tydzień Dobrej Nowiny" loading="lazy" onerror="this.remove()"><figcaption>Tydzień Dobrej Nowiny</figcaption></figure>
  </div>
 </section>
 
@@ -1346,18 +1346,18 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 <section class="wrap gallery" id="galerie" aria-labelledby="h-gal">
  <h2 id="h-gal">Galerie</h2>
  <div class="albums">
-  <a class="album a1" href="#" data-edit="galeria"><div class="ph"></div><span>Tydzień Dobrej Nowiny 2026</span><small>lipiec 2026</small></a>
-  <a class="album a2" href="#" data-edit="galeria"><div class="ph"></div><span>Święto Żniw</span><small>październik 2026</small></a>
-  <a class="album a3" href="#" data-edit="galeria"><div class="ph"><img src="https://brenna.luteranie.pl/wp-content/uploads/2019/05/choir.jpg" alt="" loading="lazy" onerror="this.remove()"></div><span>Chóry parafialne</span><small>archiwum</small></a>
-  <a class="album a4" href="#" data-edit="galeria"><div class="ph"></div><span>Jesienne Koncerty Kameralne</span><small>2026</small></a>
-  <a class="album a5" href="#" data-edit="galeria"><div class="ph"><img src="https://brenna.luteranie.pl/wp-content/uploads/2019/05/youth.jpg" alt="" loading="lazy" onerror="this.remove()"></div><span>Młodzież</span><small>archiwum</small></a>
+  <a class="album a1" href="#" data-edit="galeria" data-key="galeria-1"><div class="ph"></div><span>Tydzień Dobrej Nowiny 2026</span><small>lipiec 2026</small></a>
+  <a class="album a2" href="#" data-edit="galeria" data-key="galeria-2"><div class="ph"></div><span>Święto Żniw</span><small>październik 2026</small></a>
+  <a class="album a3" href="#" data-edit="galeria" data-key="galeria-3"><div class="ph"><img src="https://brenna.luteranie.pl/wp-content/uploads/2019/05/choir.jpg" alt="" loading="lazy" onerror="this.remove()"></div><span>Chóry parafialne</span><small>archiwum</small></a>
+  <a class="album a4" href="#" data-edit="galeria" data-key="galeria-4"><div class="ph"></div><span>Jesienne Koncerty Kameralne</span><small>2026</small></a>
+  <a class="album a5" href="#" data-edit="galeria" data-key="galeria-5"><div class="ph"><img src="https://brenna.luteranie.pl/wp-content/uploads/2019/05/youth.jpg" alt="" loading="lazy" onerror="this.remove()"></div><span>Młodzież</span><small>archiwum</small></a>
  </div>
 </section>
 
 <!-- ============ PARAFIA ============ -->
 <section class="parish" id="parafia" aria-labelledby="h-par">
  <div class="wrap parish-in">
-  <div class="about" data-edit="tekst">
+  <div class="about" data-edit="tekst" data-key="tekst-4">
    <h2 id="h-par">Parafia Brenna-Górki</h2>
    <p>Jesteśmy parafią Kościoła Ewangelicko-Augsburskiego w Diecezji Cieszyńskiej. Gromadzimy się w dwóch miejscach: w kościele św. Bartłomieja Apostoła w Brennej, zbudowanym w latach 1985–1988 w dolinie Brennicy, oraz w Górkach.</p>
    <p class="todo">Tu proboszcz wpisze krótko historię parafii i słowo powitania.</p>
@@ -1365,7 +1365,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
   </div>
   <div class="groups">
    <h3>Grupy i wspólnoty</h3>
-   <ul data-edit="grupy">
+   <ul data-edit="grupy" data-key="grupy-1">
     <li><b>Godzina biblijna</b> wspólne czytanie Pisma, w czwartki</li>
     <li><b>Spotkania modlitewne</b> w poniedziałki</li>
     <li><b>Spotkania kobiet</b> raz w miesiącu</li>
@@ -1374,7 +1374,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
     <li><b>Chóry parafialne</b></li>
     <li><b>Rada Parafialna</b></li>
    </ul>
-   <p class="rooms" data-edit="tekst"><b>Pokoje gościnne.</b> Przy parafii można zatrzymać się na nocleg. Zapytaj w kancelarii o wolne terminy.</p>
+   <p class="rooms" data-edit="tekst" data-key="tekst-5"><b>Pokoje gościnne.</b> Przy parafii można zatrzymać się na nocleg. Zapytaj w kancelarii o wolne terminy.</p>
   </div>
  </div>
 </section>
@@ -1382,7 +1382,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 <!-- ============ PYTANIA ============ -->
 <section class="wrap faq" id="pytania" aria-labelledby="h-faq">
  <h2 id="h-faq">Jak załatwić sprawę w parafii</h2>
- <div class="faq-in"><div class="qa" data-edit="pytania">
+ <div class="faq-in"><div class="qa" data-edit="pytania" data-key="pytania-1">
   <details><summary>Chrzest dziecka</summary><p>Termin chrztu ustalamy w kancelarii parafialnej. Przyjdź we wtorek 9:00–11:00 lub w czwartek 15:30–17:00 albo zadzwoń.</p></details>
   <details><summary>Ślub</summary><p>Zgłoś się do kancelarii z wyprzedzeniem, najlepiej kilka miesięcy przed planowaną datą.</p></details>
   <details><summary>Pogrzeb</summary><p>Zadzwoń do kancelarii: (33) 853 62 50. Termin ustalimy razem z zakładem pogrzebowym.</p></details>
@@ -1422,7 +1422,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
  <div class="wrap">
   <h2 id="h-kon">Kontakt</h2>
   <div class="reach-in">
-   <dl class="cinfo" data-edit="tekst">
+   <dl class="cinfo" data-edit="tekst" data-key="tekst-6">
     <div><dt>Kancelaria</dt><dd>ul. ks. E. Miklera 9a<br>43-438 Brenna</dd></div>
     <div><dt>Telefon</dt><dd><a href="tel:+48338536250">33 853 62 50</a></dd></div>
     <div><dt>E-mail</dt><dd><a href="mailto:brenna@luteranie.pl">brenna@luteranie.pl</a></dd></div>
@@ -1455,8 +1455,8 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 <section class="wrap docs" id="dokumenty" aria-labelledby="h-dok">
  <a class="docs-back" href="#top">Strona główna</a>
  <h2 id="h-dok">Dokumenty</h2>
- <p class="lead" data-edit="tekst">Dokumenty parafii do przeczytania i pobrania.</p>
- <div class="docs-in" data-edit="dokumenty">
+ <p class="lead" data-edit="tekst" data-key="tekst-7">Dokumenty parafii do przeczytania i pobrania.</p>
+ <div class="docs-in" data-edit="dokumenty" data-key="dokumenty-1">
   <div class="docs-g">
    <h3>Ochrona małoletnich</h3>
    <ul>
@@ -2405,6 +2405,59 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
  // linia odniesienia do opisu, jak na rysunku
  mk('path',{class:'lead',d:'M-46,87.5 L-46,104'});mk('circle',{class:'ln2',cx:-46,cy:87.5,r:1.4,fill:'#1d1d1b'})})();
 // =====================================================================
+// Łącznik z WordPressem (wtyczka „Parafia”). W prototypie window.PARAFIA nie istnieje i nic tu się nie dzieje.
+// W WordPressie: (1) zanim ruszą edytory, wkleja zapisane treści bloków [data-key] i wiersze nabożeństw,
+// (2) w trybie edycji sam zapisuje zmiany kilka sekund po ostatnim stuknięciu (bez przycisku „Zapisz”),
+// (3) daje pozostałym modułom PARAFIA.call() – zapytanie do REST API z nonce i ponowieniem po wygaśnięciu.
+// =====================================================================
+(function(){const P=window.PARAFIA;if(!P)return;
+ // --- zapytania do wtyczki ---
+ P.call=async function(path,opt={}){
+  const go=()=>fetch(P.api+path,{method:opt.method||'POST',credentials:'same-origin',
+   headers:Object.assign(opt.form?{}:{'Content-Type':'application/json'},P.nonce?{'X-WP-Nonce':P.nonce}:{}),
+   body:opt.form||(opt.body!==undefined?JSON.stringify(opt.body):undefined)});
+  let r=await go();
+  if(r.status===403&&P.ajax){                       // nonce wygasł (strona otwarta długo) – pobierz nowy i spróbuj raz jeszcze
+   const n=await fetch(P.ajax+'?action=rest-nonce',{credentials:'same-origin'});if(n.ok){P.nonce=(await n.text()).trim();r=await go()}}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.message||('Błąd '+r.status));return j};
+ P.upload=async function(blobOrFile,name){const f=new FormData();f.append('file',blobOrFile,name||blobOrFile.name||'zdjecie.jpg');return P.call('media',{form:f})};
+
+ // --- (1) zapisane treści wracają na stronę ---
+ Object.entries(P.blocks||{}).forEach(([k,html])=>{const el=document.querySelector(`[data-key="${k}"]`);if(el)el.innerHTML=html});
+ const tb=document.querySelector('[data-key="nabozenstwa"]');
+ if(tb&&Array.isArray(P.services)&&P.services.length){const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  tb.tBodies[0].innerHTML=P.services.map(r=>`<tr${r.f?' class="feast"':''}><td><b>${e(r.d)}</b></td><td>${e(r.n)}</td><td>${e(r.b)}</td><td>${e(r.g)}</td></tr>`).join('')}
+ if(!P.canEdit)return;
+
+ // --- (2) zapis w trybie edycji ---
+ const dirty=new Set();let timer=0,svcDirty=false;
+ const stat=()=>document.querySelector('.editbar .savestat');
+ const say=t=>{const s=stat();if(s)s.textContent=t};
+ // kopia bloku bez elementów edytora (przyciski, pola wyboru plików, atrybuty edycji)
+ const clean=el=>{const c=el.cloneNode(true);c.querySelectorAll('[contenteditable]').forEach(x=>x.removeAttribute('contenteditable'));
+  c.querySelectorAll('.doc-add,input[type=file],.ctl,.rowtools').forEach(x=>x.remove());return c.innerHTML.trim()};
+ const rows=()=>[...tb.tBodies[0].rows].map(tr=>({d:(tr.cells[0].textContent.match(/\d{1,2}\s*\.\s*\d{1,2}/)||[''])[0].replace(/\s/g,''),
+  n:tr.cells[1].textContent.trim(),b:tr.cells[2].textContent.trim(),g:tr.cells[3].textContent.trim(),f:tr.classList.contains('feast')})).filter(r=>r.d||r.n);
+ async function flush(){timer=0;const blocks={};dirty.forEach(k=>{const el=document.querySelector(`[data-key="${k}"]`);if(el)blocks[k]=clean(el)});dirty.clear();
+  const svc=svcDirty;svcDirty=false;if(!Object.keys(blocks).length&&!svc)return;
+  say('Zapisywanie…');
+  try{if(Object.keys(blocks).length)await P.call('blocks',{body:{blocks}});if(svc&&tb)await P.call('services',{body:{rows:rows()}});say('Zapisano')}
+  catch(e){Object.keys(blocks).forEach(k=>dirty.add(k));if(svc)svcDirty=true;say('Nie zapisano: '+e.message+' – spróbuję ponownie');schedule(5000)}}
+ const schedule=(ms=1500)=>{clearTimeout(timer);timer=setTimeout(flush,ms)};
+ const mark=el=>{const b=el&&el.closest&&el.closest('[data-key]');if(!b||!document.body.classList.contains('editing'))return;
+  if(b===tb)svcDirty=true;else dirty.add(b.dataset.key);schedule()};
+ document.addEventListener('input',e=>mark(e.target));
+ document.addEventListener('focusout',e=>mark(e.target));
+ // zmiany w strukturze: wiersze nabożeństw (dodaj, usuń, przesuń, święto), dodane dokumenty
+ document.querySelectorAll('[data-key]').forEach(b=>{try{new MutationObserver(ms=>{
+  if(!document.body.classList.contains('editing'))return;
+  if(ms.some(m=>m.type==='childList'||(m.type==='attributes'&&m.target.tagName==='TR')))mark(b)})
+  .observe(b,b===tb?{childList:true,subtree:true,attributes:true,attributeFilter:['class']}:{childList:true,subtree:true})}
+  catch(e){console.warn('Parafia: obserwacja bloku',b.dataset.key,e)}});
+ addEventListener('beforeunload',e=>{if(timer||dirty.size||svcDirty){flush();e.preventDefault();e.returnValue=''}});
+ P.flush=flush})();
+
+// =====================================================================
 // Drzwi do spaceru 360°: rysują się kreską, po kliknięciu odrysowują się (kolor schodzi, kreski
 // się zwijają, w kole zostaje zdjęcie nawy), a w kole wczytuje się spacer. „Pełny ekran”
 // powiększa samo koło (bez przeładowania spaceru); „Zamknij pełny ekran” albo Esc wraca do koła.
@@ -2442,7 +2495,7 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
 // Dokumenty: w prototypie osobna „podstrona” w tym samym pliku – adres #dokumenty chowa resztę
 // treści i pokazuje sam dział pod nagłówkiem. W WordPressie to zwykła podstrona /dokumenty/.
 // W trybie edycji przy każdej grupie „+ Dodaj plik” (prototyp: plik widać do odświeżenia strony;
-// w WordPressie trafi do biblioteki mediów).
+// w WordPressie od razu trafia do biblioteki mediów).
 // =====================================================================
 (function(){const sec=document.getElementById('dokumenty');if(!sec)return;
  function route(){const h=location.hash;if(h==='#edycja')return;
@@ -2464,7 +2517,11 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
    const a=document.createElement('a');a.className='doc-n';a.href=URL.createObjectURL(file);a.target='_blank';a.rel='noopener';
    a.textContent=file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ');
    const m=document.createElement('span');m.className='doc-m';m.textContent=`${file.name.split('.').pop().toUpperCase()}, ${size(file.size)}`;
-   li.append(a,m);g.querySelector('ul').appendChild(li);f.value=''};
+   li.append(a,m);g.querySelector('ul').appendChild(li);f.value='';
+   // WordPress: plik do biblioteki mediów, na liście zostaje jego stały adres (zapis listy robi wp.js)
+   const WP=window.PARAFIA;if(WP){m.textContent='wysyłanie…';
+    WP.upload(file).then(r=>{a.href=r.url;m.textContent=`${file.name.split('.').pop().toUpperCase()}, ${size(file.size)}`})
+     .catch(e=>{m.textContent='nie wysłano: '+e.message;m.classList.add('todo')})}};
   g.append(b,f)})})();
 
 // ===== aktualności: lista wpisów, przeglądarka zdjęć i okno edycji wpisu =====
@@ -2485,8 +2542,10 @@ let posts=[...sec.querySelectorAll('article.post')].map(a=>{const im=a.querySele
  const p={id:++uid,title:a.querySelector('h3').textContent.trim(),date:a.querySelector('time').getAttribute('datetime'),
   html:[...a.querySelectorAll('p')].map(x=>'<p>'+x.innerHTML+'</p>').join(''),main:im?{src:im.getAttribute('src'),fx:50,fy:50}:null,gallery:[]};
  a.remove();return p});
+// WordPress: wpisy z bazy (każdy ma wp – numer wpisu; zdjęcia mają id w bibliotece mediów)
+const WP=window.PARAFIA;
+if(WP&&Array.isArray(WP.posts))posts=WP.posts.map(x=>({...x,id:++uid}));
 const lead=sec.querySelector('.lead');
-if(lead)lead.textContent='Ogłoszenia i wydarzenia z naszej parafii.';
 const addBtn=document.createElement('button');addBtn.type='button';addBtn.className='addpost';addBtn.innerHTML='<span aria-hidden="true">+</span> Dodaj aktualność';
 (lead||sec.querySelector('h2')).after(addBtn);
 const SHOW=4;
@@ -2583,7 +2642,8 @@ function ask(q,yes,no,cb,danger){const C=$('.ped-confirm');C.hidden=false;$('#pe
 const tryClose=()=>{if(snap()!==orig)ask('Zamknąć bez zapisywania zmian?','Zamknij','Wróć do edycji',shut,true);else shut()};
 D.addEventListener('cancel',e=>{e.preventDefault();if(!$('.ped-confirm').hidden){$('.ped-confirm').hidden=true;return}tryClose()});
 $('.ped-x').onclick=tryClose;$('.ped-foot .ped-cancel').onclick=tryClose;
-$('.ped-del').onclick=()=>ask('Usunąć ten wpis ze strony?','Usuń wpis','Nie usuwaj',()=>{posts=posts.filter(x=>x.id!==editing.id);shut();render();toast('Wpis usunięty')},true);
+$('.ped-del').onclick=()=>ask('Usunąć ten wpis ze strony?','Usuń wpis','Nie usuwaj',()=>{const gone=editing;posts=posts.filter(x=>x.id!==gone.id);shut();render();toast('Wpis usunięty');
+ if(WP&&gone.wp)WP.call('posts/'+gone.wp,{method:'DELETE'}).catch(e=>toast('Nie usunięto z bazy: '+e.message))},true);
 
 // zdjęcie główne
 const ICON='<svg viewBox="0 0 54 54" aria-hidden="true"><rect x="5" y="11" width="44" height="33" rx="3"/><circle cx="19" cy="22" r="4.5"/><path d="M5 38 L19 28 L28 35 L37 26 L49 36"/></svg>';
@@ -2667,7 +2727,16 @@ $('.ped-in').addEventListener('submit',e=>{e.preventDefault();const title=fT.val
  if(!title){$('.ped-title').classList.add('bad');msg.textContent='Wpisz tytuł wpisu.';fT.focus();return}
  const p={...cur,title,date:fD.value||todayISO(),html:clean(txt.innerHTML)};
  if(editing){Object.assign(editing,p)}else{p.id=++uid;posts.push(p)}
- shut();render(p.id||editing.id);toast(editing?'Zmiany zapisane':'Wpis opublikowany')});
+ const saved=editing||p;shut();render(p.id||editing.id);
+ if(!WP){toast(editing?'Zmiany zapisane':'Wpis opublikowany');return}
+ toast('Zapisywanie wpisu…');persist(saved).then(()=>toast(editing?'Zmiany zapisane':'Wpis opublikowany')).catch(e=>toast('Nie zapisano: '+e.message))});
+// WordPress: nowe zdjęcia (adresy blob:) do biblioteki mediów, potem wpis do bazy
+async function persist(p){
+ const up=async im=>{if(!im||!/^blob:/.test(im.src))return im;const b=await (await fetch(im.src)).blob();const m=await WP.upload(b,'zdjecie.jpg');return {...im,src:m.url,mid:m.id}};
+ p.main=await up(p.main);p.gallery=await Promise.all((p.gallery||[]).map(up));
+ const r=await WP.call('posts',{body:{wp:p.wp||0,title:p.title,date:p.date,html:p.html,
+  main:p.main?{id:p.main.mid||0,src:p.main.src,fx:p.main.fx,fy:p.main.fy}:null,gallery:(p.gallery||[]).map(g=>g.mid||0).filter(Boolean)}});
+ p.wp=r.wp;render()}
 function toast(t){const el=document.createElement('div');el.className='ped-toast';el.setAttribute('role','status');el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.remove(),3100)}
 })();
 
@@ -2738,8 +2807,8 @@ function toast(t){const el=document.createElement('div');el.className='ped-toast
  const l=document.querySelector('.flogo'),j=document.querySelector('.jmark svg');if(l&&j)l.appendChild(j.cloneNode(true))})();
 
 // ===== logowanie i tryb edycji =====
-// Prototyp: login „proboszcz”, hasło „brenna”. W WordPressie okno wysyła dane do wp_signon()
-// (logowanie WordPressa, ciasteczko sesji), a przyciski edycji widzi tylko zalogowany redaktor.
+// Prototyp: login „proboszcz”, hasło „brenna”. W WordPressie (window.PARAFIA) okno wysyła dane do wtyczki,
+// która loguje przez wp_signon() („Zapamiętaj mnie” = rok), a o prawie do edycji decyduje serwer (PARAFIA.canEdit).
 (function(){
  const ROSE='<svg viewBox="-30 -30 60 60" aria-hidden="true"><circle r="27"/><path d="M0,-9 C-3,-15 -12,-17 -12,-10 C-12,-4 -4,1 0,6 C4,1 12,-4 12,-10 C12,-17 3,-15 0,-9 Z M0,-7 V3 M-4,-3 H4 M-4,-13 C-10,-27 10,-27 4,-13 M10,-6 C24,-9 22,10 9,4 M7,9 C14,22 -2,26 -1,13 M-7,9 C-14,22 2,26 1,13 M-10,-6 C-24,-9 -22,10 -9,4"/></svg>';
  const D=document.createElement('dialog');D.className='login';D.setAttribute('aria-labelledby','lg-h');
@@ -2759,7 +2828,8 @@ function toast(t){const el=document.createElement('div');el.className='ped-toast
  const edit=on=>{if(on&&!document.body.classList.contains('admin'))return;document.body.classList.toggle('editing',on);
   document.querySelectorAll(sel).forEach(el=>{if(el.closest('.screw,.ctl,.nextbar'))return;if(on)el.setAttribute('contenteditable','true');else el.removeAttribute('contenteditable')})};
  const admin=on=>{document.body.classList.toggle('admin',on);if(!on)edit(false)};
- if(st.get('brenna-admin')==='1')admin(true);
+ const WP=window.PARAFIA;
+ if(WP?WP.canEdit:st.get('brenna-admin')==='1')admin(true);
  let fails=0,lockUntil=0;
  const open=()=>{if(document.body.classList.contains('admin')){edit(true);return}D.querySelector('.err').textContent='';D.showModal();D.querySelector('[name=u]').focus()};
  document.querySelector('.seal')?.addEventListener('click',open);
@@ -2768,12 +2838,16 @@ function toast(t){const el=document.createElement('div');el.className='ped-toast
  D.querySelector('.lx').onclick=D.querySelector('.no').onclick=()=>D.close();
  D.querySelector('form').addEventListener('submit',e=>{e.preventDefault();const err=D.querySelector('.err'),u=D.querySelector('[name=u]').value.trim().toLowerCase(),p=D.querySelector('[name=p]').value;
   if(Date.now()<lockUntil){err.textContent=`Zbyt wiele prób. Spróbuj ponownie za ${Math.ceil((lockUntil-Date.now())/1000)} s.`;return}
+  if(WP){const b=D.querySelector('.go');b.disabled=true;err.textContent='';
+   WP.call('login',{body:{u,p,r:D.querySelector('[name=r]').checked}}).then(()=>{location.hash='edycja';location.reload()})
+    .catch(x=>{b.disabled=false;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');err.textContent=x.message});return}
   if(u==='proboszcz'&&p==='brenna'){fails=0;st.set('brenna-admin','1',D.querySelector('[name=r]').checked);D.querySelector('[name=p]').value='';D.close();admin(true);edit(true);return}
   fails++;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');D.querySelector('[name=p]').select();
   if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Zbyt wiele prób. Spróbuj ponownie za 30 s.'}else err.textContent='Nieprawidłowy login lub hasło.'});
  pill.onclick=()=>edit(true);
- if(bar){bar.innerHTML='Tryb edycji: kliknij tekst, aby go zmienić. <button type="button" id="editdone">Zakończ</button><button type="button" class="out">Wyloguj</button>';
-  bar.querySelector('#editdone').onclick=()=>edit(false);bar.querySelector('.out').onclick=()=>{st.del('brenna-admin');admin(false)}}
+ if(bar){bar.innerHTML='Tryb edycji: kliknij tekst, aby go zmienić. <span class="savestat" role="status"></span><button type="button" id="editdone">Zakończ</button><button type="button" class="out">Wyloguj</button>';
+  bar.querySelector('#editdone').onclick=()=>{edit(false);WP&&WP.flush&&WP.flush()};
+  bar.querySelector('.out').onclick=async()=>{if(WP){await (WP.flush&&WP.flush());await WP.call('logout').catch(()=>{});location.reload();return}st.del('brenna-admin');admin(false)}}
 })();
 // ===== mapa: przełącznik Brenna / Górki =====
 (function(){const box=document.querySelector('.mapbox');if(!box)return;const f=box.querySelector('.gmap'),l=box.querySelector('.maplink'),tabs=[...box.querySelectorAll('[role=tab]')];
