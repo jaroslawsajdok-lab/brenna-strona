@@ -20,7 +20,8 @@
  Object.entries(P.blocks||{}).forEach(([k,html])=>{const el=document.querySelector(`[data-key="${k}"]`);if(el)el.innerHTML=html});
  const tb=document.querySelector('[data-key="nabozenstwa"]');
  if(tb&&Array.isArray(P.services)&&P.services.length){const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  tb.tBodies[0].innerHTML=P.services.map(r=>`<tr${r.f?' class="feast"':''}><td><b>${e(r.d)}</b></td><td>${e(r.n)}</td><td>${e(r.b)}</td><td>${e(r.g)}</td></tr>`).join('')}
+  const dm=d=>{const m=String(d).match(/^\d{4}-(\d{2})-(\d{2})$/);return m?(+m[2])+'.'+m[1]:d};   // pełna data RRRR-MM-DD albo dawne „8.11”
+  tb.tBodies[0].innerHTML=P.services.map(r=>`<tr${r.f?' class="feast"':''}${/^\d{4}-/.test(r.d)?` data-date="${e(r.d)}"`:''}><td><b>${e(dm(r.d))}</b></td><td>${e(r.n)}</td><td>${e(r.b)}</td><td>${e(r.g)}</td></tr>`).join('')}
  if(!P.canEdit)return;
 
  // --- (2) zapis w trybie edycji ---
@@ -30,7 +31,7 @@
  // kopia bloku bez elementów edytora (przyciski, pola wyboru plików, atrybuty edycji)
  const clean=el=>{const c=el.cloneNode(true);c.querySelectorAll('[contenteditable]').forEach(x=>x.removeAttribute('contenteditable'));
   c.querySelectorAll('.doc-add,input[type=file],.ctl,.rowtools').forEach(x=>x.remove());return c.innerHTML.trim()};
- const rows=()=>[...tb.tBodies[0].rows].map(tr=>({d:(tr.cells[0].textContent.match(/\d{1,2}\s*\.\s*\d{1,2}/)||[''])[0].replace(/\s/g,''),
+ const rows=()=>[...tb.tBodies[0].rows].map(tr=>({d:tr.dataset.date||(tr.cells[0].textContent.match(/\d{1,2}\s*\.\s*\d{1,2}/)||[''])[0].replace(/\s/g,''),
   n:tr.cells[1].textContent.trim(),b:tr.cells[2].textContent.trim(),g:tr.cells[3].textContent.trim(),f:tr.classList.contains('feast')})).filter(r=>r.d||r.n);
  async function flush(){timer=0;const blocks={};dirty.forEach(k=>{const el=document.querySelector(`[data-key="${k}"]`);if(el)blocks[k]=clean(el)});dirty.clear();
   const svc=svcDirty;svcDirty=false;if(!Object.keys(blocks).length&&!svc)return;

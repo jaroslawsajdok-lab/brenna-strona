@@ -38,7 +38,7 @@ Strona ma nie wyglądać na zrobioną przez AI. Obowiązuje:
 | `page_style.css` | style działów (stara warstwa – jest w niej drewno; `calm.css` je nadpisuje) |
 | `calm.css` | **aktualny kierunek wyglądu** – nadpisuje stare warstwy; ładowany jako ostatni |
 | `bottom.css` | kontakt, mapa Google (przełącznik Brenna/Górki), formularz, stopka, okno logowania |
-| `services_editor.js/.css` | tabela nabożeństw: edycja wierszy, sortowanie po dacie, dzień tygodnia, „najbliższe”, minione znikają, puste = brak nabożeństwa; pasek „Najbliższe nabożeństwo” pod menu |
+| `services_editor.js/.css` | tabela nabożeństw: przełącznik miesięcy nad tabelą (goście: miesiące z nabożeństwami; edycja: do 24 miesięcy naprzód, „+ Dodaj wszystkie niedziele miesiąca”), pełna data wiersza w `data-date` (RRRR-MM-DD; wpisane „8.11” dostaje rok według oglądanego miesiąca), edycja wierszy, sortowanie, dzień tygodnia, „najbliższe”, minione znikają; pasek „Najbliższe nabożeństwo” pod menu |
 | `post_editor.js/.css` | aktualności: okno edycji (tytuł, data, zdjęcie główne z punktem kadru, treść, galeria), przeglądarka zdjęć |
 | `login.js` | logowanie (róża Lutra w stopce lub `#edycja`; prototyp: `proboszcz` / `brenna`), tryb edycji, las w stopce, przełącznik mapy, flaga `?podglad` |
 | `pano_viewer.js/.css` | dawna własna przeglądarka spaceru (CSS 3D) – nieużywana: przy dużym ekranie rozjeżdżała się w kwadraty; zastąpiona oryginalnym odtwarzaczem |

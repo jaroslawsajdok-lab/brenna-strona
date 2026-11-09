@@ -8,7 +8,7 @@ import re, shutil, tarfile, zipfile, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / 'src' / 'brenna-strona.html'
 DIST = ROOT / 'dist'; THEME = DIST / 'brenna'; PLUGIN = ROOT / 'wordpress' / 'parafia'
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 
 STYLE = f"""/*
 Theme Name: Brenna-Górki

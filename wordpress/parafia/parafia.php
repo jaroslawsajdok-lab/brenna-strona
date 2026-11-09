@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Parafia Brenna-Górki
  * Description: Zapis treści edytowanych na stronie (teksty, nabożeństwa, aktualności, dokumenty), logowanie redaktora parafii, nowy wygląd w trybie próbnym (stały link) i przełącznik „nowa strona dla wszystkich”. Działa z motywem „Brenna-Górki”.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Requires at least: 6.4
  * Requires PHP: 7.4
  * Author: Jarosław Sajdok
@@ -145,7 +145,7 @@ add_action('rest_api_init', function () {
 		foreach (array_slice((array) $r->get_param('rows'), 0, 200) as $x) {
 			$x = (array) $x;
 			$rows[] = [
-				'd' => preg_match('/^\d{1,2}\.\d{1,2}$/', (string) ($x['d'] ?? '')) ? $x['d'] : '',
+				'd' => preg_match('/^(\d{4}-\d{2}-\d{2}|\d{1,2}\.\d{1,2})$/', (string) ($x['d'] ?? '')) ? $x['d'] : '',   // pełna data albo dawne „8.11”
 				'n' => sanitize_text_field($x['n'] ?? ''), 'b' => sanitize_text_field($x['b'] ?? ''),
 				'g' => sanitize_text_field($x['g'] ?? ''), 'f' => !empty($x['f']),
 			];
