@@ -2,7 +2,9 @@
 Użycie:  python narzedzia/wydanie.py 1.2.0 "Co się zmieniło (pokaże się w kokpicie WordPressa)"
 Kroki: numer wersji w wp_build.py → make_page.py → wp_build.py → commit + tag v1.2.0 → push →
 wydanie z plikami parafia.zip, brenna.zip, parafia-dokumenty.zip, wersje.json.
-Wymaga: zalogowanego gh (gh auth login) i czystego drzewa gita (wszystkie zmiany zapisane)."""
+Wymaga: zalogowanego gh (gh auth login) i czystego drzewa gita (wszystkie zmiany zapisane).
+Python ze Sklepu Microsoft nie widzi logowania gh – wtedy uruchom z Git Basha tak:
+  GH_TOKEN=$(gh auth token) python narzedzia/wydanie.py 1.2.0 "opis zmian\""""
 import re, sys, shutil, pathlib, subprocess
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 if len(sys.argv) < 3 or not re.fullmatch(r'\d+\.\d+\.\d+', sys.argv[1]):
@@ -16,6 +18,8 @@ if out('git', 'status', '--porcelain'):
     sys.exit('Najpierw zapisz zmiany (git commit) – wydanie robi się z czystego drzewa.')
 if out('git', 'tag', '-l', 'v' + ver):
     sys.exit(f'Wersja {ver} już była. Podaj wyższą.')
+if subprocess.run([GH, 'auth', 'status'], capture_output=True).returncode != 0:
+    sys.exit('gh nie widzi logowania do GitHuba. Uruchom z Git Basha:\n  GH_TOKEN=$(gh auth token) python narzedzia/wydanie.py ' + ver + ' "…"')
 
 wb = ROOT / 'narzedzia' / 'wp_build.py'
 wb.write_text(re.sub(r"^VERSION = '[^']+'", f"VERSION = '{ver}'", wb.read_text(encoding='utf-8'), count=1, flags=re.M), encoding='utf-8')
