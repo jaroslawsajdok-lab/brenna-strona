@@ -17,7 +17,7 @@
  const size=b=>b<1048576?Math.max(1,Math.round(b/1024))+' KB':(b/1048576).toFixed(1).replace('.',',')+' MB';
  sec.querySelectorAll('.docs-g').forEach(g=>{
   const b=document.createElement('button');b.type='button';b.className='doc-add';b.textContent='+ Dodaj plik';
-  const f=document.createElement('input');f.type='file';f.accept='.pdf,.doc,.docx,.odt';f.hidden=true;
+  const f=document.createElement('input');f.type='file';f.accept='.pdf,.docx';f.hidden=true;
   b.onclick=()=>f.click();
   f.onchange=()=>{const file=f.files[0];if(!file)return;
    const li=document.createElement('li');li.className='doc';

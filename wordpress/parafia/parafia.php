@@ -177,6 +177,31 @@ add_action('rest_api_init', function () {
 		return ['ok' => true];
 	}]);
 
+	// PDF z innej strony (np. list biskupa na stronie innej parafii) dla podglądu na stronie: przeglądarka nie może
+	// wczytać cudzego pliku (brak CORS), więc podajemy go stąd. Tylko https, tylko PDF, do 20 MB; wp_safe_remote_get
+	// nie pobiera z adresów wewnętrznych/prywatnych. Pamiętane 12 godzin.
+	register_rest_route($ns, '/pdf', ['methods' => 'GET', 'permission_callback' => '__return_true', 'callback' => function (WP_REST_Request $r) {
+		$url = esc_url_raw((string) $r->get_param('u'), ['https']);
+		$word = (bool) preg_match('#\.docx$#i', (string) strtok($url, '?#'));   // PDF albo Word (.docx)
+		if (!$url || !preg_match('#^https://[^/]+/.+\.(pdf|docx)$#i', strtok($url, '?#')))
+			return new WP_Error('parafia', 'To nie jest adres dokumentu PDF ani Worda.', ['status' => 400]);
+		$key = 'parafia_pdf_' . md5($url);
+		$pdf = get_transient($key);
+		if ($pdf === false) {
+			$res = wp_safe_remote_get($url, ['timeout' => 20, 'redirection' => 3, 'limit_response_size' => 20 * MB_IN_BYTES, 'headers' => ['User-Agent' => 'parafia-brenna-gorki']]);
+			$pdf = is_wp_error($res) || wp_remote_retrieve_response_code($res) !== 200 ? '' : wp_remote_retrieve_body($res);
+			if (strncmp($pdf, $word ? "PK\x03\x04" : '%PDF', 4) !== 0) return new WP_Error('parafia', 'Nie udało się pobrać dokumentu.', ['status' => 502]);
+			if (strlen($pdf) < 5 * MB_IN_BYTES) set_transient($key, $pdf, 12 * HOUR_IN_SECONDS);   // większych nie trzymamy w bazie
+		}
+		nocache_headers();
+		header('Content-Type: ' . ($word ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : 'application/pdf'));
+		header('Content-Disposition: inline; filename="' . sanitize_file_name(basename(strtok($url, '?#'))) . '"');
+		header('Content-Length: ' . strlen($pdf));
+		header('X-Content-Type-Options: nosniff');
+		echo $pdf;
+		exit;
+	}]);
+
 	register_rest_route($ns, '/media', ['methods' => 'POST', 'permission_callback' => function () { return parafia_can_edit() && current_user_can('upload_files'); }, 'callback' => function () {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/media.php';

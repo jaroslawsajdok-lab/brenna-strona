@@ -50,7 +50,7 @@
   new MutationObserver(upd).observe(document.body,{attributes:true,attributeFilter:['class']});upd();
   // ogłoszenia parafialne: jeden plik, podmieniany co tydzień
   const ann=document.querySelector('.ann');
-  if(ann){const f=document.createElement('input');f.type='file';f.accept='.pdf,.doc,.docx,.odt';f.hidden=true;ann.after(f);
+  if(ann){const f=document.createElement('input');f.type='file';f.accept='.pdf,.docx';f.hidden=true;ann.after(f);
    const b=addBtn('Wgraj nowe ogłoszenia (plik)',f,()=>f.click());
    f.onchange=async()=>{const file=f.files[0];f.value='';if(!file)return;b.disabled=true;const old=b.innerHTML;b.textContent='Wysyłanie…';
     try{const url=await upload(file);const d=new Date(),ext=file.name.split('.').pop().toUpperCase();

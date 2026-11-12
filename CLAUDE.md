@@ -46,8 +46,8 @@ Strona ma nie wyglądać na zrobioną przez AI. Obowiązuje:
 | `wp.js` | łącznik z WordPressem (działa tylko, gdy wtyczka wstawi `window.PARAFIA`): wkleja zapisane bloki `[data-key]` i wiersze nabożeństw, w trybie edycji zapisuje sam po kilku sekundach, `PARAFIA.call/upload` dla pozostałych modułów |
 | `docs.js` | podstrona Dokumenty (ochrona małoletnich, RODO, inne): w prototypie widok `#dokumenty` w tym samym pliku; w trybie edycji „+ Dodaj plik” |
 | `lists.js` | listy do uzupełniania w trybie edycji: spotkania „W tygodniu”, grupy, kalendarz wydarzeń (data z kalendarzyka, sortowanie, minione znikają), plik „Ogłoszenia parafialne” pod kalendarzem, galeria (albumy z wieloma zdjęciami, „+ zdjęcia”, przeglądarka). Przyciski edycji mają `data-ui` – `wp.js` usuwa je przy zapisie |
-| `pdfview.js` | PDF-y otwierają się w oknie na stronie (PDF.js z `vendor/pdfjs`, w motywie `{{THEME}}/vendor/pdfjs/`), także na Androidzie; w prototypie z dysku zwykły link |
-| `vendor/pdfjs/` | PDF.js 3.11.174 (Mozilla, Apache 2.0), kopiowany do motywu przez `wp_build.py` |
+| `pdfview.js` | PDF-y i pliki Worda (.docx) otwierają się w oknie na stronie (PDF.js i mammoth z `vendor/`, w motywie `{{THEME}}/vendor/`), także na Androidzie; pliki z innych stron przez wtyczkę (`/parafia/v1/pdf?u=`, bo brak CORS); w prototypie z dysku zwykły link. Wgrywać można tylko .pdf i .docx |
+| `vendor/` | `pdfjs/` – PDF.js 3.11.174 (Mozilla, Apache 2.0), `mammoth/` – mammoth 1.8.0 (BSD-2, Word → HTML); kopiowane do motywu przez `wp_build.py` |
 | `make_page.py` | **składa `brenna-strona.html`** (nagłówek + treść + wszystkie CSS/JS + obrazy drzwi jako data URI) |
 | `door/`, `door_svg.py`, `door_parts.html` | drzwi do spaceru (generator SVG drzwi wklejonych w `page_content.html`) |
 | `dokumenty/` | PDF-y podstrony Dokumenty: standardy ochrony małoletnich (25.07.2024) + załączniki 1–15 (nazwy `zalacznik-NN.pdf`); w WordPressie jako osobna wtyczka `parafia-dokumenty` (`wp_build.py`) |
