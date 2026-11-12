@@ -8,7 +8,7 @@ import re, shutil, tarfile, zipfile, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / 'src' / 'brenna-strona.html'
 DIST = ROOT / 'dist'; THEME = DIST / 'brenna'; PLUGIN = ROOT / 'wordpress' / 'parafia'
-VERSION = '1.4.0'        # motyw + wtyczka „Parafia” (zmienia narzedzia/wydanie.py)
+VERSION = '1.4.1'        # motyw + wtyczka „Parafia” (zmienia narzedzia/wydanie.py)
 DOCS_VERSION = '1.0.0'   # PDF-y – podnoś tylko, gdy zmienią się pliki w src/dokumenty (wtedy WordPress pobierze 8 MB)
 
 STYLE = f"""/*
