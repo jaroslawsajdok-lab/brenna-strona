@@ -209,7 +209,8 @@ add_action('rest_api_init', function () {
 		if (empty($_FILES['file'])) return new WP_Error('parafia', 'Brak pliku.', ['status' => 400]);
 		$id = media_handle_upload('file', 0);
 		if (is_wp_error($id)) return new WP_Error('parafia', $id->get_error_message(), ['status' => 400]);
-		$url = wp_attachment_is_image($id) ? parafia_img($id) : wp_get_attachment_url($id);
+		$full = ($_POST['size'] ?? '') === 'full';   // plakaty: pełny rozmiar, żeby dało się przeczytać drobny druk
+		$url = wp_attachment_is_image($id) ? parafia_img($id, $full ? 'full' : 'large') : wp_get_attachment_url($id);
 		return ['id' => $id, 'url' => $url];
 	}]);
 });

@@ -17,7 +17,7 @@
   // niektóre serwery (wtyczki bezpieczeństwa) zamieniają kod błędu na 200 – błąd poznajemy też po treści odpowiedzi
   const bad=!r.ok||(j&&j.code&&j.data&&j.data.status>=400);
   if(bad)throw new Error(j.message||('Błąd '+r.status));return j};
- P.upload=async function(blobOrFile,name){const f=new FormData();f.append('file',blobOrFile,name||blobOrFile.name||'zdjecie.jpg');return P.call('media',{form:f})};
+ P.upload=async function(blobOrFile,name,full){const f=new FormData();f.append('file',blobOrFile,name||blobOrFile.name||'zdjecie.jpg');if(full)f.append('size','full');return P.call('media',{form:f})};
 
  // --- (1) zapisane treści wracają na stronę ---
  // obce formatowanie (wklejone z Worda albo z innej strony): krój, pochylenie, kolory – precz; zostaje tekst i nasze znaczniki

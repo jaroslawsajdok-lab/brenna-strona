@@ -25,7 +25,7 @@
  const bar=document.querySelector('.editbar');
  const st={get:k=>{try{return localStorage.getItem(k)||sessionStorage.getItem(k)}catch(e){return null}},
   set:(k,v,keep)=>{try{(keep?localStorage:sessionStorage).setItem(k,v)}catch(e){}},del:k=>{try{localStorage.removeItem(k);sessionStorage.removeItem(k)}catch(e){}}};
- const sel='[data-edit] :is(p,h3,dd,dt,li,td,summary,span,small,time,strong,b),[data-edit]:is(p,li)';
+ const sel='[data-edit] :is(p,h3,dd,dt,li,td,summary,span,small,time,strong,b,figcaption),[data-edit]:is(p,li)';
  const edit=on=>{if(on&&!document.body.classList.contains('admin'))return;document.body.classList.toggle('editing',on);
   document.querySelectorAll(sel).forEach(el=>{if(el.closest('.screw,.ctl,.nextbar'))return;if(on)el.setAttribute('contenteditable','true');else el.removeAttribute('contenteditable')})};
  const admin=on=>{document.body.classList.toggle('admin',on);if(!on)edit(false)};

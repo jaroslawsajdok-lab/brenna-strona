@@ -18,7 +18,44 @@
   b.innerHTML='<span aria-hidden="true">+</span> '+label;b.onclick=fn;after.after(b);return b};
  const xBtn=(item,label,onRemove)=>{if(item.querySelector(':scope > .li-x'))return;const b=document.createElement('button');b.type='button';b.className='li-x';b.dataset.ui='';
   b.setAttribute('aria-label',label);b.title=label;b.innerHTML=X;b.onclick=e=>{e.preventDefault();e.stopPropagation();item.remove();onRemove&&onRemove()};item.appendChild(b)};
- const upload=async(file,name)=>WP?(await WP.upload(file,name)).url:URL.createObjectURL(file);
+ const upload=async(file,name,full)=>WP?(await WP.upload(file,name,full)).url:URL.createObjectURL(file);
+ // zdjęcia z telefonu bywają ogromne: zmniejszamy przed wysłaniem
+ const shrink=async(file,max=1800)=>{try{const bmp=await createImageBitmap(file,{imageOrientation:'from-image'});const s=Math.min(1,max/Math.max(bmp.width,bmp.height));
+  const c=document.createElement('canvas');c.width=Math.round(bmp.width*s);c.height=Math.round(bmp.height*s);c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+  return await new Promise(r=>c.toBlob(r,'image/jpeg',.86))}catch(e){return file}};
+ // przeglądarka zdjęć (albumy galerii, plakaty)
+ function lightbox(list,title){let i=0;const L=document.createElement('div');L.className='glb';L.setAttribute('role','dialog');L.setAttribute('aria-label',title);
+  L.innerHTML=`<div class="glb-h"><p><b>${esc(title)}</b><span class="glb-n"></span></p><button type="button" class="glb-x">Zamknij</button></div><img alt=""><button type="button" class="glb-b glb-p" aria-label="Poprzednie zdjęcie"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="glb-b glb-nx" aria-label="Następne zdjęcie"><svg class="ico" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>`;
+  const img=L.querySelector('img'),show=()=>{img.src=list[i];L.querySelector('.glb-n').textContent=list.length>1?`${i+1} z ${list.length}`:'';L.querySelectorAll('.glb-b').forEach(b=>b.hidden=list.length<2)};
+  const go=n=>{i=(i+n+list.length)%list.length;show()},close=()=>{L.remove();removeEventListener('keydown',key);document.documentElement.style.overflow=''};
+  const key=e=>{if(e.key==='Escape')close();else if(e.key==='ArrowLeft')go(-1);else if(e.key==='ArrowRight')go(1)};
+  L.querySelector('.glb-x').onclick=close;L.querySelector('.glb-p').onclick=()=>go(-1);L.querySelector('.glb-nx').onclick=()=>go(1);
+  let sx=0;img.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});img.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(dx<0?1:-1)});
+  addEventListener('keydown',key);document.body.appendChild(L);document.documentElement.style.overflow='hidden';show();L.querySelector('.glb-x').focus()}
+
+ // --- plakaty obok kalendarza: zmiana obrazka, podpis, usuwanie, nowy plakat; goście – powiększenie po kliknięciu ---
+ const posters=document.querySelector('.posters');
+ if(posters){
+  const capOf=f=>(f.querySelector('figcaption')?.textContent||'').trim();
+  const pickOne=fn=>{const f=document.createElement('input');f.type='file';f.accept='image/*';f.onchange=()=>f.files[0]&&fn(f.files[0]);f.click()};
+  const setImg=async(fig,file,btn)=>{const old=btn&&btn.textContent;if(btn){btn.disabled=true;btn.textContent='Wysyłanie…'}
+   try{const url=await upload(await shrink(file,2400),'plakat.jpg',true);let img=fig.querySelector('img');
+    if(!img){img=document.createElement('img');img.loading='lazy';fig.prepend(img)}
+    img.src=url;img.alt='Plakat: '+capOf(fig)}
+   catch(e){alert('Nie udało się wysłać plakatu: '+e.message)}finally{if(btn){btn.disabled=false;btn.textContent=old}}};
+  const deco=fig=>{fig.querySelector('img')?.removeAttribute('onerror');fig.tabIndex=0;fig.setAttribute('role','button');
+   xBtn(fig,'Usuń plakat');if(fig.querySelector('.po-ch'))return;
+   const b=document.createElement('button');b.type='button';b.className='po-ch';b.dataset.ui='';b.textContent='Zmień plakat';
+   b.onclick=e=>{e.preventDefault();e.stopPropagation();pickOne(file=>setImg(fig,file,b))};fig.appendChild(b)};
+  [...posters.children].forEach(deco);
+  // podpis zmienia też opis obrazka dla czytników ekranu
+  posters.addEventListener('input',e=>{const fig=e.target.closest('.poster'),img=fig&&fig.querySelector('img');if(img)img.alt='Plakat: '+capOf(fig)});
+  posters.appendChild(addBtn('Dodaj plakat',posters,()=>pickOne(async file=>{
+   posters.insertAdjacentHTML('afterbegin','<figure class="poster"><figcaption data-ph="Podpis plakatu"></figcaption></figure>');
+   const fig=posters.firstElementChild;deco(fig);writable(fig);fig.querySelector('figcaption').focus();await setImg(fig,file)})));   // przycisk pod plakatami (data-ui – nie trafia do zapisu)
+  const zoom=fig=>{const img=fig.querySelector('img');if(img&&!editing())lightbox([img.src],capOf(fig)||'Plakat')};
+  posters.addEventListener('click',e=>{const fig=e.target.closest('.poster');if(fig&&!e.target.closest('[data-ui]'))zoom(fig)});
+  posters.addEventListener('keydown',e=>{const fig=e.target.closest('.poster');if(fig&&e.target===fig&&(e.key==='Enter'||e.key===' ')){e.preventDefault();zoom(fig)}})}
 
  // --- spotkania w tygodniu i grupy: dodaj / usuń pozycję ---
  function list(box,after,label,tpl,xlabel){if(!box)return;
@@ -61,10 +98,6 @@
  const albums=document.querySelector('.albums');
  if(albums){
   const photos=a=>{try{const p=JSON.parse(a.dataset.photos||'[]');if(p.length)return p}catch(e){}const i=a.querySelector('.ph img');return i?[i.getAttribute('src')]:[]};
-  // zdjęcia z telefonu bywają ogromne: zmniejszamy przed wysłaniem
-  const shrink=async(file,max=1800)=>{try{const bmp=await createImageBitmap(file,{imageOrientation:'from-image'});const s=Math.min(1,max/Math.max(bmp.width,bmp.height));
-   const c=document.createElement('canvas');c.width=Math.round(bmp.width*s);c.height=Math.round(bmp.height*s);c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
-   return await new Promise(r=>c.toBlob(r,'image/jpeg',.86))}catch(e){return file}};
   const addPhotos=async(a,files,stat)=>{const list=photos(a).slice(),imgs=[...files].filter(f=>/^image\//.test(f.type));
    for(let i=0;i<imgs.length;i++){stat(`Wysyłanie zdjęć: ${i+1} z ${imgs.length}…`);const b=await shrink(imgs[i]);list.push(await upload(b,'galeria.jpg'))}
    a.dataset.photos=JSON.stringify(list);const ph=a.querySelector('.ph');if(list.length&&!ph.querySelector('img'))ph.innerHTML=`<img src="${esc(list[0])}" alt="" loading="lazy">`;
@@ -80,13 +113,6 @@
    try{await addPhotos(a,fs,t=>{if(t)sm.textContent=t})}catch(er){alert('Nie udało się wysłać zdjęć: '+er.message)}}));
   // przeglądarka zdjęć albumu
   albums.addEventListener('click',e=>{const a=e.target.closest('.album');if(!a)return;e.preventDefault();if(editing()||e.target.closest('[data-ui]'))return;
-   const p=photos(a);if(p.length)lightbox(p,a.querySelector('span')?.textContent||'')});
-  function lightbox(list,title){let i=0;const L=document.createElement('div');L.className='glb';L.setAttribute('role','dialog');L.setAttribute('aria-label',title);
-   L.innerHTML=`<div class="glb-h"><p><b>${esc(title)}</b><span class="glb-n"></span></p><button type="button" class="glb-x">Zamknij</button></div><img alt=""><button type="button" class="glb-b glb-p" aria-label="Poprzednie zdjęcie"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="glb-b glb-nx" aria-label="Następne zdjęcie"><svg class="ico" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>`;
-   const img=L.querySelector('img'),show=()=>{img.src=list[i];L.querySelector('.glb-n').textContent=list.length>1?`${i+1} z ${list.length}`:'';L.querySelectorAll('.glb-b').forEach(b=>b.hidden=list.length<2)};
-   const go=n=>{i=(i+n+list.length)%list.length;show()},close=()=>{L.remove();removeEventListener('keydown',key);document.documentElement.style.overflow=''};
-   const key=e=>{if(e.key==='Escape')close();else if(e.key==='ArrowLeft')go(-1);else if(e.key==='ArrowRight')go(1)};
-   L.querySelector('.glb-x').onclick=close;L.querySelector('.glb-p').onclick=()=>go(-1);L.querySelector('.glb-nx').onclick=()=>go(1);
-   let sx=0;img.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});img.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(dx<0?1:-1)});
-   addEventListener('keydown',key);document.body.appendChild(L);document.documentElement.style.overflow='hidden';show();L.querySelector('.glb-x').focus()}}
+   const p=photos(a);if(p.length)lightbox(p,a.querySelector('span')?.textContent||'')});}
+
 })();

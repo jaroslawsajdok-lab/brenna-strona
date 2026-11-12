@@ -162,7 +162,7 @@ main>section:not(.verse):not(.listen):not(.parish){background:var(--ground)}
 /* runda 6 (Claude Code, 4): plakaty nie przytłaczają kalendarza, galeria na telefonie jako lista */
 @media (max-width:900px){
  .posters{grid-template-columns:repeat(2,minmax(0,220px))!important;justify-content:start;gap:16px!important}
- .p2{margin-top:0!important}
+ .p2,.posters>.poster:nth-of-type(even){margin-top:0!important}
 }
 @media (max-width:520px){
  .albums{grid-template-columns:1fr!important;gap:12px!important}
@@ -304,6 +304,18 @@ body.editing .days li.was{opacity:.5}
 .ann h3{margin:0 0 4px;font-size:20px}
 .ann .doc-n{font-size:17px;font-weight:700;color:var(--spruce);text-decoration:underline;text-underline-offset:3px}
 .ann .doc-m{font-size:14px;color:var(--ink-soft)}
+/* plakaty: każdy drugi niżej (także nowo dodane), klik = powiększenie */
+.posters .p2{margin-top:0}
+.posters>.poster:nth-of-type(even){margin-top:56px}
+.poster{cursor:zoom-in}
+.poster:focus-visible{outline:3px solid var(--spruce);outline-offset:3px}
+body.editing .poster{cursor:default}
+.po-ch{display:none}
+body.editing .poster>.li-x{position:absolute;right:6px;top:6px;z-index:2}
+body.editing .po-ch{display:inline-flex;align-items:center;position:absolute;left:6px;top:6px;z-index:2;min-height:44px;padding:0 14px;border:0;border-radius:40px;background:#fff;color:var(--spruce);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+body.editing .po-ch:disabled{cursor:wait;opacity:.7}
+body.editing .poster figcaption{z-index:1}
+body.editing .posters>.li-add{grid-column:1/-1;justify-self:start;margin:0}
 /* galeria */
 .album{position:relative;cursor:pointer}
 body.editing .album>.li-x{position:absolute;right:6px;top:6px;z-index:2}
