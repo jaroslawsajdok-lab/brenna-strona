@@ -1196,6 +1196,50 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 .login .lg-alt{margin:16px 0 0;font-size:14px;color:var(--ink-soft)}
 .login .lg-alt a{color:var(--spruce);font-weight:700}
 
+/* ===== listy do uzupełniania (lists.js): przyciski widoczne tylko w trybie edycji ===== */
+.li-add,.li-x,.al-more,.cal-date{display:none}
+body.editing .li-add{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin:16px 0 0;padding:0 20px;border:0;border-radius:40px;background:var(--spruce);color:#fff;font:inherit;font-size:17px;font-weight:700;cursor:pointer}
+body.editing .li-add:hover{background:var(--spruce-d)}
+body.editing .li-add:disabled{opacity:.6;cursor:wait}
+body.editing .li-x{display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:#fff;color:var(--ink);cursor:pointer;flex:none}
+body.editing .li-x:hover{background:#b3261e;color:#fff}
+body.editing .li-x .ico{width:18px;height:18px}
+body.editing .weekly dl>div,body.editing .groups li{display:grid;grid-template-columns:minmax(0,1fr) 44px;column-gap:8px;align-items:start}
+body.editing .weekly dl>div>.li-x{grid-column:2;grid-row:1/span 2}
+body.editing .groups li>.li-x{grid-column:2;grid-row:1}
+body.editing [data-ph]:empty::before{content:attr(data-ph);color:#8a8c85;font-weight:400}
+/* kalendarz */
+.days li{position:relative}
+body.editing .days li{padding-right:52px}
+body.editing .days li>.li-x{position:absolute;right:0;top:14px}
+body.editing .cal-date{display:block;min-height:44px;margin:0 0 6px;padding:0 10px;border:1.5px solid var(--ink);border-radius:4px;background:#fff;font:inherit;font-size:17px}
+body.editing .days li.was{opacity:.5}
+.cal-empty{margin:8px 0 0;color:var(--ink-soft);font-size:17px}
+/* ogłoszenia parafialne pod kalendarzem */
+.ann{margin:28px 0 0;padding:18px 20px;background:#fff;display:grid;gap:4px;justify-items:start}
+.ann h3{margin:0 0 4px;font-size:20px}
+.ann .doc-n{font-size:17px;font-weight:700;color:var(--spruce);text-decoration:underline;text-underline-offset:3px}
+.ann .doc-m{font-size:14px;color:var(--ink-soft)}
+/* galeria */
+.album{position:relative;cursor:pointer}
+body.editing .album>.li-x{position:absolute;right:6px;top:6px;z-index:2}
+body.editing .al-more{display:inline-flex;align-items:center;min-height:44px;margin-top:6px;padding:0 14px;border:0;border-radius:40px;background:var(--tone);color:var(--spruce);font:inherit;font-size:14px;font-weight:700;cursor:pointer;align-self:flex-start}
+/* przeglądarka zdjęć i podgląd PDF: okno na cały ekran */
+.glb,.pdfv{position:fixed;inset:0;z-index:10000;background:#1d1d1b;display:flex;flex-direction:column}
+.glb-h,.pdfv-h{flex:none;display:flex;align-items:center;gap:12px;min-height:64px;padding:0 12px 0 20px;background:var(--ground);color:var(--ink)}
+.glb-h p,.pdfv-h p{flex:1;min-width:0;margin:0;display:flex;flex-wrap:wrap;gap:0 12px;align-items:baseline}
+.glb-h b,.pdfv-h b{font-size:17px}
+.glb-n,.pdfv-n{font-size:14px;color:var(--ink-soft)}
+.glb-x,.pdfv-x,.pdfv-d{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border:0;background:var(--spruce);color:#fff;font:inherit;font-size:17px;font-weight:700;text-decoration:none;cursor:pointer}
+.pdfv-d{background:#fff;color:var(--spruce)}
+.glb img{flex:1;min-height:0;width:100%;object-fit:contain}
+.glb-b{position:absolute;top:50%;width:52px;height:52px;margin-top:-26px;border:0;border-radius:50%;background:rgba(243,243,240,.92);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+.glb-b .ico{width:24px;height:24px}
+.glb-p{left:12px}.glb-nx{right:12px}
+.pdfv-b{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.pdfv-b canvas{background:#fff;max-width:100%}
+@media (max-width:520px){.pdfv-h{padding-left:12px;gap:8px}.pdfv-d,.pdfv-x,.glb-x{padding:0 12px}}
+
 </style></head>
 <body data-season="jesien">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="fglow"><stop offset="0" stop-color="#ffcf6b" stop-opacity=".75"/><stop offset="1" stop-color="#ffcf6b" stop-opacity="0"/></radialGradient><radialGradient id="warm"><stop offset="0" stop-color="#ffd27a" stop-opacity=".85"/><stop offset=".6" stop-color="#e8a24a" stop-opacity=".35"/><stop offset="1" stop-color="#e8a24a" stop-opacity="0"/></radialGradient><radialGradient id="starglow"><stop offset="0" stop-color="#fff6d0" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d0" stop-opacity="0"/></radialGradient><radialGradient id="whiteglow"><stop offset="0" stop-color="#fffdf2" stop-opacity=".95"/><stop offset="1" stop-color="#fff8dc" stop-opacity="0"/></radialGradient><linearGradient id="snowg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d6e1eb"/></linearGradient></defs></svg><a class="skip" href="#tresc">Przejdź do treści</a><header id="hero"><h1 class="sr">Parafia Ewangelicko-Augsburska Brenna-Górki</h1>
@@ -1376,7 +1420,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
    <li><time datetime="2026-10-16"><b>16</b> paź</time><div><h3>Próba zespołu „Świetliki”</h3><p>17:30. O 18:00 spotkanie młodzieży i konfirmantów w Brennej.</p></div></li>
    <li><time datetime="2026-10-31"><b>31</b> paź</time><div><h3>Święto Reformacji</h3><p>Nabożeństwo świąteczne. Szczegóły w ogłoszeniach.</p></div></li>
   </ol>
-  <a class="more" href="#">Pełny kalendarz parafii</a>
+  <div class="ann" data-edit="ogloszenia" data-key="ogloszenia-1"><h3>Ogłoszenia parafialne</h3><span class="doc-m todo">plik do dodania</span></div>
  </div>
  <div class="posters" aria-label="Plakaty">
   <figure class="poster p1" data-edit="plakat" data-key="plakat-1"><img src="https://brenna.luteranie.pl/wp-content/uploads/2026/08/jkk.jpg" alt="Plakat: VII Jesienne Koncerty Kameralne" loading="lazy" onerror="this.remove()"><figcaption>Jesienne Koncerty Kameralne</figcaption></figure>
@@ -1387,7 +1431,7 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 <!-- ============ GALERIE ============ -->
 <section class="wrap gallery" id="galerie" aria-labelledby="h-gal">
  <h2 id="h-gal">Galerie</h2>
- <div class="albums">
+ <div class="albums" data-edit="galeria" data-key="galerie">
   <a class="album a1" href="#" data-edit="galeria" data-key="galeria-1"><div class="ph"></div><span>Tydzień Dobrej Nowiny 2026</span><small>lipiec 2026</small></a>
   <a class="album a2" href="#" data-edit="galeria" data-key="galeria-2"><div class="ph"></div><span>Święto Żniw</span><small>październik 2026</small></a>
   <a class="album a3" href="#" data-edit="galeria" data-key="galeria-3"><div class="ph"><img src="https://brenna.luteranie.pl/wp-content/uploads/2019/05/choir.jpg" alt="" loading="lazy" onerror="this.remove()"></div><span>Chóry parafialne</span><small>archiwum</small></a>
@@ -2497,7 +2541,9 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
  const say=t=>{const s=stat();if(s)s.textContent=t};
  // kopia bloku bez elementów edytora (przyciski, pola wyboru plików, atrybuty edycji)
  const clean=el=>{const c=el.cloneNode(true);c.querySelectorAll('[contenteditable]').forEach(x=>x.removeAttribute('contenteditable'));
-  c.querySelectorAll('.doc-add,input[type=file],.ctl,.rowtools').forEach(x=>x.remove());return c.innerHTML.trim()};
+  c.querySelectorAll('.doc-add,input[type=file],.ctl,.rowtools,[data-ui]').forEach(x=>x.remove());
+  c.querySelectorAll('[data-key]').forEach(x=>x.removeAttribute('data-key'));   // bloki zagnieżdżone (np. albumy w galerii) zapisują się razem z rodzicem
+  return c.innerHTML.trim()};
  const rows=()=>[...tb.tBodies[0].rows].map(tr=>({d:tr.dataset.date||(tr.cells[0].textContent.match(/\d{1,2}\s*\.\s*\d{1,2}/)||[''])[0].replace(/\s/g,''),
   n:tr.cells[1].textContent.trim(),b:tr.cells[2].textContent.trim(),g:tr.cells[3].textContent.trim(),f:tr.classList.contains('feast')})).filter(r=>r.d||r.n);
  async function flush(){timer=0;const blocks={};dirty.forEach(k=>{const el=document.querySelector(`[data-key="${k}"]`);if(el)blocks[k]=clean(el)});dirty.clear();
@@ -2506,7 +2552,8 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
   try{if(Object.keys(blocks).length)await P.call('blocks',{body:{blocks}});if(svc&&tb)await P.call('services',{body:{rows:rows()}});say('Zapisano')}
   catch(e){Object.keys(blocks).forEach(k=>dirty.add(k));if(svc)svcDirty=true;say('Nie zapisano: '+e.message+' – spróbuję ponownie');schedule(5000)}}
  const schedule=(ms=1500)=>{clearTimeout(timer);timer=setTimeout(flush,ms)};
- const mark=el=>{const b=el&&el.closest&&el.closest('[data-key]');if(!b||!document.body.classList.contains('editing'))return;
+ const mark=el=>{let b=el&&el.closest&&el.closest('[data-key]');while(b&&b.parentElement&&b.parentElement.closest('[data-key]'))b=b.parentElement.closest('[data-key]');   // zapis do bloku najbardziej zewnętrznego
+  if(!b||!document.body.classList.contains('editing'))return;
   if(b===tb)svcDirty=true;else dirty.add(b.dataset.key);schedule()};
  document.addEventListener('input',e=>mark(e.target));
  document.addEventListener('focusout',e=>mark(e.target));
@@ -2900,9 +2947,6 @@ function toast(t){const el=document.createElement('div');el.className='ped-toast
 
  new MutationObserver(upd).observe(tb.tBodies[0],{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});upd()})();
 
-// kalendarz: minione wydarzenia znikają, tak jak minione wiersze tabeli
-(function(){const t=new Date();t.setHours(0,0,0,0);
- document.querySelectorAll('.days li').forEach(li=>{const d=li.querySelector('time')?.getAttribute('datetime');if(d&&new Date(d+'T00:00')<t)li.hidden=true})})();
 
 (function(){if(/podglad/.test(location.search+location.hash))document.documentElement.classList.add('dev')})();
 // ===== stopka: las i logo =====
@@ -2965,6 +3009,129 @@ function toast(t){const el=document.createElement('div');el.className='ped-toast
  tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.setAttribute('aria-selected',x===t));
   f.src='https://maps.google.com/maps?q='+encodeURIComponent(t.dataset.q)+'&z=15&output=embed';f.title='Mapa: kościół w '+(t.textContent==='Brenna'?'Brennej':'Górkach');
   l.href='https://www.google.com/maps/dir/?api=1&destination='+t.dataset.dir}))})();
+
+// =====================================================================
+// Listy do uzupełniania w trybie edycji: spotkania w tygodniu, grupy, kalendarz wydarzeń (z datą),
+// plik z ogłoszeniami parafialnymi, galeria (albumy ze zdjęciami + przeglądarka).
+// Przyciski edycji mają atrybut data-ui (wp.js pomija je przy zapisie); przyciski „+ Dodaj…” stoją
+// za blokiem, więc w ogóle nie trafiają do zapisu. W WordPressie pliki i zdjęcia idą do biblioteki mediów.
+// =====================================================================
+(function(){
+ const WP=window.PARAFIA,editing=()=>document.body.classList.contains('editing');
+ const X='<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+ const MS=['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+ const MN=['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
+ const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ const size=b=>b<1048576?Math.max(1,Math.round(b/1024))+' KB':(b/1048576).toFixed(1).replace('.',',')+' MB';
+ // nowe pola od razu do pisania (tryb edycji ustawia contenteditable tylko przy włączeniu)
+ const writable=el=>{el.querySelectorAll('[data-ph]').forEach(x=>{if(editing())x.setAttribute('contenteditable','true')})};
+ const addBtn=(label,after,fn)=>{const b=document.createElement('button');b.type='button';b.className='li-add';b.dataset.ui='';
+  b.innerHTML='<span aria-hidden="true">+</span> '+label;b.onclick=fn;after.after(b);return b};
+ const xBtn=(item,label,onRemove)=>{if(item.querySelector(':scope > .li-x'))return;const b=document.createElement('button');b.type='button';b.className='li-x';b.dataset.ui='';
+  b.setAttribute('aria-label',label);b.title=label;b.innerHTML=X;b.onclick=e=>{e.preventDefault();e.stopPropagation();item.remove();onRemove&&onRemove()};item.appendChild(b)};
+ const upload=async(file,name)=>WP?(await WP.upload(file,name)).url:URL.createObjectURL(file);
+
+ // --- spotkania w tygodniu i grupy: dodaj / usuń pozycję ---
+ function list(box,after,label,tpl,xlabel){if(!box)return;
+  const deco=()=>[...box.children].forEach(it=>xBtn(it,xlabel));deco();
+  addBtn(label,after,()=>{box.insertAdjacentHTML('beforeend',tpl);const it=box.lastElementChild;xBtn(it,xlabel);writable(it);it.querySelector('[data-ph]').focus()})}
+ list(document.querySelector('.weekly dl'),document.querySelector('.weekly dl'),'Dodaj spotkanie',
+  '<div><dt data-ph="Nazwa spotkania"></dt><dd data-ph="dzień, godzina, miejsce"></dd></div>','Usuń spotkanie');
+ list(document.querySelector('.groups ul'),document.querySelector('.groups ul'),'Dodaj grupę',
+  '<li><b data-ph="Nazwa grupy"></b> <span data-ph="kiedy się spotyka"></span></li>','Usuń grupę');
+
+ // --- kalendarz wydarzeń: data z kalendarzyka, sortowanie, minione znikają ---
+ const days=document.querySelector('.days');
+ if(days){
+  const t0=()=>{const t=new Date();t.setHours(0,0,0,0);return t};
+  const dateOf=li=>{const v=li.querySelector('time')?.getAttribute('datetime');return v?new Date(v+'T00:00'):null};
+  const setDate=(li,d)=>{const t=li.querySelector('time');t.setAttribute('datetime',iso(d));t.innerHTML=`<b>${d.getDate()}</b> ${MS[d.getMonth()]}`};
+  const sort=()=>[...days.children].sort((a,b)=>(dateOf(a)||0)-(dateOf(b)||0)).forEach(li=>days.appendChild(li));
+  const pastHide=()=>[...days.children].forEach(li=>{const d=dateOf(li);li.hidden=!editing()&&!!d&&d<t0();li.classList.toggle('was',!!d&&d<t0())});
+  const deco=li=>{xBtn(li,'Usuń wydarzenie',pastHide);if(li.querySelector('.cal-date'))return;
+   const inp=document.createElement('input');inp.type='date';inp.className='cal-date';inp.dataset.ui='';inp.setAttribute('aria-label','Data wydarzenia');
+   inp.value=li.querySelector('time')?.getAttribute('datetime')||'';
+   inp.onchange=()=>{if(!inp.value)return;setDate(li,new Date(inp.value+'T00:00'));sort();pastHide()};(li.querySelector(':scope > div')||li).prepend(inp)};
+  [...days.children].forEach(deco);
+  const empty=document.createElement('p');empty.className='cal-empty';days.after(empty);
+  const upd=()=>{pastHide();const n=[...days.children].filter(li=>!li.hidden).length;empty.hidden=n>0;empty.textContent='Na razie brak zapowiedzianych wydarzeń.'};
+  addBtn('Dodaj wydarzenie',empty,()=>{const d=t0();d.setDate(d.getDate()+7);
+   days.insertAdjacentHTML('beforeend','<li><time></time><div><h3 data-ph="Nazwa wydarzenia"></h3><p data-ph="godzina, miejsce, kilka słów"></p></div></li>');
+   const li=days.lastElementChild;setDate(li,d);deco(li);writable(li);sort();upd();li.querySelector('h3').focus()});
+  new MutationObserver(upd).observe(document.body,{attributes:true,attributeFilter:['class']});upd();
+  // ogłoszenia parafialne: jeden plik, podmieniany co tydzień
+  const ann=document.querySelector('.ann');
+  if(ann){const f=document.createElement('input');f.type='file';f.accept='.pdf,.doc,.docx,.odt';f.hidden=true;ann.after(f);
+   const b=addBtn('Wgraj nowe ogłoszenia (plik)',f,()=>f.click());
+   f.onchange=async()=>{const file=f.files[0];f.value='';if(!file)return;b.disabled=true;const old=b.innerHTML;b.textContent='Wysyłanie…';
+    try{const url=await upload(file);const d=new Date(),ext=file.name.split('.').pop().toUpperCase();
+     ann.innerHTML=`<h3>Ogłoszenia parafialne</h3><a class="doc-n" href="${esc(url)}" target="_blank" rel="noopener">Ogłoszenia parafialne</a><span class="doc-m">${ext}, ${size(file.size)} · dodane ${d.getDate()} ${MS[d.getMonth()]} ${d.getFullYear()}</span>`}
+    catch(e){alert('Nie udało się wysłać pliku: '+e.message)}finally{b.disabled=false;b.innerHTML=old}}}}
+
+ // --- galeria: albumy ze zdjęciami ---
+ const albums=document.querySelector('.albums');
+ if(albums){
+  const photos=a=>{try{const p=JSON.parse(a.dataset.photos||'[]');if(p.length)return p}catch(e){}const i=a.querySelector('.ph img');return i?[i.getAttribute('src')]:[]};
+  // zdjęcia z telefonu bywają ogromne: zmniejszamy przed wysłaniem
+  const shrink=async(file,max=1800)=>{try{const bmp=await createImageBitmap(file,{imageOrientation:'from-image'});const s=Math.min(1,max/Math.max(bmp.width,bmp.height));
+   const c=document.createElement('canvas');c.width=Math.round(bmp.width*s);c.height=Math.round(bmp.height*s);c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+   return await new Promise(r=>c.toBlob(r,'image/jpeg',.86))}catch(e){return file}};
+  const addPhotos=async(a,files,stat)=>{const list=photos(a).slice(),imgs=[...files].filter(f=>/^image\//.test(f.type));
+   for(let i=0;i<imgs.length;i++){stat(`Wysyłanie zdjęć: ${i+1} z ${imgs.length}…`);const b=await shrink(imgs[i]);list.push(await upload(b,'galeria.jpg'))}
+   a.dataset.photos=JSON.stringify(list);const ph=a.querySelector('.ph');if(list.length&&!ph.querySelector('img'))ph.innerHTML=`<img src="${esc(list[0])}" alt="" loading="lazy">`;
+   const sm=a.querySelector('small');sm.textContent=sm.dataset.base||sm.textContent;stat('')};
+  const pick=fn=>{const f=document.createElement('input');f.type='file';f.accept='image/*';f.multiple=true;f.onchange=()=>fn(f.files);f.click()};
+  const deco=a=>{xBtn(a,'Usuń album');if(a.querySelector('.al-more'))return;const m=document.createElement('button');m.type='button';m.className='al-more';m.dataset.ui='';
+   m.textContent='+ zdjęcia';m.onclick=e=>{e.preventDefault();e.stopPropagation();pick(fs=>{const sm=a.querySelector('small');sm.dataset.base=sm.textContent;
+    addPhotos(a,fs,t=>{if(t)sm.textContent=t}).catch(er=>alert('Nie udało się wysłać zdjęć: '+er.message))})};a.appendChild(m)};
+  [...albums.children].forEach(deco);
+  addBtn('Dodaj album',albums,()=>pick(async fs=>{const d=new Date();
+   albums.insertAdjacentHTML('afterbegin',`<a class="album" href="#"><div class="ph"></div><span data-ph="Nazwa albumu"></span><small>${MN[d.getMonth()]} ${d.getFullYear()}</small></a>`);
+   const a=albums.firstElementChild,sm=a.querySelector('small');sm.dataset.base=sm.textContent;deco(a);writable(a);a.querySelector('span').focus();
+   try{await addPhotos(a,fs,t=>{if(t)sm.textContent=t})}catch(er){alert('Nie udało się wysłać zdjęć: '+er.message)}}));
+  // przeglądarka zdjęć albumu
+  albums.addEventListener('click',e=>{const a=e.target.closest('.album');if(!a)return;e.preventDefault();if(editing()||e.target.closest('[data-ui]'))return;
+   const p=photos(a);if(p.length)lightbox(p,a.querySelector('span')?.textContent||'')});
+  function lightbox(list,title){let i=0;const L=document.createElement('div');L.className='glb';L.setAttribute('role','dialog');L.setAttribute('aria-label',title);
+   L.innerHTML=`<div class="glb-h"><p><b>${esc(title)}</b><span class="glb-n"></span></p><button type="button" class="glb-x">Zamknij</button></div><img alt=""><button type="button" class="glb-b glb-p" aria-label="Poprzednie zdjęcie"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="glb-b glb-nx" aria-label="Następne zdjęcie"><svg class="ico" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>`;
+   const img=L.querySelector('img'),show=()=>{img.src=list[i];L.querySelector('.glb-n').textContent=list.length>1?`${i+1} z ${list.length}`:'';L.querySelectorAll('.glb-b').forEach(b=>b.hidden=list.length<2)};
+   const go=n=>{i=(i+n+list.length)%list.length;show()},close=()=>{L.remove();removeEventListener('keydown',key);document.documentElement.style.overflow=''};
+   const key=e=>{if(e.key==='Escape')close();else if(e.key==='ArrowLeft')go(-1);else if(e.key==='ArrowRight')go(1)};
+   L.querySelector('.glb-x').onclick=close;L.querySelector('.glb-p').onclick=()=>go(-1);L.querySelector('.glb-nx').onclick=()=>go(1);
+   let sx=0;img.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});img.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(dx<0?1:-1)});
+   addEventListener('keydown',key);document.body.appendChild(L);document.documentElement.style.overflow='hidden';show();L.querySelector('.glb-x').focus()}}
+})();
+
+// =====================================================================
+// Podgląd PDF na stronie: dokumenty (standardy, RODO, ogłoszenia) otwierają się w oknie, a nie pobierają –
+// także na telefonach z Androidem i w przeglądarkach ustawionych na „pobieraj PDF-y”.
+// Biblioteka PDF.js (Mozilla, Apache 2.0) leży w motywie: {{THEME}}/vendor/pdfjs/. W prototypie z dysku
+// (file://) albo gdy coś się nie uda – zwykłe otwarcie pliku w nowej karcie.
+// =====================================================================
+(function(){
+ const LIB='{{THEME}}/vendor/pdfjs/';
+ if(LIB.includes('{{')||location.protocol==='file:')return;          // prototyp: zostaje zwykły link
+ let lib=null;
+ const load=()=>lib||(lib=new Promise((ok,no)=>{const s=document.createElement('script');s.src=LIB+'pdf.min.js';
+  s.onload=()=>{window.pdfjsLib.GlobalWorkerOptions.workerSrc=LIB+'pdf.worker.min.js';ok(window.pdfjsLib)};s.onerror=no;document.head.appendChild(s)}));
+ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ document.addEventListener('click',e=>{const a=e.target.closest('a[href]');if(!a||e.ctrlKey||e.metaKey||e.shiftKey)return;
+  const href=a.getAttribute('href');if(!/\.pdf(\?|#|$)/i.test(href)||document.body.classList.contains('editing'))return;
+  e.preventDefault();open(a.href,a.textContent.trim()||'Dokument')});
+ async function open(url,title){
+  const V=document.createElement('div');V.className='pdfv';V.setAttribute('role','dialog');V.setAttribute('aria-label',title);
+  V.innerHTML=`<div class="pdfv-h"><p><b>${esc(title)}</b><span class="pdfv-n">Wczytywanie…</span></p><a class="pdfv-d" href="${esc(url)}" download>Pobierz</a><button type="button" class="pdfv-x">Zamknij</button></div><div class="pdfv-b"></div>`;
+  const close=()=>{V.remove();removeEventListener('keydown',key);document.documentElement.style.overflow=''},key=e=>{if(e.key==='Escape')close()};
+  V.querySelector('.pdfv-x').onclick=close;addEventListener('keydown',key);document.body.appendChild(V);document.documentElement.style.overflow='hidden';V.querySelector('.pdfv-x').focus();
+  try{const pdfjs=await load(),doc=await pdfjs.getDocument(url).promise,box=V.querySelector('.pdfv-b');
+   V.querySelector('.pdfv-n').textContent=doc.numPages+(doc.numPages===1?' strona':doc.numPages<5?' strony':' stron');
+   const w=Math.min(box.clientWidth-24,900),dpr=Math.min(2,devicePixelRatio||1);
+   for(let i=1;i<=doc.numPages&&V.isConnected;i++){const pg=await doc.getPage(i),vp0=pg.getViewport({scale:1}),scale=w/vp0.width,vp=pg.getViewport({scale:scale*dpr});
+    const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;c.style.width=w+'px';c.setAttribute('aria-label',`Strona ${i}`);box.appendChild(c);
+    await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise}}
+  catch(err){close();window.open(url,'_blank','noopener')}}            // nie wyszło – zwykłe otwarcie pliku
+})();
 
 document.querySelector('.mapframe button')?.addEventListener('click',e=>{const f=e.target.parentElement;f.innerHTML=`<iframe src="${f.dataset.src}" title="Mapa dojazdu do kancelarii parafialnej" loading="lazy"></iframe>`});
 

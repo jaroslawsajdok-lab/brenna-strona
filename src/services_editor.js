@@ -96,6 +96,3 @@
 
  new MutationObserver(upd).observe(tb.tBodies[0],{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});upd()})();
 
-// kalendarz: minione wydarzenia znikają, tak jak minione wiersze tabeli
-(function(){const t=new Date();t.setHours(0,0,0,0);
- document.querySelectorAll('.days li').forEach(li=>{const d=li.querySelector('time')?.getAttribute('datetime');if(d&&new Date(d+'T00:00')<t)li.hidden=true})})();

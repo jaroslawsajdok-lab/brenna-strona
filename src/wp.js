@@ -33,7 +33,9 @@
  const say=t=>{const s=stat();if(s)s.textContent=t};
  // kopia bloku bez elementów edytora (przyciski, pola wyboru plików, atrybuty edycji)
  const clean=el=>{const c=el.cloneNode(true);c.querySelectorAll('[contenteditable]').forEach(x=>x.removeAttribute('contenteditable'));
-  c.querySelectorAll('.doc-add,input[type=file],.ctl,.rowtools').forEach(x=>x.remove());return c.innerHTML.trim()};
+  c.querySelectorAll('.doc-add,input[type=file],.ctl,.rowtools,[data-ui]').forEach(x=>x.remove());
+  c.querySelectorAll('[data-key]').forEach(x=>x.removeAttribute('data-key'));   // bloki zagnieżdżone (np. albumy w galerii) zapisują się razem z rodzicem
+  return c.innerHTML.trim()};
  const rows=()=>[...tb.tBodies[0].rows].map(tr=>({d:tr.dataset.date||(tr.cells[0].textContent.match(/\d{1,2}\s*\.\s*\d{1,2}/)||[''])[0].replace(/\s/g,''),
   n:tr.cells[1].textContent.trim(),b:tr.cells[2].textContent.trim(),g:tr.cells[3].textContent.trim(),f:tr.classList.contains('feast')})).filter(r=>r.d||r.n);
  async function flush(){timer=0;const blocks={};dirty.forEach(k=>{const el=document.querySelector(`[data-key="${k}"]`);if(el)blocks[k]=clean(el)});dirty.clear();
@@ -42,7 +44,8 @@
   try{if(Object.keys(blocks).length)await P.call('blocks',{body:{blocks}});if(svc&&tb)await P.call('services',{body:{rows:rows()}});say('Zapisano')}
   catch(e){Object.keys(blocks).forEach(k=>dirty.add(k));if(svc)svcDirty=true;say('Nie zapisano: '+e.message+' – spróbuję ponownie');schedule(5000)}}
  const schedule=(ms=1500)=>{clearTimeout(timer);timer=setTimeout(flush,ms)};
- const mark=el=>{const b=el&&el.closest&&el.closest('[data-key]');if(!b||!document.body.classList.contains('editing'))return;
+ const mark=el=>{let b=el&&el.closest&&el.closest('[data-key]');while(b&&b.parentElement&&b.parentElement.closest('[data-key]'))b=b.parentElement.closest('[data-key]');   // zapis do bloku najbardziej zewnętrznego
+  if(!b||!document.body.classList.contains('editing'))return;
   if(b===tb)svcDirty=true;else dirty.add(b.dataset.key);schedule()};
  document.addEventListener('input',e=>mark(e.target));
  document.addEventListener('focusout',e=>mark(e.target));

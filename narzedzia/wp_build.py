@@ -71,6 +71,7 @@ h = h.replace('href="dokumenty/', 'href="{{DOCS}}/')
 (THEME / 'style.css').write_text(STYLE, encoding='utf-8')
 (THEME / 'functions.php').write_text(FUNCTIONS, encoding='utf-8')
 (THEME / 'index.php').write_text(INDEX, encoding='utf-8')
+shutil.copytree(ROOT / 'src' / 'vendor', THEME / 'vendor')   # PDF.js do podglądu dokumentów (ładowany dopiero przy otwarciu PDF-a)
 shot = ROOT / 'zrzuty' / 'motyw.png'
 if shot.exists(): shutil.copy(shot, THEME / 'screenshot.png')
 

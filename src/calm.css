@@ -279,3 +279,47 @@ body.editing .doc-add{display:inline-flex;align-items:center}
 /* logowanie: link do zwykłej strony logowania WordPressa po nieudanej próbie */
 .login .lg-alt{margin:16px 0 0;font-size:14px;color:var(--ink-soft)}
 .login .lg-alt a{color:var(--spruce);font-weight:700}
+
+/* ===== listy do uzupełniania (lists.js): przyciski widoczne tylko w trybie edycji ===== */
+.li-add,.li-x,.al-more,.cal-date{display:none}
+body.editing .li-add{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin:16px 0 0;padding:0 20px;border:0;border-radius:40px;background:var(--spruce);color:#fff;font:inherit;font-size:17px;font-weight:700;cursor:pointer}
+body.editing .li-add:hover{background:var(--spruce-d)}
+body.editing .li-add:disabled{opacity:.6;cursor:wait}
+body.editing .li-x{display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:#fff;color:var(--ink);cursor:pointer;flex:none}
+body.editing .li-x:hover{background:#b3261e;color:#fff}
+body.editing .li-x .ico{width:18px;height:18px}
+body.editing .weekly dl>div,body.editing .groups li{display:grid;grid-template-columns:minmax(0,1fr) 44px;column-gap:8px;align-items:start}
+body.editing .weekly dl>div>.li-x{grid-column:2;grid-row:1/span 2}
+body.editing .groups li>.li-x{grid-column:2;grid-row:1}
+body.editing [data-ph]:empty::before{content:attr(data-ph);color:#8a8c85;font-weight:400}
+/* kalendarz */
+.days li{position:relative}
+body.editing .days li{padding-right:52px}
+body.editing .days li>.li-x{position:absolute;right:0;top:14px}
+body.editing .cal-date{display:block;min-height:44px;margin:0 0 6px;padding:0 10px;border:1.5px solid var(--ink);border-radius:4px;background:#fff;font:inherit;font-size:17px}
+body.editing .days li.was{opacity:.5}
+.cal-empty{margin:8px 0 0;color:var(--ink-soft);font-size:17px}
+/* ogłoszenia parafialne pod kalendarzem */
+.ann{margin:28px 0 0;padding:18px 20px;background:#fff;display:grid;gap:4px;justify-items:start}
+.ann h3{margin:0 0 4px;font-size:20px}
+.ann .doc-n{font-size:17px;font-weight:700;color:var(--spruce);text-decoration:underline;text-underline-offset:3px}
+.ann .doc-m{font-size:14px;color:var(--ink-soft)}
+/* galeria */
+.album{position:relative;cursor:pointer}
+body.editing .album>.li-x{position:absolute;right:6px;top:6px;z-index:2}
+body.editing .al-more{display:inline-flex;align-items:center;min-height:44px;margin-top:6px;padding:0 14px;border:0;border-radius:40px;background:var(--tone);color:var(--spruce);font:inherit;font-size:14px;font-weight:700;cursor:pointer;align-self:flex-start}
+/* przeglądarka zdjęć i podgląd PDF: okno na cały ekran */
+.glb,.pdfv{position:fixed;inset:0;z-index:10000;background:#1d1d1b;display:flex;flex-direction:column}
+.glb-h,.pdfv-h{flex:none;display:flex;align-items:center;gap:12px;min-height:64px;padding:0 12px 0 20px;background:var(--ground);color:var(--ink)}
+.glb-h p,.pdfv-h p{flex:1;min-width:0;margin:0;display:flex;flex-wrap:wrap;gap:0 12px;align-items:baseline}
+.glb-h b,.pdfv-h b{font-size:17px}
+.glb-n,.pdfv-n{font-size:14px;color:var(--ink-soft)}
+.glb-x,.pdfv-x,.pdfv-d{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border:0;background:var(--spruce);color:#fff;font:inherit;font-size:17px;font-weight:700;text-decoration:none;cursor:pointer}
+.pdfv-d{background:#fff;color:var(--spruce)}
+.glb img{flex:1;min-height:0;width:100%;object-fit:contain}
+.glb-b{position:absolute;top:50%;width:52px;height:52px;margin-top:-26px;border:0;border-radius:50%;background:rgba(243,243,240,.92);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+.glb-b .ico{width:24px;height:24px}
+.glb-p{left:12px}.glb-nx{right:12px}
+.pdfv-b{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.pdfv-b canvas{background:#fff;max-width:100%}
+@media (max-width:520px){.pdfv-h{padding-left:12px;gap:8px}.pdfv-d,.pdfv-x,.glb-x{padding:0 12px}}

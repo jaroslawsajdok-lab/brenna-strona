@@ -45,6 +45,9 @@ Strona ma nie wyglądać na zrobioną przez AI. Obowiązuje:
 | `tour.js` | drzwi (rysowanie, odrysowanie po kliknięciu), spacer w kole i „Pełny ekran”: oryginalny odtwarzacz 3DVista z luteranie-wirtualne-muzea.pl w ramce (w kole wyższa niż koło, żeby pasek miniatur wypadł pod obręcz; na dotyku osłona przepuszcza przewijanie), `#media=N` otwiera od N-tego punktu (drzwi otwierają od 9 – nawa) |
 | `wp.js` | łącznik z WordPressem (działa tylko, gdy wtyczka wstawi `window.PARAFIA`): wkleja zapisane bloki `[data-key]` i wiersze nabożeństw, w trybie edycji zapisuje sam po kilku sekundach, `PARAFIA.call/upload` dla pozostałych modułów |
 | `docs.js` | podstrona Dokumenty (ochrona małoletnich, RODO, inne): w prototypie widok `#dokumenty` w tym samym pliku; w trybie edycji „+ Dodaj plik” |
+| `lists.js` | listy do uzupełniania w trybie edycji: spotkania „W tygodniu”, grupy, kalendarz wydarzeń (data z kalendarzyka, sortowanie, minione znikają), plik „Ogłoszenia parafialne” pod kalendarzem, galeria (albumy z wieloma zdjęciami, „+ zdjęcia”, przeglądarka). Przyciski edycji mają `data-ui` – `wp.js` usuwa je przy zapisie |
+| `pdfview.js` | PDF-y otwierają się w oknie na stronie (PDF.js z `vendor/pdfjs`, w motywie `{{THEME}}/vendor/pdfjs/`), także na Androidzie; w prototypie z dysku zwykły link |
+| `vendor/pdfjs/` | PDF.js 3.11.174 (Mozilla, Apache 2.0), kopiowany do motywu przez `wp_build.py` |
 | `make_page.py` | **składa `brenna-strona.html`** (nagłówek + treść + wszystkie CSS/JS + obrazy drzwi jako data URI) |
 | `door/`, `door_svg.py`, `door_parts.html` | drzwi do spaceru (generator SVG drzwi wklejonych w `page_content.html`) |
 | `dokumenty/` | PDF-y podstrony Dokumenty: standardy ochrony małoletnich (25.07.2024) + załączniki 1–15 (nazwy `zalacznik-NN.pdf`); w WordPressie jako osobna wtyczka `parafia-dokumenty` (`wp_build.py`) |
@@ -68,7 +71,7 @@ Przyciski podglądu (pora roku, święta, czas, telefon) pokazują się tylko z 
 
 ## WordPress (stan: wersja 1.2.0 na GitHubie, aktualizacje jednym kliknięciem przetestowane lokalnie)
 - Wtyczka: `wordpress/parafia/parafia.php` (źródło). Motyw składa `narzedzia/wp_build.py` z `src/brenna-strona.html` → `dist/brenna/`, ZIP-y w `dist/` (poza gitem): `brenna.zip`, `parafia.zip`, `parafia-dokumenty.zip` (PDF-y z `src/dokumenty`, linki `{{DOCS}}`).
-- Bloki edytowalne mają stałe klucze `data-key` (np. `tekst-1`, `nabozenstwa`) – **nie zmieniać ich**, bo pod nimi są zapisane treści proboszcza. Nowy blok = nowy klucz.
+- Bloki edytowalne mają stałe klucze `data-key` (np. `tekst-1`, `nabozenstwa`) – **nie zmieniać ich**, bo pod nimi są zapisane treści proboszcza. Nowy blok = nowy klucz. Blok w bloku (albumy `galeria-N` w `galerie`): zapis idzie do najbardziej zewnętrznego, klucze dzieci są wtedy usuwane.
 - Tryb próbny: nowy wygląd widzi redaktor parafii i ktoś ze stałym linkiem `/?nowa=klucz`; przełącznik „nowa strona dla wszystkich” w kokpicie → Parafia.
 - Aktualności = zwykłe wpisy WP (te same co na starej stronie), zdjęcia i dokumenty w Mediach, teksty i nabożeństwa w opcjach wtyczki z historią (Parafia → Historia zmian).
 - Test lokalny: `narzedzia/wp_test/` (blueprint Playground + `test_flow.py`; dane testowego konta w blueprint.json). Uruchomienie w Git Bash wymaga `MSYS_NO_PATHCONV=1`.
@@ -78,7 +81,7 @@ Przyciski podglądu (pora roku, święta, czas, telefon) pokazują się tylko z 
 
 ## Wiadome braki (stan na 29.10.2026)
 - Brak prawdziwych zdjęć poza miniaturami aktualności (galeria, plakaty, duszpasterz puste). Potrzebne: kościół w Brennej, kościół w Górkach, ludzie, wnętrze – od parafii / z FB za zgodą proboszcza.
-- Treści zastępcze do usunięcia lub uzupełnienia: nagrania kazań z wymyślonymi długościami, „Tu proboszcz wpisze…”, „imię i nazwisko” duszpasterza, hasło tygodnia (nieaktualne, powinno liczyć się samo z roku kościelnego), adres kościoła w Górkach, skład Zespołu Wsparcia (ochrona małoletnich, wyznacza go uchwała Rady Parafialnej), pliki RODO na podstronie Dokumenty (klauzula informacyjna, polityka prywatności).
+- Treści zastępcze do usunięcia lub uzupełnienia: nagrania kazań z wymyślonymi długościami, „Tu proboszcz wpisze…”, „imię i nazwisko” duszpasterza, hasło tygodnia (nie zmienia się samo – na razie wpisuje je proboszcz; do automatu potrzebna oficjalna lista haseł na rok kościelny), adres kościoła w Górkach, skład Zespołu Wsparcia (ochrona małoletnich, wyznacza go uchwała Rady Parafialnej), pliki RODO na podstronie Dokumenty (klauzula informacyjna, polityka prywatności).
 - Do decyzji z proboszczem: czy zostają działy Kalendarz (dubluje tabelę i aktualności) i Galerie.
 - Prototyp nie zapisuje zmian (po odświeżeniu znikają) – zapis będzie w WordPressie.
 
