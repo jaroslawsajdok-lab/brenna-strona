@@ -345,6 +345,7 @@ function parafia_admin_page() {
 	}
 	echo '</tbody></table><p><a class="button" href="' . esc_url(admin_url('update-core.php?force-check=1')) . '">Sprawdź aktualizacje</a> ';
 	if ($rel) echo 'Ostatnie wydanie: <a href="' . esc_url($rel['url']) . '" target="_blank" rel="noopener">' . esc_html($rel['tag']) . '</a>';
+	elseif ($err = get_option('parafia_release_err')) echo '<b>Nie udało się sprawdzić wersji</b> (' . esc_html($err['when'] . ' – ' . $err['why']) . '). Kolejna próba za kilkanaście minut albo przyciskiem obok.';
 	echo '</p><p>Nowe wersje instalujesz w <b>Kokpit → Aktualizacje</b> przyciskiem „Aktualizuj” – bez wgrywania plików. Treści proboszcza zostają.</p>';
 
 	echo '<h2>Redaktorzy</h2><p>Proboszcz potrzebuje konta z rolą <b>Redaktor parafii</b> (Użytkownicy → Dodaj nowego → Rola: Redaktor parafii). Loguje się na stronie: róża Lutra w stopce albo adres strony z <code>#edycja</code> na końcu. Zaznaczone „Zapamiętaj mnie” trzyma go zalogowanym przez rok. Administrator też może edytować.</p>';

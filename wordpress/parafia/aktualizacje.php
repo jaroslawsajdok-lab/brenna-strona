@@ -14,25 +14,29 @@ const PARAFIA_PARTS = [   // nazwa w wersje.json => [rodzaj, plik wtyczki / kata
 	'brenna'            => ['theme', 'brenna', 'brenna.zip'],
 ];
 
-// najnowsze wydanie: wersje części + adresy paczek (pamiętane 6 godzin; „Sprawdź ponownie” w kokpicie czyści)
+// najnowsze wydanie: wersje części + adresy paczek (pamiętane 6 godzin; „Sprawdź ponownie” w kokpicie czyści).
+// Bez api.github.com – to API ma limit 60 zapytań/godz. na adres IP, a na wspólnym hostingu wiele stron dzieli
+// jeden adres. Plik wersje.json i paczki bierzemy z bezpośrednich adresów najnowszego wydania (bez tego limitu).
 function parafia_release() {
 	$r = get_transient('parafia_release');
 	if ($r !== false) return $r ?: null;
-	$args = ['timeout' => 10, 'headers' => ['Accept' => 'application/vnd.github+json', 'User-Agent' => 'parafia-brenna-gorki']];
-	$res = wp_remote_get('https://api.github.com/repos/' . PARAFIA_REPO . '/releases/latest', $args);
-	$rel = is_wp_error($res) || wp_remote_retrieve_response_code($res) !== 200 ? null : json_decode(wp_remote_retrieve_body($res), true);
+	$base = 'https://github.com/' . PARAFIA_REPO . '/releases/latest/download/';
+	$res = wp_remote_get($base . 'wersje.json', ['timeout' => 15, 'redirection' => 5, 'headers' => ['User-Agent' => 'parafia-brenna-gorki']]);
+	$code = is_wp_error($res) ? 0 : (int) wp_remote_retrieve_response_code($res);
+	$ver = $code === 200 ? json_decode(wp_remote_retrieve_body($res), true) : null;
 	$out = null;
-	if ($rel && !empty($rel['assets'])) {
+	if (is_array($ver) && !empty($ver['parafia'])) {
 		$assets = [];
-		foreach ($rel['assets'] as $a) $assets[$a['name']] = $a['browser_download_url'];
-		$ver = [];
-		if (!empty($assets['wersje.json'])) {
-			$v = wp_remote_get($assets['wersje.json'], ['timeout' => 10, 'headers' => ['User-Agent' => 'parafia-brenna-gorki']]);
-			if (!is_wp_error($v)) $ver = (array) json_decode(wp_remote_retrieve_body($v), true);
-		}
-		$out = ['tag' => $rel['tag_name'], 'url' => $rel['html_url'], 'notes' => (string) ($rel['body'] ?? ''), 'date' => $rel['published_at'] ?? '', 'assets' => $assets, 'ver' => $ver];
+		foreach (PARAFIA_PARTS as [, , $zip]) $assets[$zip] = $base . $zip;
+		$tag = (string) ($ver['tag'] ?? ('v' . $ver['parafia']));
+		$out = ['tag' => $tag, 'url' => 'https://github.com/' . PARAFIA_REPO . '/releases/tag/' . rawurlencode($tag),
+			'notes' => (string) ($ver['notes'] ?? ''), 'date' => (string) ($ver['date'] ?? ''), 'assets' => $assets, 'ver' => $ver];
+		delete_option('parafia_release_err');
+	} else {
+		update_option('parafia_release_err', ['when' => current_time('mysql'),
+			'why' => is_wp_error($res) ? $res->get_error_message() : ('odpowiedź GitHuba: ' . ($code ?: 'brak'))], false);
 	}
-	set_transient('parafia_release', $out ?: 0, $out ? 6 * HOUR_IN_SECONDS : HOUR_IN_SECONDS);
+	set_transient('parafia_release', $out ?: 0, $out ? 6 * HOUR_IN_SECONDS : 15 * MINUTE_IN_SECONDS);
 	return $out;
 }
 // pakiet do aktualizacji danej części albo null

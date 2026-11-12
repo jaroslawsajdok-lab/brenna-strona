@@ -26,6 +26,12 @@ wb = ROOT / 'narzedzia' / 'wp_build.py'
 wb.write_text(re.sub(r"^VERSION = '[^']+'", f"VERSION = '{ver}'", wb.read_text(encoding='utf-8'), count=1, flags=re.M), encoding='utf-8')
 run(sys.executable, 'make_page.py', cwd=ROOT / 'src')
 run(sys.executable, str(wb))
+# wersje.json: dla WordPressa także numer, opis i data wydania (wtyczka nie pyta api.github.com – limit na wspólnym hostingu)
+import json, datetime
+wj = ROOT / 'dist' / 'wersje.json'
+w = json.loads(wj.read_text(encoding='utf-8'))
+w.update({'tag': 'v' + ver, 'notes': notes, 'date': datetime.date.today().isoformat()})
+wj.write_text(json.dumps(w, ensure_ascii=False), encoding='utf-8')
 run('git', 'add', '-A')
 run('git', 'commit', '-q', '-m', f'Wydanie {ver}\n\n{notes}')
 run('git', 'tag', '-a', 'v' + ver, '-m', f'Wersja {ver}')
