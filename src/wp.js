@@ -27,9 +27,10 @@
   const e=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const m=String(V.date).match(/^(\d{1,2})\.(\d{1,2})\./),when=V.name||('hasło na '+(V.day?V.day+', ':'')+(m?(+m[1])+' '+MD[+m[2]-1]:''));
   bq.removeAttribute('data-key');bq.removeAttribute('data-edit');bq.closest('.verse').setAttribute('aria-label','Hasło dnia');
-  bq.classList.toggle('long',V.first.replace(/<[^>]+>/g,'').length>110);
-  bq.innerHTML=`<p>${V.first}</p><footer>${e(V.first_s)} <span>${e(when)}</span></footer>`+(V.second?`<p class="v2">${V.second} <cite>${e(V.second_s)}</cite></p>`:'')+
-   `<p class="vsrc">Hasło dnia: <a href="https://biblianacodzien.pl/" target="_blank" rel="noopener">Biblia na co dzień</a></p>`}
+  bq.classList.add('daily');      // dwa równorzędne wersety (ST i NT) obok siebie, pod nimi dzień i źródło
+  const vv=(t,r)=>t?`<div class="vv"><p>${t}</p><cite>${e(r)}</cite></div>`:'';
+  bq.innerHTML=vv(V.first,V.first_s)+vv(V.second,V.second_s)+
+   `<p class="vsrc">${e(when.charAt(0).toUpperCase()+when.slice(1))} · <a href="https://biblianacodzien.pl/" target="_blank" rel="noopener">Biblia na co dzień</a></p>`}
  const tb=document.querySelector('[data-key="nabozenstwa"]');
  if(tb&&Array.isArray(P.services)&&P.services.length){const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const dm=d=>{const m=String(d).match(/^\d{4}-(\d{2})-(\d{2})$/);return m?(+m[2])+'.'+m[1]:d};   // pełna data RRRR-MM-DD albo dawne „8.11”

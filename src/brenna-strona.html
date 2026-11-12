@@ -1248,6 +1248,15 @@ body.editing .al-more{display:inline-flex;align-items:center;min-height:44px;mar
 @media (min-width:1100px){.verse blockquote.long>p:first-child{font-size:30px!important;line-height:1.2}}
 .verse blockquote .v2,.verse blockquote .vsrc{font-family:'PT Sans',sans-serif;font-weight:400;letter-spacing:0}
 
+/* hasło dnia: dwa równorzędne wersety (ST i NT) – na komputerze obok siebie, na telefonie jeden pod drugim */
+.verse blockquote.daily{display:grid;grid-template-columns:1fr;gap:28px 64px;align-items:start;max-width:none}
+.verse blockquote.daily .vv{display:grid;gap:10px;align-content:start}
+.verse blockquote.daily .vv p{margin:0;font-size:20px!important;line-height:1.35;color:#fff;max-width:none}
+.verse blockquote.daily cite{font-style:normal;font-size:14px;font-weight:700;color:#cfe0c6}
+.verse blockquote.daily .vsrc{grid-column:1/-1;margin:0;font-size:14px!important;color:#cfe0c6}
+.verse blockquote.daily .vsrc a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+@media (min-width:900px){.verse blockquote.daily{grid-template-columns:1fr 1fr}.verse blockquote.daily .vv p{font-size:30px!important;line-height:1.2}}
+
 </style></head>
 <body data-season="jesien">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="fglow"><stop offset="0" stop-color="#ffcf6b" stop-opacity=".75"/><stop offset="1" stop-color="#ffcf6b" stop-opacity="0"/></radialGradient><radialGradient id="warm"><stop offset="0" stop-color="#ffd27a" stop-opacity=".85"/><stop offset=".6" stop-color="#e8a24a" stop-opacity=".35"/><stop offset="1" stop-color="#e8a24a" stop-opacity="0"/></radialGradient><radialGradient id="starglow"><stop offset="0" stop-color="#fff6d0" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d0" stop-opacity="0"/></radialGradient><radialGradient id="whiteglow"><stop offset="0" stop-color="#fffdf2" stop-opacity=".95"/><stop offset="1" stop-color="#fff8dc" stop-opacity="0"/></radialGradient><linearGradient id="snowg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d6e1eb"/></linearGradient></defs></svg><a class="skip" href="#tresc">Przejdź do treści</a><header id="hero"><h1 class="sr">Parafia Ewangelicko-Augsburska Brenna-Górki</h1>
@@ -2543,9 +2552,10 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
   const e=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const m=String(V.date).match(/^(\d{1,2})\.(\d{1,2})\./),when=V.name||('hasło na '+(V.day?V.day+', ':'')+(m?(+m[1])+' '+MD[+m[2]-1]:''));
   bq.removeAttribute('data-key');bq.removeAttribute('data-edit');bq.closest('.verse').setAttribute('aria-label','Hasło dnia');
-  bq.classList.toggle('long',V.first.replace(/<[^>]+>/g,'').length>110);
-  bq.innerHTML=`<p>${V.first}</p><footer>${e(V.first_s)} <span>${e(when)}</span></footer>`+(V.second?`<p class="v2">${V.second} <cite>${e(V.second_s)}</cite></p>`:'')+
-   `<p class="vsrc">Hasło dnia: <a href="https://biblianacodzien.pl/" target="_blank" rel="noopener">Biblia na co dzień</a></p>`}
+  bq.classList.add('daily');      // dwa równorzędne wersety (ST i NT) obok siebie, pod nimi dzień i źródło
+  const vv=(t,r)=>t?`<div class="vv"><p>${t}</p><cite>${e(r)}</cite></div>`:'';
+  bq.innerHTML=vv(V.first,V.first_s)+vv(V.second,V.second_s)+
+   `<p class="vsrc">${e(when.charAt(0).toUpperCase()+when.slice(1))} · <a href="https://biblianacodzien.pl/" target="_blank" rel="noopener">Biblia na co dzień</a></p>`}
  const tb=document.querySelector('[data-key="nabozenstwa"]');
  if(tb&&Array.isArray(P.services)&&P.services.length){const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const dm=d=>{const m=String(d).match(/^\d{4}-(\d{2})-(\d{2})$/);return m?(+m[2])+'.'+m[1]:d};   // pełna data RRRR-MM-DD albo dawne „8.11”

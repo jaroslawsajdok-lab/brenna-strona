@@ -331,3 +331,12 @@ body.editing .al-more{display:inline-flex;align-items:center;min-height:44px;mar
 .verse blockquote .vsrc a{color:#fff;text-decoration:underline;text-underline-offset:3px}
 @media (min-width:1100px){.verse blockquote.long>p:first-child{font-size:30px!important;line-height:1.2}}
 .verse blockquote .v2,.verse blockquote .vsrc{font-family:'PT Sans',sans-serif;font-weight:400;letter-spacing:0}
+
+/* hasło dnia: dwa równorzędne wersety (ST i NT) – na komputerze obok siebie, na telefonie jeden pod drugim */
+.verse blockquote.daily{display:grid;grid-template-columns:1fr;gap:28px 64px;align-items:start;max-width:none}
+.verse blockquote.daily .vv{display:grid;gap:10px;align-content:start}
+.verse blockquote.daily .vv p{margin:0;font-size:20px!important;line-height:1.35;color:#fff;max-width:none}
+.verse blockquote.daily cite{font-style:normal;font-size:14px;font-weight:700;color:#cfe0c6}
+.verse blockquote.daily .vsrc{grid-column:1/-1;margin:0;font-size:14px!important;color:#cfe0c6}
+.verse blockquote.daily .vsrc a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+@media (min-width:900px){.verse blockquote.daily{grid-template-columns:1fr 1fr}.verse blockquote.daily .vv p{font-size:30px!important;line-height:1.2}}
