@@ -145,6 +145,8 @@ add_action('rest_api_init', function () {
 		foreach ($in as $k => $html) {
 			$k = sanitize_key($k);
 			if ($k === '' || !is_string($html) || strlen($html) > 200000) continue;
+			// bez obcego formatowania (wklejonego z Worda): atrybuty style i znaczniki <font> precz
+			$html = preg_replace(['/\sstyle\s*=\s*("[^"]*"|\'[^\']*\')/i', '#</?font[^>]*>#i'], '', $html);
 			$all[$k] = wp_kses_post($html);
 		}
 		parafia_revision('blocks', get_option('parafia_blocks', []));

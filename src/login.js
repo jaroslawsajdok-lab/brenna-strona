@@ -50,6 +50,9 @@
   fails++;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');D.querySelector('[name=p]').select();
   if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Zbyt wiele prób. Spróbuj ponownie za 30 s.'}else err.textContent='Nieprawidłowy login lub hasło.'});
  pill.onclick=()=>edit(true);
+ // wklejanie w trybie edycji: tylko czysty tekst (bez kroju, pochylenia i kolorów z Worda czy innych stron)
+ document.addEventListener('paste',e=>{if(e.defaultPrevented)return;const el=e.target.closest&&e.target.closest('[contenteditable="true"]');if(!el)return;
+  e.preventDefault();const t=(e.clipboardData||window.clipboardData).getData('text/plain');document.execCommand('insertText',false,t)});
  if(bar){bar.innerHTML='Tryb edycji: kliknij tekst, aby go zmienić. <span class="savestat" role="status"></span><button type="button" id="editdone">Zakończ</button><button type="button" class="out">Wyloguj</button>';
   bar.querySelector('#editdone').onclick=()=>{edit(false);WP&&WP.flush&&WP.flush()};
   bar.querySelector('.out').onclick=async()=>{if(WP){await (WP.flush&&WP.flush());await WP.call('logout').catch(()=>{});location.reload();return}st.del('brenna-admin');admin(false)}}

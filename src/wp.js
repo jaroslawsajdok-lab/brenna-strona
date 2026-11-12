@@ -20,7 +20,11 @@
  P.upload=async function(blobOrFile,name){const f=new FormData();f.append('file',blobOrFile,name||blobOrFile.name||'zdjecie.jpg');return P.call('media',{form:f})};
 
  // --- (1) zapisane treści wracają na stronę ---
- Object.entries(P.blocks||{}).forEach(([k,html])=>{const el=document.querySelector(`[data-key="${k}"]`);if(el)el.innerHTML=html});
+ // obce formatowanie (wklejone z Worda albo z innej strony): krój, pochylenie, kolory – precz; zostaje tekst i nasze znaczniki
+ const tidyHtml=el=>{el.querySelectorAll('font,span[style]:not([class])').forEach(x=>x.replaceWith(...x.childNodes));
+  el.querySelectorAll('[style]').forEach(x=>x.removeAttribute('style'))};
+ P.tidyHtml=tidyHtml;
+ Object.entries(P.blocks||{}).forEach(([k,html])=>{const el=document.querySelector(`[data-key="${k}"]`);if(el){el.innerHTML=html;tidyHtml(el)}});
  // hasło dnia z „Biblii na co dzień” (wtyczka pobiera je raz dziennie); zastępuje hasło wpisane ręcznie
  const V=P.verse,bq=document.querySelector('.verse blockquote');
  if(V&&V.first&&bq){const MD=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
@@ -42,7 +46,7 @@
  const stat=()=>document.querySelector('.editbar .savestat');
  const say=t=>{const s=stat();if(s)s.textContent=t};
  // kopia bloku bez elementów edytora (przyciski, pola wyboru plików, atrybuty edycji)
- const clean=el=>{const c=el.cloneNode(true);c.querySelectorAll('[contenteditable]').forEach(x=>x.removeAttribute('contenteditable'));
+ const clean=el=>{const c=el.cloneNode(true);tidyHtml(c);c.querySelectorAll('[contenteditable]').forEach(x=>x.removeAttribute('contenteditable'));
   c.querySelectorAll('.doc-add,input[type=file],.ctl,.rowtools,[data-ui]').forEach(x=>x.remove());
   c.querySelectorAll('[data-key]').forEach(x=>x.removeAttribute('data-key'));   // bloki zagnieżdżone (np. albumy w galerii) zapisują się razem z rodzicem
   return c.innerHTML.trim()};

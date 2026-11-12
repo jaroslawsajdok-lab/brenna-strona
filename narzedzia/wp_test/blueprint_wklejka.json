@@ -1,0 +1,28 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/",
+  "preferredVersions": {
+    "php": "8.2",
+    "wp": "latest"
+  },
+  "steps": [
+    {
+      "step": "setSiteOptions",
+      "options": {
+        "blogname": "Parafia Brenna-Górki (test lokalny)"
+      }
+    },
+    {
+      "step": "activatePlugin",
+      "pluginPath": "/wordpress/wp-content/plugins/parafia/parafia.php"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require '/wordpress/wp-load.php'; wp_insert_user(['user_login'=>'proboszcz-test','user_pass'=>'Test-Brenna-2026','role'=>'redaktor_parafii','display_name'=>'Proboszcz (test)']); update_option('parafia_token','TESTLINK123'); foreach(['Koncert organowy','Tydzień Dobrej Nowiny','Komunikat'] as $i=>$t) wp_insert_post(['post_title'=>$t,'post_content'=>'<p>Treść testowa wpisu „'.$t.'”.</p>','post_status'=>'publish','post_date'=>date('Y-m-d H:i:s',time()-($i+1)*86400*5)]);"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require '/wordpress/wp-load.php'; update_option('parafia_blocks',['tekst-2'=>\"<p><span style=\\\"font-family: Arial; font-style: italic;\\\">Uzdr\\u00f3w mnie, Panie, a b\\u0119d\\u0119 uzdrowiony, wybaw mnie, a b\\u0119d\\u0119 wybawiony.</span></p><footer>Jeremiasz 17,14 <span>has\\u0142o 19. niedzieli po Tr\\u00f3jcy \\u015awi\\u0119tej</span></footer>\"]);"
+    }
+  ]
+}

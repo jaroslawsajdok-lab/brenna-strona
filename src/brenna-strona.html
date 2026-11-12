@@ -2545,7 +2545,11 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
  P.upload=async function(blobOrFile,name){const f=new FormData();f.append('file',blobOrFile,name||blobOrFile.name||'zdjecie.jpg');return P.call('media',{form:f})};
 
  // --- (1) zapisane treści wracają na stronę ---
- Object.entries(P.blocks||{}).forEach(([k,html])=>{const el=document.querySelector(`[data-key="${k}"]`);if(el)el.innerHTML=html});
+ // obce formatowanie (wklejone z Worda albo z innej strony): krój, pochylenie, kolory – precz; zostaje tekst i nasze znaczniki
+ const tidyHtml=el=>{el.querySelectorAll('font,span[style]:not([class])').forEach(x=>x.replaceWith(...x.childNodes));
+  el.querySelectorAll('[style]').forEach(x=>x.removeAttribute('style'))};
+ P.tidyHtml=tidyHtml;
+ Object.entries(P.blocks||{}).forEach(([k,html])=>{const el=document.querySelector(`[data-key="${k}"]`);if(el){el.innerHTML=html;tidyHtml(el)}});
  // hasło dnia z „Biblii na co dzień” (wtyczka pobiera je raz dziennie); zastępuje hasło wpisane ręcznie
  const V=P.verse,bq=document.querySelector('.verse blockquote');
  if(V&&V.first&&bq){const MD=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
@@ -2567,7 +2571,7 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
  const stat=()=>document.querySelector('.editbar .savestat');
  const say=t=>{const s=stat();if(s)s.textContent=t};
  // kopia bloku bez elementów edytora (przyciski, pola wyboru plików, atrybuty edycji)
- const clean=el=>{const c=el.cloneNode(true);c.querySelectorAll('[contenteditable]').forEach(x=>x.removeAttribute('contenteditable'));
+ const clean=el=>{const c=el.cloneNode(true);tidyHtml(c);c.querySelectorAll('[contenteditable]').forEach(x=>x.removeAttribute('contenteditable'));
   c.querySelectorAll('.doc-add,input[type=file],.ctl,.rowtools,[data-ui]').forEach(x=>x.remove());
   c.querySelectorAll('[data-key]').forEach(x=>x.removeAttribute('data-key'));   // bloki zagnieżdżone (np. albumy w galerii) zapisują się razem z rodzicem
   return c.innerHTML.trim()};
@@ -3027,6 +3031,9 @@ function toast(t){const el=document.createElement('div');el.className='ped-toast
   fails++;D.classList.remove('shake');void D.offsetWidth;D.classList.add('shake');D.querySelector('[name=p]').select();
   if(fails>=5){lockUntil=Date.now()+30000;fails=0;err.textContent='Zbyt wiele prób. Spróbuj ponownie za 30 s.'}else err.textContent='Nieprawidłowy login lub hasło.'});
  pill.onclick=()=>edit(true);
+ // wklejanie w trybie edycji: tylko czysty tekst (bez kroju, pochylenia i kolorów z Worda czy innych stron)
+ document.addEventListener('paste',e=>{if(e.defaultPrevented)return;const el=e.target.closest&&e.target.closest('[contenteditable="true"]');if(!el)return;
+  e.preventDefault();const t=(e.clipboardData||window.clipboardData).getData('text/plain');document.execCommand('insertText',false,t)});
  if(bar){bar.innerHTML='Tryb edycji: kliknij tekst, aby go zmienić. <span class="savestat" role="status"></span><button type="button" id="editdone">Zakończ</button><button type="button" class="out">Wyloguj</button>';
   bar.querySelector('#editdone').onclick=()=>{edit(false);WP&&WP.flush&&WP.flush()};
   bar.querySelector('.out').onclick=async()=>{if(WP){await (WP.flush&&WP.flush());await WP.call('logout').catch(()=>{});location.reload();return}st.del('brenna-admin');admin(false)}}
