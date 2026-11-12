@@ -76,12 +76,13 @@ Przyciski podglądu (pora roku, święta, czas, telefon) pokazują się tylko z 
 - Aktualności = zwykłe wpisy WP (te same co na starej stronie), zdjęcia i dokumenty w Mediach, teksty i nabożeństwa w opcjach wtyczki z historią (Parafia → Historia zmian).
 - Test lokalny: `narzedzia/wp_test/` (blueprint Playground + `test_flow.py`; dane testowego konta w blueprint.json). Uruchomienie w Git Bash wymaga `MSYS_NO_PATHCONV=1`.
 - Instrukcja wgrania: `WDROZENIE.md`.
+- Hasło dnia: `wordpress/parafia/haslo.php` – oficjalne API biblianacodzien.pl (`/bncd/api/open-node/`, POST z kluczem; serwis sprawdza domenę w nagłówku Origin = adres strony parafii). Klucz tylko w opcji WP (Parafia → Hasło dnia), **nigdy w repo**. Pobieranie raz dziennie, zapas: ostatnie udane hasło. Test lokalny z podstawioną odpowiedzią: `narzedzia/wp_test/blueprint_haslo.json`.
 - Repozytorium (publiczne): https://github.com/jaroslawsajdok-lab/brenna-strona. **Nowa wersja:** `GH_TOKEN=$(gh auth token) python narzedzia/wydanie.py X.Y.Z "opis"` (Python ze Sklepu Microsoft nie widzi logowania gh – stąd GH_TOKEN). Wydanie = ZIP-y + `wersje.json`; wtyczka (`aktualizacje.php`) pokazuje w WordPressie „Aktualizuj”. `DOCS_VERSION` w `wp_build.py` podnosić tylko przy zmianie PDF-ów.
 - Test aktualizacji: `narzedzia/wp_test/blueprint_aktualizacja.json` (stare wersje rozpakowane z ZIP-ów; podpięte foldery `--mount` nie nadają się do testu aktualizacji – WordPress nie podmieni podpiętego folderu).
 
 ## Wiadome braki (stan na 29.10.2026)
 - Brak prawdziwych zdjęć poza miniaturami aktualności (galeria, plakaty, duszpasterz puste). Potrzebne: kościół w Brennej, kościół w Górkach, ludzie, wnętrze – od parafii / z FB za zgodą proboszcza.
-- Treści zastępcze do usunięcia lub uzupełnienia: nagrania kazań z wymyślonymi długościami, „Tu proboszcz wpisze…”, „imię i nazwisko” duszpasterza, hasło tygodnia (nie zmienia się samo – na razie wpisuje je proboszcz; do automatu potrzebna oficjalna lista haseł na rok kościelny), adres kościoła w Górkach, skład Zespołu Wsparcia (ochrona małoletnich, wyznacza go uchwała Rady Parafialnej), pliki RODO na podstronie Dokumenty (klauzula informacyjna, polityka prywatności).
+- Treści zastępcze do usunięcia lub uzupełnienia: nagrania kazań z wymyślonymi długościami, „Tu proboszcz wpisze…”, „imię i nazwisko” duszpasterza, hasło tygodnia – oficjalne API „Biblii na co dzień” go nie podaje (zielony pas pokazuje automatycznie hasło dnia; prośba do autorów o hasło tygodnia w API), adres kościoła w Górkach, skład Zespołu Wsparcia (ochrona małoletnich, wyznacza go uchwała Rady Parafialnej), pliki RODO na podstronie Dokumenty (klauzula informacyjna, polityka prywatności).
 - Do decyzji z proboszczem: czy zostają działy Kalendarz (dubluje tabelę i aktualności) i Galerie.
 - Prototyp nie zapisuje zmian (po odświeżeniu znikają) – zapis będzie w WordPressie.
 

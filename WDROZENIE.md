@@ -39,6 +39,11 @@ Kokpit → **Parafia** → skopiuj „Stały link do nowej strony” i wyślij p
 ## 5. Zmiana na nową stronę dla wszystkich
 Kokpit → **Parafia** → **„Włącz nową stronę dla wszystkich”**. Powrót: „Wróć do starej strony”.
 
+## Hasło dnia (Biblia na co dzień)
+Kokpit → **Parafia** → „Hasło dnia” → wpisz klucz API (wygenerowany na biblianacodzien.pl dla domeny
+brenna.luteranie.pl) → **Zapisz klucz**. Pod spodem pojawi się „Ostatnie pobranie: … udane”.
+Klucza nie wpisuj nigdzie indziej. Bez klucza w zielonym pasie zostaje hasło wpisane ręcznie.
+
 ## Co jest zapisywane gdzie
 | Na stronie | W WordPressie |
 |---|---|

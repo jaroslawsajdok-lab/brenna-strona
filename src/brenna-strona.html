@@ -1240,6 +1240,14 @@ body.editing .al-more{display:inline-flex;align-items:center;min-height:44px;mar
 .pdfv-b canvas{background:#fff;max-width:100%}
 @media (max-width:520px){.pdfv-h{padding-left:12px;gap:8px}.pdfv-d,.pdfv-x,.glb-x{padding:0 12px}}
 
+/* hasło dnia z „Biblii na co dzień” w zielonym pasie */
+.verse blockquote .v2{grid-column:1/-1;margin:8px 0 0;font-size:20px!important;line-height:1.45;color:#fff;max-width:46em}
+.verse blockquote .v2 cite{font-style:normal;font-size:14px;color:#cfe0c6;white-space:nowrap}
+.verse blockquote .vsrc{grid-column:1/-1;margin:4px 0 0;font-size:14px!important;color:#cfe0c6}
+.verse blockquote .vsrc a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+@media (min-width:1100px){.verse blockquote.long>p:first-child{font-size:30px!important;line-height:1.2}}
+.verse blockquote .v2,.verse blockquote .vsrc{font-family:'PT Sans',sans-serif;font-weight:400;letter-spacing:0}
+
 </style></head>
 <body data-season="jesien">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="fglow"><stop offset="0" stop-color="#ffcf6b" stop-opacity=".75"/><stop offset="1" stop-color="#ffcf6b" stop-opacity="0"/></radialGradient><radialGradient id="warm"><stop offset="0" stop-color="#ffd27a" stop-opacity=".85"/><stop offset=".6" stop-color="#e8a24a" stop-opacity=".35"/><stop offset="1" stop-color="#e8a24a" stop-opacity="0"/></radialGradient><radialGradient id="starglow"><stop offset="0" stop-color="#fff6d0" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d0" stop-opacity="0"/></radialGradient><radialGradient id="whiteglow"><stop offset="0" stop-color="#fffdf2" stop-opacity=".95"/><stop offset="1" stop-color="#fff8dc" stop-opacity="0"/></radialGradient><linearGradient id="snowg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d6e1eb"/></linearGradient></defs></svg><a class="skip" href="#tresc">Przejdź do treści</a><header id="hero"><h1 class="sr">Parafia Ewangelicko-Augsburska Brenna-Górki</h1>
@@ -2529,6 +2537,15 @@ const clk=document.getElementById('clk');setInterval(()=>{const w=wall(),dt=new 
 
  // --- (1) zapisane treści wracają na stronę ---
  Object.entries(P.blocks||{}).forEach(([k,html])=>{const el=document.querySelector(`[data-key="${k}"]`);if(el)el.innerHTML=html});
+ // hasło dnia z „Biblii na co dzień” (wtyczka pobiera je raz dziennie); zastępuje hasło wpisane ręcznie
+ const V=P.verse,bq=document.querySelector('.verse blockquote');
+ if(V&&V.first&&bq){const MD=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+  const e=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const m=String(V.date).match(/^(\d{1,2})\.(\d{1,2})\./),when=V.name||('hasło na '+(V.day?V.day+', ':'')+(m?(+m[1])+' '+MD[+m[2]-1]:''));
+  bq.removeAttribute('data-key');bq.removeAttribute('data-edit');bq.closest('.verse').setAttribute('aria-label','Hasło dnia');
+  bq.classList.toggle('long',V.first.replace(/<[^>]+>/g,'').length>110);
+  bq.innerHTML=`<p>${V.first}</p><footer>${e(V.first_s)} <span>${e(when)}</span></footer>`+(V.second?`<p class="v2">${V.second} <cite>${e(V.second_s)}</cite></p>`:'')+
+   `<p class="vsrc">Hasło dnia: <a href="https://biblianacodzien.pl/" target="_blank" rel="noopener">Biblia na co dzień</a></p>`}
  const tb=document.querySelector('[data-key="nabozenstwa"]');
  if(tb&&Array.isArray(P.services)&&P.services.length){const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const dm=d=>{const m=String(d).match(/^\d{4}-(\d{2})-(\d{2})$/);return m?(+m[2])+'.'+m[1]:d};   // pełna data RRRR-MM-DD albo dawne „8.11”

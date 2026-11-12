@@ -14,7 +14,8 @@ const PARAFIA_THEME = 'brenna';
 const PARAFIA_CAP   = 'edit_parafia';
 const PARAFIA_COOKIE = 'parafia_nowa';
 
-require_once __DIR__ . '/aktualizacje.php';   // aktualizacje jednym kliknięciem z wydań na GitHubie
+require_once __DIR__ . '/aktualizacje.php';
+require_once __DIR__ . '/haslo.php';          // hasło dnia z „Biblii na co dzień”   // aktualizacje jednym kliknięciem z wydań na GitHubie
 
 /* ------------------------------------------------------------------
  * Włączenie / wyłączenie wtyczki: rola „Redaktor parafii”, prawo edycji dla administratora, klucz linku próbnego
@@ -119,7 +120,8 @@ function parafia_boot() {
 		'canEdit' => $edit,
 		'nonce' => $edit ? wp_create_nonce('wp_rest') : '',
 		'ajax' => $edit ? admin_url('admin-ajax.php') : '',
-		'loginUrl' => wp_login_url(home_url('/#edycja')),   // zwykłe logowanie WordPressa (działa też z CAPTCHA wtyczek bezpieczeństwa)
+		'loginUrl' => wp_login_url(home_url('/#edycja')),
+		'verse' => parafia_bncd(),                            // hasło dnia (null bez klucza)   // zwykłe logowanie WordPressa (działa też z CAPTCHA wtyczek bezpieczeństwa)
 		'blocks' => (object) get_option('parafia_blocks', []),
 		'services' => get_option('parafia_services', []),
 		'posts' => array_map('parafia_post_data', $posts),
@@ -275,6 +277,11 @@ add_action('admin_post_parafia', function () {
 		switch_theme(PARAFIA_THEME);
 	} elseif ($do === 'old' && ($prev = get_option('parafia_prev_theme'))) {
 		switch_theme($prev);
+	} elseif ($do === 'bncd') {
+		$k = trim(sanitize_text_field(wp_unslash($_POST['key'] ?? '')));
+		if ($k !== '') update_option('parafia_bncd_key', $k, false);   // puste pole = klucz bez zmian
+		delete_transient('parafia_bncd');
+		parafia_bncd();
 	} elseif ($do === 'token') {
 		update_option('parafia_token', wp_generate_password(20, false), false);
 	} elseif ($do === 'restore') {
@@ -320,6 +327,14 @@ function parafia_admin_page() {
 		'parafia-dokumenty' => is_readable($docs_file) ? (get_plugin_data($docs_file, false, false)['Version'] ?? '') : ''];
 	$rel = parafia_release();
 	$names = ['parafia' => 'Wtyczka „Parafia”', 'brenna' => 'Motyw „Brenna-Górki”', 'parafia-dokumenty' => 'Dokumenty (PDF)'];
+	// hasło dnia: klucz API i stan ostatniego pobrania
+	$bst = get_option('parafia_bncd_status');
+	echo '<h2>Hasło dnia</h2><p>Zielony pas na stronie pokazuje hasło dnia z serwisu <a href="https://biblianacodzien.pl/" target="_blank" rel="noopener">Biblia na co dzień</a>. Klucz API jest przypisany do domeny tej strony.</p>';
+	$has_key = (string) get_option('parafia_bncd_key', '') !== '';
+	$btn('bncd', 'Zapisz klucz', false, '<input type="text" name="key" autocomplete="off" placeholder="' . ($has_key ? 'klucz zapisany – wpisz nowy, aby zmienić' : 'klucz API') . '" style="width:340px"> ');
+	if ($bst) echo '<p>Ostatnie pobranie: ' . esc_html($bst['when']) . ' – ' . ($bst['ok'] ? '<b>udane</b>' : '<b>nieudane</b> (' . esc_html($bst['why'] ?? '') . ')') . '</p>';
+	elseif (!$has_key) echo '<p>Bez klucza na stronie zostaje hasło wpisane ręcznie.</p>';
+
 	echo '<h2>Wersje</h2><table class="widefat striped" style="max-width:640px"><thead><tr><th></th><th>zainstalowana</th><th>najnowsza</th></tr></thead><tbody>';
 	foreach ($names as $k => $n) {
 		$new = $rel['ver'][$k] ?? '';

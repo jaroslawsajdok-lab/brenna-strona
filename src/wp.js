@@ -21,6 +21,15 @@
 
  // --- (1) zapisane treści wracają na stronę ---
  Object.entries(P.blocks||{}).forEach(([k,html])=>{const el=document.querySelector(`[data-key="${k}"]`);if(el)el.innerHTML=html});
+ // hasło dnia z „Biblii na co dzień” (wtyczka pobiera je raz dziennie); zastępuje hasło wpisane ręcznie
+ const V=P.verse,bq=document.querySelector('.verse blockquote');
+ if(V&&V.first&&bq){const MD=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+  const e=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const m=String(V.date).match(/^(\d{1,2})\.(\d{1,2})\./),when=V.name||('hasło na '+(V.day?V.day+', ':'')+(m?(+m[1])+' '+MD[+m[2]-1]:''));
+  bq.removeAttribute('data-key');bq.removeAttribute('data-edit');bq.closest('.verse').setAttribute('aria-label','Hasło dnia');
+  bq.classList.toggle('long',V.first.replace(/<[^>]+>/g,'').length>110);
+  bq.innerHTML=`<p>${V.first}</p><footer>${e(V.first_s)} <span>${e(when)}</span></footer>`+(V.second?`<p class="v2">${V.second} <cite>${e(V.second_s)}</cite></p>`:'')+
+   `<p class="vsrc">Hasło dnia: <a href="https://biblianacodzien.pl/" target="_blank" rel="noopener">Biblia na co dzień</a></p>`}
  const tb=document.querySelector('[data-key="nabozenstwa"]');
  if(tb&&Array.isArray(P.services)&&P.services.length){const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const dm=d=>{const m=String(d).match(/^\d{4}-(\d{2})-(\d{2})$/);return m?(+m[2])+'.'+m[1]:d};   // pełna data RRRR-MM-DD albo dawne „8.11”

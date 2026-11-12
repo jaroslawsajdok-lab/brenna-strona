@@ -1,0 +1,33 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/",
+  "preferredVersions": {
+    "php": "8.2",
+    "wp": "latest"
+  },
+  "steps": [
+    {
+      "step": "setSiteOptions",
+      "options": {
+        "blogname": "Parafia Brenna-Górki (test lokalny)"
+      }
+    },
+    {
+      "step": "activatePlugin",
+      "pluginPath": "/wordpress/wp-content/plugins/parafia/parafia.php"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require '/wordpress/wp-load.php'; wp_insert_user(['user_login'=>'proboszcz-test','user_pass'=>'Test-Brenna-2026','role'=>'redaktor_parafii','display_name'=>'Proboszcz (test)']); update_option('parafia_token','TESTLINK123'); foreach(['Koncert organowy','Tydzień Dobrej Nowiny','Komunikat'] as $i=>$t) wp_insert_post(['post_title'=>$t,'post_content'=>'<p>Treść testowa wpisu „'.$t.'”.</p>','post_status'=>'publish','post_date'=>date('Y-m-d H:i:s',time()-($i+1)*86400*5)]);"
+    },
+    {
+      "step": "writeFile",
+      "path": "/wordpress/wp-content/mu-plugins/udawane-bncd.php",
+      "data": "<?php // test: odpowiedź API „Biblii na co dzień” podstawiona lokalnie (lokalny adres nie jest domeną klucza)\nadd_filter('pre_http_request',function($pre,$args,$url){ if(strpos($url,'biblianacodzien.pl/bncd/api/open-node')===false) return $pre; if(get_option('parafia_test_bncd_fail')) return ['headers'=>[],'body'=>'{\"status\":\"fail\",\"message\":\"bad domain\"}','response'=>['code'=>200,'message'=>'OK'],'cookies'=>[]]; return ['headers'=>[],'body'=>'{\"status\": \"ok\", \"date\": \"15.11.2026\", \"day\": \"NIEDZIELA\", \"is_name\": true, \"name\": \"Przedostatnia niedziela roku kościelnego\", \"is_first\": true, \"first\": \"<p><b>Pilnuj swoich kroków, gdy idziesz do domu Bożego, i nastaw się na słuchanie. </b></p>\", \"first_s\": \"Kz 4,17\", \"is_second\": true, \"second\": \"<p><b>Pojednaj się najpierw ze swoim bratem, a potem wróć i złóż swój dar. </b></p>\", \"second_s\": \"Mt 5,24 (BE)\", \"is_third\": false}','response'=>['code'=>200,'message'=>'OK'],'cookies'=>[]]; },10,3);"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require '/wordpress/wp-load.php'; update_option('parafia_bncd_key','TESTOWY-KLUCZ');"
+    }
+  ]
+}
