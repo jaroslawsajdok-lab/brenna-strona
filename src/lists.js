@@ -18,6 +18,16 @@
   b.innerHTML='<span aria-hidden="true">+</span> '+label;b.onclick=fn;after.after(b);return b};
  const xBtn=(item,label,onRemove)=>{if(item.querySelector(':scope > .li-x'))return;const b=document.createElement('button');b.type='button';b.className='li-x';b.dataset.ui='';
   b.setAttribute('aria-label',label);b.title=label;b.innerHTML=X;b.onclick=e=>{e.preventDefault();e.stopPropagation();item.remove();onRemove&&onRemove()};item.appendChild(b)};
+ // strzałki kolejności: przesuwają pozycję o jedno miejsce (pomijając przyciski edytora); zapis sam (wp.js widzi zmianę)
+ const ARW={u:'M6 15l6-6 6 6',d:'M6 9l6 6 6-6',l:'M15 5l-7 7 7 7',r:'M9 5l7 7-7 7'};
+ const mvBtns=(item,what,side)=>{if(item.querySelector(':scope > .mv'))return;const[a,b]=side?['l','r']:['u','d'],[ta,tb]=side?['w lewo','w prawo']:['wyżej','niżej'];
+  const s=document.createElement('span');s.className='mv';s.dataset.ui='';
+  const btn=(k,t,cls)=>`<button type="button" class="${cls}" aria-label="Przesuń ${what} ${t}" title="Przesuń ${t}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${ARW[k]}"/></svg></button>`;
+  s.innerHTML=btn(a,ta,'mv-a')+btn(b,tb,'mv-b');
+  s.onclick=e=>{const bt=e.target.closest('button');if(!bt)return;e.preventDefault();e.stopPropagation();const back=bt.classList.contains('mv-a');
+   let o=item;do{o=back?o.previousElementSibling:o.nextElementSibling}while(o&&(o.hasAttribute('data-ui')||o.hidden));
+   if(!o)return;back?o.before(item):o.after(item);bt.focus()};
+  item.insertBefore(s,item.querySelector(':scope > .li-x'))};
  const upload=async(file,name,full)=>WP?(await WP.upload(file,name,full)).url:URL.createObjectURL(file);
  // zdjęcia z telefonu bywają ogromne: zmniejszamy przed wysłaniem
  const shrink=async(file,max=1800)=>{try{const bmp=await createImageBitmap(file,{imageOrientation:'from-image'});const s=Math.min(1,max/Math.max(bmp.width,bmp.height));
@@ -44,7 +54,7 @@
     img.src=url;img.alt='Plakat: '+capOf(fig)}
    catch(e){alert('Nie udało się wysłać plakatu: '+e.message)}finally{if(btn){btn.disabled=false;btn.textContent=old}}};
   const deco=fig=>{fig.querySelector('img')?.removeAttribute('onerror');fig.tabIndex=0;fig.setAttribute('role','button');
-   xBtn(fig,'Usuń plakat');if(fig.querySelector('.po-ch'))return;
+   xBtn(fig,'Usuń plakat');mvBtns(fig,'plakat',true);if(fig.querySelector('.po-ch'))return;
    const b=document.createElement('button');b.type='button';b.className='po-ch';b.dataset.ui='';b.textContent='Zmień plakat';
    b.onclick=e=>{e.preventDefault();e.stopPropagation();pickOne(file=>setImg(fig,file,b))};fig.appendChild(b)};
   [...posters.children].forEach(deco);
@@ -58,13 +68,13 @@
   posters.addEventListener('keydown',e=>{const fig=e.target.closest('.poster');if(fig&&e.target===fig&&(e.key==='Enter'||e.key===' ')){e.preventDefault();zoom(fig)}})}
 
  // --- spotkania w tygodniu i grupy: dodaj / usuń pozycję ---
- function list(box,after,label,tpl,xlabel){if(!box)return;
-  const deco=()=>[...box.children].forEach(it=>xBtn(it,xlabel));deco();
-  addBtn(label,after,()=>{box.insertAdjacentHTML('beforeend',tpl);const it=box.lastElementChild;xBtn(it,xlabel);writable(it);it.querySelector('[data-ph]').focus()})}
+ function list(box,after,label,tpl,xlabel,what){if(!box)return;
+  const deco=it=>{xBtn(it,xlabel);mvBtns(it,what)};[...box.children].forEach(deco);
+  addBtn(label,after,()=>{box.insertAdjacentHTML('beforeend',tpl);const it=box.lastElementChild;deco(it);writable(it);it.querySelector('[data-ph]').focus()})}
  list(document.querySelector('.weekly dl'),document.querySelector('.weekly dl'),'Dodaj spotkanie',
-  '<div><dt data-ph="Nazwa spotkania"></dt><dd data-ph="dzień, godzina, miejsce"></dd></div>','Usuń spotkanie');
+  '<div><dt data-ph="Nazwa spotkania"></dt><dd data-ph="dzień, godzina, miejsce"></dd></div>','Usuń spotkanie','spotkanie');
  list(document.querySelector('.groups ul'),document.querySelector('.groups ul'),'Dodaj grupę',
-  '<li><b data-ph="Nazwa grupy"></b> <span data-ph="kiedy się spotyka"></span></li>','Usuń grupę');
+  '<li><b data-ph="Nazwa grupy"></b> <span data-ph="kiedy się spotyka"></span></li>','Usuń grupę','grupę');
 
  // --- kalendarz wydarzeń: data z kalendarzyka, sortowanie, minione znikają ---
  const days=document.querySelector('.days');
@@ -103,7 +113,7 @@
    a.dataset.photos=JSON.stringify(list);const ph=a.querySelector('.ph');if(list.length&&!ph.querySelector('img'))ph.innerHTML=`<img src="${esc(list[0])}" alt="" loading="lazy">`;
    const sm=a.querySelector('small');sm.textContent=sm.dataset.base||sm.textContent;stat('')};
   const pick=fn=>{const f=document.createElement('input');f.type='file';f.accept='image/*';f.multiple=true;f.onchange=()=>fn(f.files);f.click()};
-  const deco=a=>{xBtn(a,'Usuń album');if(a.querySelector('.al-more'))return;const m=document.createElement('button');m.type='button';m.className='al-more';m.dataset.ui='';
+  const deco=a=>{xBtn(a,'Usuń album');mvBtns(a,'album',true);if(a.querySelector('.al-more'))return;const m=document.createElement('button');m.type='button';m.className='al-more';m.dataset.ui='';
    m.textContent='+ zdjęcia';m.onclick=e=>{e.preventDefault();e.stopPropagation();pick(fs=>{const sm=a.querySelector('small');sm.dataset.base=sm.textContent;
     addPhotos(a,fs,t=>{if(t)sm.textContent=t}).catch(er=>alert('Nie udało się wysłać zdjęć: '+er.message))})};a.appendChild(m)};
   [...albums.children].forEach(deco);

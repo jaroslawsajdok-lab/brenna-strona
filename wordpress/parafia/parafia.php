@@ -125,6 +125,7 @@ function parafia_boot() {
 		'blocks' => (object) get_option('parafia_blocks', []),
 		'services' => get_option('parafia_services', []),
 		'posts' => array_map('parafia_post_data', $posts),
+		'postsOrder' => array_values(array_map('intval', (array) get_option('parafia_posts_order', []))),   // kolejność aktualności ustawiona strzałkami
 	];
 	echo '<script>window.PARAFIA=' . wp_json_encode($data, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . ";</script>\n";
 }
@@ -170,6 +171,12 @@ add_action('rest_api_init', function () {
 	}]);
 
 	register_rest_route($ns, '/posts', ['methods' => 'POST', 'permission_callback' => $editor, 'callback' => 'parafia_rest_save_post']);
+	// kolejność aktualności (strzałki „wyżej/niżej”): lista numerów wpisów; nowe wpisy spoza listy pokazują się na górze
+	register_rest_route($ns, '/order', ['methods' => 'POST', 'permission_callback' => $editor, 'callback' => function (WP_REST_Request $r) {
+		$ids = array_values(array_unique(array_filter(array_map('intval', (array) $r->get_param('ids')))));
+		update_option('parafia_posts_order', array_slice($ids, 0, 200), false);
+		return ['ok' => true, 'count' => count($ids)];
+	}]);
 	register_rest_route($ns, '/posts/(?P<id>\d+)', ['methods' => 'DELETE', 'permission_callback' => $editor, 'callback' => function (WP_REST_Request $r) {
 		$p = get_post((int) $r['id']);
 		if (!$p || $p->post_type !== 'post') return new WP_Error('parafia', 'Nie ma takiego wpisu.', ['status' => 404]);

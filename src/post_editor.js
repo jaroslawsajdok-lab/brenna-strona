@@ -19,6 +19,15 @@ let posts=[...sec.querySelectorAll('article.post')].map(a=>{const im=a.querySele
 // WordPress: wpisy z bazy (każdy ma wp – numer wpisu; zdjęcia mają id w bibliotece mediów)
 const WP=window.PARAFIA;
 if(WP&&Array.isArray(WP.posts))posts=WP.posts.map(x=>({...x,id:++uid}));
+// kolejność ustawiona strzałkami: lista numerów wpisów; wpisy spoza listy (nowe) idą na górę według daty
+const key=p=>p.wp||('n'+p.id);
+let order=WP&&Array.isArray(WP.postsOrder)?WP.postsOrder:[];
+function sortPosts(){const ix=new Map(order.map((k,i)=>[k,i])),at=p=>ix.has(key(p))?ix.get(key(p)):-1;
+ posts.sort((a,b)=>{const ia=at(a),ib=at(b);if((ia<0)!==(ib<0))return ia<0?-1:1;if(ia<0)return b.date.localeCompare(a.date)||b.id-a.id;return ia-ib})}
+function move(p,d){sortPosts();const i=posts.indexOf(p),j=i+d;if(i<0||j<0||j>=posts.length)return;[posts[i],posts[j]]=[posts[j],posts[i]];
+ order=posts.map(key);render(p.id);if(j>=SHOW)toast('Wpis przesunięty niżej – nie mieści się już w aktualnościach na stronie');
+ const btn=sec.querySelector(`.post[data-id="${p.id}"] .${d<0?'pup':'pdn'}`);if(btn&&!btn.disabled)btn.focus();
+ if(WP&&WP.canEdit)WP.call('order',{body:{ids:order.filter(k=>Number.isInteger(k))}}).catch(e=>toast('Nie zapisano kolejności: '+e.message))}
 const lead=sec.querySelector('.lead');
 const addBtn=document.createElement('button');addBtn.type='button';addBtn.className='addpost';addBtn.innerHTML='<span aria-hidden="true">+</span> Dodaj aktualność';
 (lead||sec.querySelector('h2')).after(addBtn);
@@ -28,11 +37,12 @@ function cardHTML(p,prev){
  const all=(p.main?[p.main]:[]).concat(p.gallery),g=p.gallery,vis=g.slice(0,4),rest=g.length-vis.length;
  const ph=p.main?`<${prev?'div':'button type="button"'} class="ph" data-i="0" ${prev?'':`aria-label="Zobacz zdjęcia (${all.length}): ${esc(p.title)}"`}><img src="${p.main.src}" alt="" style="object-position:${p.main.fx}% ${p.main.fy}%"></${prev?'div':'button'}>`:'<div class="ph" aria-hidden="true"></div>';
  const gal=vis.length?`<ul class="pgal">${vis.map((x,i)=>`<li><${prev?'span':'button type="button"'} class="pgb" data-i="${i+(p.main?1:0)}" ${prev?'':`aria-label="Zdjęcie ${i+(p.main?2:1)} z ${all.length}"`}><img src="${x.src}" alt="">${i===vis.length-1&&rest>0?`<span class="n">+${rest}</span>`:''}</${prev?'span':'button'}></li>`).join('')}</ul>`:'';
- return `<article class="post" data-id="${p.id}">${ph}<time datetime="${p.date}">${fmtD(p.date)}</time><h3>${esc(p.title)||'<span style="color:#8a8c85">Tytuł wpisu</span>'}</h3><div class="ptext">${p.html||'<p style="color:#8a8c85">Treść wpisu…</p>'}</div>${prev?'':'<button type="button" class="pmore" aria-expanded="false">Czytaj dalej</button>'}${gal}${prev?'':'<button type="button" class="pedit"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg> Edytuj wpis</button>'}</article>`}
+ return `<article class="post" data-id="${p.id}">${ph}<time datetime="${p.date}">${fmtD(p.date)}</time><h3>${esc(p.title)||'<span style="color:#8a8c85">Tytuł wpisu</span>'}</h3><div class="ptext">${p.html||'<p style="color:#8a8c85">Treść wpisu…</p>'}</div>${prev?'':'<button type="button" class="pmore" aria-expanded="false">Czytaj dalej</button>'}${gal}${prev?'':'<div class="ptools"><button type="button" class="pup" aria-label="Przesuń wpis wyżej" title="Wyżej"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="pdn" aria-label="Przesuń wpis niżej" title="Niżej"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><button type="button" class="pedit"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg> Edytuj wpis</button></div>'}</article>`}
 function render(flashId){
  sec.querySelectorAll('article.post').forEach(a=>a.remove());
- posts.sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+ sortPosts();
  more.insertAdjacentHTML('beforebegin',posts.slice(0,SHOW).map(p=>cardHTML(p)).join(''));
+ const cards=sec.querySelectorAll('article.post');cards.forEach((a,i)=>{const u=a.querySelector('.pup'),d=a.querySelector('.pdn');if(u)u.disabled=i===0;if(d)d.disabled=i===posts.length-1});
  sec.querySelectorAll('article.post').forEach(a=>{const t=a.querySelector('.ptext');if(t.scrollHeight>t.clientHeight+4)a.classList.add('long')});
  if(flashId){const a=sec.querySelector(`.post[data-id="${flashId}"]`);if(a){a.classList.add('flash');a.scrollIntoView({block:'center',behavior:'smooth'})}}}
 render();
@@ -41,19 +51,22 @@ render();
 sec.addEventListener('click',e=>{const a=e.target.closest('article.post');if(!a||a.closest('.ped'))return;const p=posts.find(x=>x.id==a.dataset.id);if(!p)return;
  const pic=e.target.closest('[data-i]');if(pic){lightbox(p,+pic.dataset.i,pic);return}
  if(e.target.closest('.pmore')){const o=a.classList.toggle('open');e.target.textContent=o?'Zwiń':'Czytaj dalej';e.target.setAttribute('aria-expanded',o);return}
+ if(e.target.closest('.pup')){move(p,-1);return}if(e.target.closest('.pdn')){move(p,1);return}
  if(e.target.closest('.pedit'))openEditor(p)});
 addBtn.addEventListener('click',()=>openEditor(null));
 
-// --- przeglądarka zdjęć ---
+// --- okno wpisu: zdjęcie (plakat) w całości, a pod nim tytuł, data i cała treść ---
 function lightbox(p,i,back){const all=(p.main?[p.main]:[]).concat(p.gallery);if(!all.length)return;
- const L=document.createElement('div');L.className='lbx';L.setAttribute('role','dialog');L.setAttribute('aria-modal','true');L.setAttribute('aria-label','Zdjęcia: '+p.title);
- L.innerHTML=`<img alt=""><div class="lb-cap"></div><button type="button" class="lb-x" aria-label="Zamknij"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>${all.length>1?'<button type="button" class="lb-p" aria-label="Poprzednie"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="lb-n" aria-label="Następne"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>':''}`;
+ const L=document.createElement('div');L.className='lbx';L.setAttribute('role','dialog');L.setAttribute('aria-modal','true');L.setAttribute('aria-label',p.title);
+ const nav=all.length>1?'<button type="button" class="lb-p" aria-label="Poprzednie zdjęcie"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="lb-n" aria-label="Następne zdjęcie"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>':'';
+ L.innerHTML=`<div class="lb-sc"><figure class="lb-fig"><img alt="">${nav}<figcaption class="lb-cap"></figcaption></figure><article class="lb-txt"><time datetime="${p.date}">${fmtD(p.date)}</time><h3>${esc(p.title)}</h3><div class="lb-html">${p.html||''}</div></article></div><button type="button" class="lb-x" aria-label="Zamknij"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`;
+ if(!p.html)L.querySelector('.lb-html').remove();
  const img=L.querySelector('img'),cap=L.querySelector('.lb-cap');
- const show=()=>{i=(i+all.length)%all.length;img.src=all[i].src;cap.textContent=`${p.title} · ${i+1} / ${all.length}`};
+ const show=()=>{i=(i+all.length)%all.length;img.src=all[i].src;cap.textContent=all.length>1?`Zdjęcie ${i+1} z ${all.length}`:''};
  const close=()=>{L.remove();removeEventListener('keydown',key);document.documentElement.style.overflow='';back&&back.focus()};
- const key=e=>{if(e.key==='Escape')close();else if(e.key==='ArrowRight'){i++;show()}else if(e.key==='ArrowLeft'){i--;show()}};
- L.addEventListener('click',e=>{if(e.target.closest('.lb-x')||e.target===L)close();else if(e.target.closest('.lb-p')){i--;show()}else if(e.target.closest('.lb-n')){i++;show()}});
- let x0=null;L.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});L.addEventListener('touchend',e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>50){i+=d<0?1:-1;show()}x0=null});
+ const key=e=>{if(e.key==='Escape'&&!document.querySelector('.pdfv'))close();else if(e.key==='ArrowRight'){i++;show()}else if(e.key==='ArrowLeft'){i--;show()}};
+ L.addEventListener('click',e=>{if(e.target.closest('.lb-x')||e.target===L||e.target.classList.contains('lb-sc'))close();else if(e.target.closest('.lb-p')){i--;show()}else if(e.target.closest('.lb-n')){i++;show()}});
+ let x0=null;img.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});img.addEventListener('touchend',e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>50){i+=d<0?1:-1;show()}x0=null});
  addEventListener('keydown',key);document.body.appendChild(L);document.documentElement.style.overflow='hidden';show();L.querySelector('.lb-x').focus()}
 
 // --- zdjęcia z telefonu bywają ogromne: zmniejszamy przed dodaniem ---

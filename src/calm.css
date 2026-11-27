@@ -288,9 +288,18 @@ body.editing .li-add:disabled{opacity:.6;cursor:wait}
 body.editing .li-x{display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:#fff;color:var(--ink);cursor:pointer;flex:none}
 body.editing .li-x:hover{background:#b3261e;color:#fff}
 body.editing .li-x .ico{width:18px;height:18px}
-body.editing .weekly dl>div,body.editing .groups li{display:grid;grid-template-columns:minmax(0,1fr) 44px;column-gap:8px;align-items:start}
-body.editing .weekly dl>div>.li-x{grid-column:2;grid-row:1/span 2}
-body.editing .groups li>.li-x{grid-column:2;grid-row:1}
+body.editing .weekly dl>div,body.editing .groups li{display:grid;grid-template-columns:minmax(0,1fr) auto 44px;column-gap:8px;align-items:start}
+body.editing .weekly dl>div>.li-x{grid-column:3;grid-row:1/span 2}
+body.editing .groups li>.li-x{grid-column:3;grid-row:1}
+body.editing .weekly dl>div>.mv{grid-column:2;grid-row:1/span 2}
+body.editing .groups li>.mv{grid-column:2;grid-row:1}
+/* strzałki kolejności */
+.mv{display:none}
+body.editing .mv{display:flex;gap:4px}
+body.editing .mv button{display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:#fff;color:var(--ink);cursor:pointer}
+body.editing .mv button:hover{background:var(--spruce);color:#fff}
+body.editing .mv .ico{width:20px;height:20px}
+body.editing .poster>.mv,body.editing .album>.mv{position:absolute;right:6px;top:56px;z-index:2}
 body.editing [data-ph]:empty::before{content:attr(data-ph);color:#8a8c85;font-weight:400}
 /* kalendarz */
 .days li{position:relative}
